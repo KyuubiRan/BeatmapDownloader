@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "cheat.hpp"
+#include "main.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,

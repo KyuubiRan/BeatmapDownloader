@@ -4,14 +4,16 @@
 #include <Psapi.h>
 #include <tlhelp32.h>
 #include <tchar.h>
-
+#include <filesystem>
 using namespace std;
 
-#define LOGI(msg, ...)  printf("[INFO] " msg "\n", ##__VA_ARGS__)
-#define LOGE(msg, ...)  printf("[ERROR] " msg "\n", ##__VA_ARGS__)
-#define LOGW(msg, ...)  printf("[WARNING] " msg "\n", ##__VA_ARGS__)
+#define LOGD(msg, ...)  printf_s("[DEBUG] " msg "\n", ##__VA_ARGS__)
+#define LOGI(msg, ...)  printf_s("[INFO] " msg "\n", ##__VA_ARGS__)
+#define LOGW(msg, ...)  printf_s("[WARNING] " msg "\n", ##__VA_ARGS__)
+#define LOGE(msg, ...)  printf_s("[ERROR] " msg "\n", ##__VA_ARGS__)
 
-bool InjectDll(HANDLE hProc, const char *dllName) {
+bool InjectDll(HANDLE hProc, const char *path) {
+
     LPVOID lpBaseAddress = NULL;
     HMODULE hKernel32 = GetModuleHandleA("Kernel32.dll");
     if (hKernel32 == NULL) {
@@ -23,12 +25,12 @@ bool InjectDll(HANDLE hProc, const char *dllName) {
         LOGE("Failed to get LoadLibraryA address, error code: %d", GetLastError());
         return false;
     }
-    lpBaseAddress = VirtualAllocEx(hProc, NULL, strlen(dllName) + 1, MEM_COMMIT, PAGE_READWRITE);
+    lpBaseAddress = VirtualAllocEx(hProc, NULL, strlen(path) + 1, MEM_COMMIT, PAGE_READWRITE);
     if (lpBaseAddress == NULL) {
         LOGE("Failed to allocate memory in target process, error code: %d", GetLastError());
         return false;
     }
-    if (!WriteProcessMemory(hProc, lpBaseAddress, dllName, strlen(dllName) + 1, NULL)) {
+    if (!WriteProcessMemory(hProc, lpBaseAddress, path, strlen(path) + 1, NULL)) {
         LOGE("Failed to write dll name to target process, error code: %d", GetLastError());
         return false;
     }
@@ -43,36 +45,40 @@ bool InjectDll(HANDLE hProc, const char *dllName) {
     return true;
 }
 
-DWORD GetPidByName(const char *name) {
-    TCHAR tszProcess[64] = { 0 };
+DWORD GetPidByName(LPCWSTR name) {
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-    STARTUPINFO st;
-    PROCESS_INFORMATION pi;
-    PROCESSENTRY32 ps;
-    HANDLE hSnapshot;
+    if (hSnapshot == INVALID_HANDLE_VALUE)
+        return 0;
 
-    memset(&st, 0, sizeof st);
-    st.cb = sizeof st;
-    memset(&ps, 0, sizeof ps);
-    ps.dwSize = sizeof ps;
-    memset(&pi, 0, sizeof pi);
+    PROCESSENTRY32W pe{};
+    pe.dwSize = sizeof pe;
 
-    hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (INVALID_HANDLE_VALUE == hSnapshot) return 0;
-    if (!Process32First(hSnapshot, &ps)) return 0;
-    do {
-        if (lstrcmp(ps.szExeFile, tszProcess) == 0) {
+    if (Process32FirstW(hSnapshot, &pe)) {
+        if (lstrcmpW(pe.szExeFile, name) == 0) {
             CloseHandle(hSnapshot);
-            return ps.th32ProcessID;
+            return pe.th32ProcessID;
         }
-    } while (Process32Next(hSnapshot, &ps));
+    } else {
+        CloseHandle(hSnapshot);
+        return 0;
+    }
+
+    while (Process32NextW(hSnapshot, &pe)) {
+        if (lstrcmpW(pe.szExeFile, name) == 0) {
+            CloseHandle(hSnapshot);
+            return pe.th32ProcessID;
+        }
+    }
+
     CloseHandle(hSnapshot);
     return 0;
 }
+
 int main() {
     LOGI("Waiting for osu! to start...");
     DWORD pid = 0;
-    while ((pid = GetPidByName("osu!.exe")) == 0) {
+    while ((pid = GetPidByName(L"osu!.exe")) == 0) {
         Sleep(1000);
     }
     LOGI("osu! found, pid: %d", pid);
@@ -83,7 +89,12 @@ int main() {
         return 1;
     }
 
-    if (InjectDll(hProc, "Downloader.dll")) {
+    LOGI("Injecting dll...");
+    auto path = std::filesystem::current_path() / "Downloader.dll";
+    auto sPath = path.string();
+    LOGI("DLL path: %s", sPath.c_str());
+
+    if (InjectDll(hProc, sPath.c_str())) {
         LOGI("Dll injected successfully");
     }
 
