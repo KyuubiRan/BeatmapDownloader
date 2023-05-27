@@ -62,28 +62,6 @@ void OnRenderDX11(ID3D11DeviceContext *pContext) {
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    ImGuiIO &io = ImGui::GetIO();
-
-    ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
-
-    bool mouseClicked = false;
-    switch (msg) {
-        case WM_KEYDOWN:
-            break;
-        case WM_KEYUP:
-            break;
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
-        case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
-        case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP:
-            mouseClicked = true;
-            break;
-    }
-
-    if (ui::main::IsShowed() && mouseClicked)
-        return 1;
 
     return CallWindowProc(OriginalWndProcHandler, hWnd, msg, wParam, lParam);
 }
@@ -97,7 +75,6 @@ void OnRenderGL(HDC hdc) {
         osuHwnd = WindowFromDC(hdc);
         ImGui_ImplOpenGL3_Init();
         ImGui_ImplWin32_Init(osuHwnd);
-        OriginalWndProcHandler = (WNDPROC)SetWindowLongPtr(osuHwnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
     }
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -129,6 +106,34 @@ void MainUiToggleCheck(LPVOID) {
     }
 }
 
+BOOL OnPeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg) {
+    BOOL ret = HookManager::CallOriginal(OnPeekMessage, lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+
+    ImGuiIO &io = ImGui::GetIO();
+    ImGui_ImplWin32_WndProcHandler(hWnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
+
+    bool mouseClicked = false;
+    switch (lpMsg->message) {
+        case WM_KEYDOWN:
+            if (lpMsg->wParam == VK_HOME) {
+                ui::main::ToggleShow();
+            }
+            break;
+        case WM_KEYUP:
+            break;
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+            mouseClicked = true;
+            break;
+    }
+
+    return ret;
+}
+
 void Init(GraphicsApiType version) {
     switch (version) {
         case GraphicsApiType::D3D11:
@@ -142,7 +147,18 @@ void Init(GraphicsApiType version) {
             return;
     }
 
-    CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainUiToggleCheck, nullptr, 0, nullptr);
+    HMODULE hModule = GetModuleHandle(TEXT("user32.dll"));
+    if (hModule == nullptr) {
+        LOGE("Cannot get user32.dll handle!");
+        return;
+    }
+
+    
+    auto p = (decltype(&OnPeekMessage))GetProcAddress(hModule, "PeekMessageW");
+    LOGD("PeekMessageW address: 0x%p", p);
+    HookManager::InstallHook(p, OnPeekMessage);
+    
+    //CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainUiToggleCheck, nullptr, 0, nullptr);
 }
 
 void SetCurrentFont(uint8_t *byte, size_t size, float pixelSize, ImFontConfig *cfg, const ImWchar *glyphRanges) {
