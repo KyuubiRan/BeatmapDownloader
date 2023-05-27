@@ -3,54 +3,102 @@
 
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
-#include <backends/imgui_impl_dx9.h>
+#include <backends/imgui_impl_dx11.h>
 #include <backends/imgui_impl_opengl3.h>
 
 #include "backend/DirectX.h"
 #include "backend/OpenGL.h"
-#include "glob/GlobalEvents.h"
+#include "ui/MainUi.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace renderer {
 
+HWND osuHwnd;
+
+void Update() {
+    ui::main::Update();
+}
+
 ImFont *_currentFont = nullptr;
 
-void OnRenderDX9(LPDIRECT3DDEVICE9 d3ddvice) {
+static ID3D11RenderTargetView *mainRenderTargetView;
+
+void OnInitializeDX11(HWND window, ID3D11Device *pDevice, ID3D11DeviceContext *pContext, IDXGISwapChain *pChain) {
     ImGuiIO &io = ImGui::GetIO();
+
+    ImGui_ImplWin32_Init(window);
+    ImGui_ImplDX11_Init(pDevice, pContext);
+
+    osuHwnd = window;
+
+    ID3D11Texture2D *pBackBuffer;
+    pChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID *>(&pBackBuffer));
+    pDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mainRenderTargetView);
+    pBackBuffer->Release();
+    LOGD("Success initialized dx11!");
+}
+
+void OnRenderDX11(ID3D11DeviceContext *pContext) {
+    ImGuiIO &io = ImGui::GetIO();
+
     if (!io.Fonts->IsBuilt()) {
         io.Fonts->Build();
-        ImGui_ImplDX9_InvalidateDeviceObjects();
+        ImGui_ImplDX11_InvalidateDeviceObjects();
     }
 
-    ImGui_ImplDX9_NewFrame();
+    ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
 
     if (_currentFont != nullptr)
         io.FontDefault = _currentFont;
 
     ImGui::NewFrame();
-    global::OnRender();
-    ImGui::EndFrame();
-
+    Update();
     ImGui::Render();
 
-    ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+    pContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void OnResetDX9(LPDIRECT3DDEVICE9 d3ddvice) {
-    ImGui_ImplDX9_InvalidateDeviceObjects();
-    ImGui_ImplDX9_CreateDeviceObjects();
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    ImGuiIO &io = ImGui::GetIO();
+
+    ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+
+    bool mouseClicked = false;
+    switch (msg) {
+        case WM_KEYDOWN:
+            break;
+        case WM_KEYUP:
+            break;
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+            mouseClicked = true;
+            break;
+    }
+
+    if (ui::main::IsShowed() && mouseClicked)
+        return 1;
+
+    return CallWindowProc(OriginalWndProcHandler, hWnd, msg, wParam, lParam);
 }
 
 void OnRenderGL(HDC hdc) {
-    static bool glContextCreated = false;
-    if (!glContextCreated) {
-        ImGui_ImplOpenGL3_Init();
-        glContextCreated = true;
-    }
-
     ImGuiIO &io = ImGui::GetIO();
+    if (ImGui::GetCurrentContext() == nullptr)
+        return;
+
+    if (!io.BackendRendererUserData) {
+        osuHwnd = WindowFromDC(hdc);
+        ImGui_ImplOpenGL3_Init();
+        ImGui_ImplWin32_Init(osuHwnd);
+        OriginalWndProcHandler = (WNDPROC)SetWindowLongPtr(osuHwnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+    }
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -59,68 +107,42 @@ void OnRenderGL(HDC hdc) {
         io.FontDefault = _currentFont;
 
     ImGui::NewFrame();
-    global::OnRender();
-    ImGui::EndFrame();
-
+    Update();
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-
-LRESULT CALLBACK HwndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    ImGuiIO &io = ImGui::GetIO();
-    POINT mPos;
-    GetCursorPos(&mPos);
-    ScreenToClient(hWnd, &mPos);
-    io.MousePos.x = static_cast<float>(mPos.x);
-    io.MousePos.y = static_cast<float>(mPos.y);
-
-    ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
-    global::OnWndProc(hWnd, uMsg, wParam, lParam);
-
-    return CallWindowProc(OriginalWndProcHandler, hWnd, uMsg, wParam, lParam);
+void MainUiToggleCheck(LPVOID) {
+    while (1) {
+        bool isDown = (GetKeyState(VK_HOME) & 8000) != 0;
+        static bool toggled = false;
+        if (isDown) {
+            if (!toggled) {
+                toggled = true;
+                ui::main::ToggleShow();
+            }
+        } else {
+            toggled = false;
+        }
+        Sleep(20);
+    }
 }
 
 void Init(GraphicsApiType version) {
-    HWND window = nullptr;
-    EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
-        wchar_t className[256];
-        GetClassName(hwnd, className, 256);
-        if (wcsncmp(className, L"WindowsForms", 12) == 0) {
-            wchar_t title[256];
-            GetWindowText(hwnd, title, 256);
-            if (wcscmp(title, L"osu!") == 0) {
-                *(HWND *)lParam = hwnd;
-                return FALSE;
-            }
-        }
-        return TRUE;
-    }, (LPARAM)&window);
-
-    if (window == nullptr) {
-        LOGE("Cannot found osu! window!");
-        return;
-    }
-
-    renderer::OriginalWndProcHandler = (WNDPROC)SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)renderer::HwndProc);
-
-    LOGI("HWND hook Inited");
-
     switch (version) {
-        case GraphicsApiType::D3D9:
-            backend::DX9Events::OnRender += OnRenderDX9;
-            backend::DX9Events::OnReset += OnResetDX9;
-            backend::InitDX9Hooks();
+        case GraphicsApiType::D3D11:
+            backend::InitDX11Hooks();
             break;
         case GraphicsApiType::OpenGL3:
-            backend::GLEvents::OnRender += OnRenderGL;
             backend::InitGLHooks();
             break;
         default:
             LOGE("Unsupported api version!");
-            break;
+            return;
     }
+
+    CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainUiToggleCheck, nullptr, 0, nullptr);
 }
 
 void SetCurrentFont(uint8_t *byte, size_t size, float pixelSize, ImFontConfig *cfg, const ImWchar *glyphRanges) {
@@ -129,11 +151,10 @@ void SetCurrentFont(uint8_t *byte, size_t size, float pixelSize, ImFontConfig *c
         return;
     }
 
-    LOGI("Begin change font");
+    LOGD("Begin change font");
     ImGuiIO &io = ImGui::GetIO();
     _currentFont = io.Fonts->AddFontFromMemoryTTF(byte, size, pixelSize, cfg, glyphRanges);
-    LOGI("Finished change font");
+    LOGD("Finished change font");
 }
 
 }
-

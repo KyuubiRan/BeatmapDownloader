@@ -60,9 +60,6 @@
     <ClInclude Include="libraries\imgui\misc\single_file\imgui_single_file.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\imgui\backends\imgui_impl_dx9.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\imgui\backends\imgui_impl_win32.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -96,10 +93,10 @@
     <ClInclude Include="src\misc\ISerializable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\glob\GlobalEvents.h">
+    <ClInclude Include="src\ui\MainUi.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\MainUi.h">
+    <ClInclude Include="libraries\imgui\backends\imgui_impl_dx11.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,9 +122,6 @@
     <ClCompile Include="libraries\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\imgui\backends\imgui_impl_dx9.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\imgui\backends\imgui_impl_win32.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -144,6 +138,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\MainUi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\imgui\backends\imgui_impl_dx11.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

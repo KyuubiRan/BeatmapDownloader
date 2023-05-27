@@ -39,6 +39,7 @@ public:
 		return original ? original(params...) : ReturnType{};
 	}
 
+#ifndef _WIN64
 	template <typename ReturnType, typename... Params>
 	static ReturnType CallOriginal(ReturnType(__fastcall *handler)(Params...), Params... params) {
 		auto original = GetOriginal(handler);
@@ -50,6 +51,7 @@ public:
 		auto original = GetOriginal(handler);
 		return original ? original(params...) : ReturnType{};
 	}
+#endif 
 
 private:
 	HookManager() = default;
