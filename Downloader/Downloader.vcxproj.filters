@@ -90,13 +90,22 @@
     <ClInclude Include="libraries\detours\detver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\misc\ISerializable.h">
+    <ClInclude Include="src\config\ISerializable.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\MainUi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libraries\imgui\backends\imgui_impl_dx11.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hook\HandleLinkHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\Feature.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config\Field.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -141,6 +150,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="libraries\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hook\HandleLinkHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

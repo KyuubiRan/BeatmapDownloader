@@ -4,6 +4,8 @@
 #include <d3d11.h>
 
 namespace renderer {
+inline HHOOK g_msgHook = nullptr;
+
 enum class GraphicsApiType {
     D3D9,
     D3D10,

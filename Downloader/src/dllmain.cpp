@@ -14,6 +14,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
         case DLL_THREAD_DETACH:
             break;
         case DLL_PROCESS_DETACH:
+            if (renderer::g_msgHook != NULL) {
+                UnhookWindowsHookEx(renderer::g_msgHook);
+            }
             break;
     }
     return TRUE;

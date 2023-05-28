@@ -19,6 +19,8 @@ void Update() {
     if (!show) return;
     ImGui::Begin("Osu! Beatmap Downloader");
     ImGui::Text("Hello, world!");
+    static char buf[256] = { 0 };
+    ImGui::InputText("Input", buf, 256);
     ImGui::End();
 }
 

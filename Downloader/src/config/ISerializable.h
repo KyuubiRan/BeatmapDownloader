@@ -1,6 +1,8 @@
 #pragma once
 #include <json.hpp>
 
+namespace config {
+
 class ISerializable {
 public:
     virtual ~ISerializable() = default;
@@ -12,13 +14,15 @@ public:
     }
 };
 
+}
+
 template <>
-struct nlohmann::adl_serializer<ISerializable> {
-    static void to_json(json &j, ISerializable &obj) {
+struct nlohmann::adl_serializer<config::ISerializable> {
+    static void to_json(json &j, config::ISerializable &obj) {
         obj.to_json(j);
     }
 
-    static void from_json(json &j, ISerializable &obj) {
+    static void from_json(json &j, config::ISerializable &obj) {
         obj.from_json(j);
     }
 };

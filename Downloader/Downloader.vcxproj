@@ -186,8 +186,10 @@
     <ClInclude Include="libraries\utility\Event.hpp" />
     <ClInclude Include="libraries\utility\Random.hpp" />
     <ClInclude Include="libraries\utility\Sequence.hpp" />
+    <ClInclude Include="src\config\Field.h" />
+    <ClInclude Include="src\hook\HandleLinkHook.h" />
     <ClInclude Include="src\main.hpp" />
-    <ClInclude Include="src\misc\ISerializable.h" />
+    <ClInclude Include="src\config\ISerializable.h" />
     <ClInclude Include="src\HookManager.hpp" />
     <ClInclude Include="src\renderer\backend\DirectX.h" />
     <ClInclude Include="src\renderer\backend\OpenGL.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\ui\Feature.h" />
     <ClInclude Include="src\ui\MainUi.h" />
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +250,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\hook\HandleLinkHook.cpp" />
     <ClCompile Include="src\renderer\backend\DirectX.cpp" />
     <ClCompile Include="src\renderer\backend\OpenGL.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
