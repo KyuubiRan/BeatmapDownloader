@@ -10,7 +10,7 @@
 
 namespace ui::main {
 static bool show = true;
-static std::map<std::string_view, std::set<Feature*>> s_Features;
+static std::unordered_map<std::string_view, std::set<Feature*>> s_Features;
 static const std::string_view *s_CurrentSelectedCategory = nullptr;
 
 bool IsShowed() {
@@ -38,14 +38,14 @@ void Update() {
 
     // Draw category
     if (ImGui::BeginListBox("##feature category list", ImVec2(100, -FLT_MIN))) {
-        for (auto &[category, _] : std::ranges::reverse_view(s_Features)) {
-            const bool isSeleted = s_CurrentSelectedCategory == &category;
+        for (const auto &category : s_Features | std::views::keys) {
+            const bool isSelected = s_CurrentSelectedCategory == &category;
 
-            if (ImGui::Selectable(lang.GetTextCStr(category), isSeleted)) {
+            if (ImGui::Selectable(lang.GetTextCStr(category), isSelected)) {
                 s_CurrentSelectedCategory = &category;
             }
 
-            if (isSeleted) {
+            if (isSelected) {
                 ImGui::SetItemDefaultFocus();
             }
         }
