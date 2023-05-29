@@ -4,5 +4,11 @@
   "OsuBeatmapDownloader": "Osu! 谱面下载器",
   "Settings": "设置",
   "Mirror": "镜像站",
-  "SelectMirror": "选择镜像站"
+  "SelectMirror": "选择镜像站",
+  "About": "关于",
+  "Author": "作者: KyuubiRan",
+  "ProjectLink": "项目链接: https://github.com/KyuubiRan/BeatmapDownloader",
+  "Language": "语言",
+  "Enabled": "启用",
+  "Domain": "域名"
 }

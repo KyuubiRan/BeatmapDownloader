@@ -91,7 +91,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -111,7 +111,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -131,7 +131,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -151,7 +151,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DETOURS_INTERNAL;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -197,8 +197,11 @@
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\ui\About.h" />
     <ClInclude Include="src\ui\Feature.h" />
     <ClInclude Include="src\ui\MainUi.h" />
+    <ClInclude Include="src\ui\Settings.h" />
+    <ClInclude Include="src\utils\gui_utils.h" />
     <ClInclude Include="src\utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -262,7 +265,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\ui\About.cpp" />
     <ClCompile Include="src\ui\MainUi.cpp" />
+    <ClCompile Include="src\ui\Settings.cpp" />
+    <ClCompile Include="src\utils\gui_utils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>

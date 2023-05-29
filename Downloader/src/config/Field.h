@@ -26,7 +26,7 @@ public:
         return name;
     }
 
-    T &getValue() const {
+    T &getValue() {
         return value;
     }
 
@@ -34,7 +34,7 @@ public:
         this->value = _value;
     }
 
-    operator T &() const {
+    operator T &() {
         return value;
     }
 

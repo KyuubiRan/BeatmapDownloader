@@ -4,5 +4,11 @@
   "OsuBeatmapDownloader": "Osu! Beatmap Downloader",
   "Settings": "Settings",
   "Mirror": "Mirror",
-  "SelectMirror": "Select Mirror"
+  "SelectMirror": "Select Mirror",
+  "About": "About",
+  "Author": "Author: KyuubiRan",
+  "ProjectLink": "Project link: https://github.com/KyuubiRan/BeatmapDownloader",
+  "Language": "Language",
+  "Enabled": "Enabled",
+  "Domain": "Domain"
 }

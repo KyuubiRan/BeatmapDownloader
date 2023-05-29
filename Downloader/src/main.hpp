@@ -10,6 +10,10 @@
 #include "config/Field.h"
 #include "misc/ResourcesLoader.hpp"
 #include "../resource.h"
+#include "ui/MainUi.h"
+#include "ui/Settings.h"
+
+void InitFeatures();
 
 void Run(HMODULE *phModule) {
     utils::SetMyModuleHandle(*phModule);
@@ -18,9 +22,9 @@ void Run(HMODULE *phModule) {
     config::Init();
 
     AllocConsole();
-    freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
-    freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
-    freopen_s((FILE **)stderr, "CONOUT$", "w", stderr);
+    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+    freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+    freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
 
     LOGI("Waiting for osu! initialization...");
     Sleep(3000);
@@ -32,6 +36,8 @@ void Run(HMODULE *phModule) {
     io.IniFilename = s.c_str();
     io.SetPlatformImeDataFn = nullptr;
     ImGui::StyleColorsDark();
+
+    InitFeatures();
 
     LPBYTE bytes = nullptr;
     if (const DWORD size = res::LoadEx(IDR_FONT, RT_FONT, &bytes)) {
@@ -67,4 +73,13 @@ void Run(HMODULE *phModule) {
     LOGD("Api detected: %s", graphicsApiType == renderer::GraphicsApiType::OpenGL3 ? "OpenGL" : "DirectX");
 
     renderer::Init(graphicsApiType);
+}
+
+#include "ui/About.h"
+#include "hook/HandleLinkHook.h"
+
+inline void InitFeatures() {
+    AddFeature(&ui::misc::About::GetInstance());
+    AddFeature(&ui::misc::Settings::GetInstance());
+    AddFeature(&hook::HandleLinkHook::GetInstance());
 }

@@ -5,7 +5,7 @@
 
 namespace res {
 
-static DWORD LoadEx(LPCWSTR name, LPWSTR type, BYTE **pDest) {
+static DWORD LoadEx(LPCWSTR name, LPCWSTR type, BYTE **pDest) {
     if (!utils::GetMyModuleHandle())
         return 0;
     
@@ -31,7 +31,7 @@ static DWORD LoadEx(LPCWSTR name, LPWSTR type, BYTE **pDest) {
     return 0;
 }
 
-static DWORD LoadEx(int id, LPWSTR type, BYTE **pDest) {
+static DWORD LoadEx(int id, LPCWSTR type, BYTE **pDest) {
     if (!type)
         return 0;
 
