@@ -24,15 +24,6 @@
     <ClInclude Include="src\main.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\utility\Event.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\utility\Random.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\utility\Sequence.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\json\json.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -108,6 +99,18 @@
     <ClInclude Include="src\config\Field.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config\I18nManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\ResourcesLoader.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -155,9 +158,27 @@
     <ClCompile Include="src\hook\HandleLinkHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\Utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\config\Field.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\detours\detours-x64.lib" />
     <Library Include="libraries\detours\detours-x86.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\language\en_us.json" />
+    <None Include="res\language\zh_cn.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\MiSans-Normal.ttf" />
   </ItemGroup>
 </Project>

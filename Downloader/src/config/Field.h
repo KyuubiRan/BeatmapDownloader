@@ -4,15 +4,22 @@
 
 namespace config {
 
+void Register(ISerializable *cfg);
+void Load(ISerializable *cfg);
+void Init();
+void Save();
+
 template <typename T>
 class Field : ISerializable {
     std::string_view name;
     T value;
+    T defaultValue;
+
 public:
 
-    Field(std::string_view name) : name(name), value(T{}) {
-    }
-    Field(std::string_view name, T value) : name(name), value(value) {
+    Field(std::string_view name, T defaultValue = T{}) : name(name), defaultValue(defaultValue) {
+        Register(this);
+        Load(this);
     }
 
     std::string_view getName() const {
@@ -38,6 +45,22 @@ public:
 
     T *getPtr() const {
         return &value;
+    }
+
+    void reset() {
+        value = defaultValue;
+    }
+    
+    void to_json(nlohmann::json &j) override {
+        j[name] = value;
+    }
+
+    void from_json(nlohmann::json &j) override {
+        if (j.contains(name)) {
+            value = j[name].get<T>();
+        } else {
+            value = defaultValue;
+        }
     }
 };
 

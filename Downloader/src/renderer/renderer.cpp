@@ -28,7 +28,7 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode != HC_ACTION) {
         return CallNextHookEx(g_msgHook, nCode, wParam, lParam);
     }
-    MSG *msg = (MSG *)lParam;
+    MSG *msg = (MSG*)lParam;
 
     if (wParam == PM_REMOVE) {
         if (msg->message == WM_KEYDOWN) {
@@ -45,7 +45,8 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
             msg->message = WM_NULL;
             return 1;
         }
-        if ((WM_MOUSEFIRST <= msg->message && msg->message <= WM_MOUSELAST) || (msg->message == WM_NCHITTEST) || (msg->message == WM_SETCURSOR)) {
+        if ((WM_MOUSEFIRST <= msg->message && msg->message <= WM_MOUSELAST) || (msg->message == WM_NCHITTEST) || (msg->message ==
+            WM_SETCURSOR)) {
             msg->message = WM_NULL;
             return 1;
         }
@@ -54,18 +55,18 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 DWORD WINAPI MsgHookThread(LPVOID lpParam) {
-    DWORD tid = *(DWORD *)lpParam;
+    DWORD tid = *(DWORD*)lpParam;
     g_msgHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, GetModuleHandle(NULL), tid);
     if (!g_msgHook) {
         LOGE("Cannot set message hook!");
         return 1;
-    } else {
-        LOGD("Successfully to set message hook.");
-        MSG msg;
-        while (GetMessage(&msg, NULL, 0, 0)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+    }
+
+    LOGD("Successfully to set message hook.");
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
     }
     return 0;
 }
@@ -98,22 +99,21 @@ void OnRenderGL(HDC hdc) {
 
 void Init(GraphicsApiType version) {
     switch (version) {
-        case GraphicsApiType::D3D11:
-            backend::InitDX11Hooks();
-            break;
-        case GraphicsApiType::OpenGL3:
-            backend::InitGLHooks();
-            break;
-        default:
-            LOGE("Unsupported api version!");
-            return;
+    case GraphicsApiType::D3D11:
+        backend::InitDX11Hooks();
+        break;
+    case GraphicsApiType::OpenGL3:
+        backend::InitGLHooks();
+        break;
+    default:
+        LOGE("Unsupported api version!");
+        return;
     }
 }
 
 static ID3D11RenderTargetView *mainRenderTargetView;
 
 void OnInitializeDX11(HWND window, ID3D11Device *pDevice, ID3D11DeviceContext *pContext, IDXGISwapChain *pChain) {
-
     /*
     ImGuiIO &io = ImGui::GetIO();
     if (!io.BackendRendererUserData)
@@ -154,7 +154,6 @@ void OnRenderDX11(ID3D11DeviceContext *pContext) {
     */
 }
 
-
 void SetCurrentFont(uint8_t *byte, size_t size, float pixelSize, ImFontConfig *cfg, const ImWchar *glyphRanges) {
     if (byte == nullptr || size == 0) {
         LOGE("Font file doesn't exists!");
@@ -166,5 +165,4 @@ void SetCurrentFont(uint8_t *byte, size_t size, float pixelSize, ImFontConfig *c
     _currentFont = io.Fonts->AddFontFromMemoryTTF(byte, size, pixelSize, cfg, glyphRanges);
     LOGD("Finished change font");
 }
-
 }

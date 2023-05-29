@@ -6,9 +6,17 @@
 #include <fstream>
 #include "Logger.h"
 #include "renderer/renderer.h"
-#include "ui/MainUi.h"
+#include "utils/Utils.h"
+#include "config/Field.h"
+#include "misc/ResourcesLoader.hpp"
+#include "../resource.h"
 
 void Run(HMODULE *phModule) {
+    utils::SetMyModuleHandle(*phModule);
+    utils::SetCurrentDirPath(utils::GetModulePath(phModule).parent_path());
+
+    config::Init();
+
     AllocConsole();
     freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
     freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
@@ -16,14 +24,19 @@ void Run(HMODULE *phModule) {
 
     LOGI("Waiting for osu! initialization...");
     Sleep(3000);
-    
+
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    auto s = (std::filesystem::current_path() / "imgui.ini").string();
+    auto s = (utils::GetCurrentDirPath() / "imgui.ini").string();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.IniFilename = s.c_str();
     io.SetPlatformImeDataFn = nullptr;
     ImGui::StyleColorsDark();
+
+    LPBYTE bytes = nullptr;
+    if (const DWORD size = res::LoadEx(IDR_FONT, RT_FONT, &bytes)) {
+        renderer::SetCurrentFont(bytes, size, 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesChineseFull());
+    }
 
     LOGD("Check graphics api...");
 

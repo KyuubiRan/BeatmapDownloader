@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "main.hpp"
+#include "config/Field.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,
@@ -17,6 +18,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
             if (renderer::g_msgHook != NULL) {
                 UnhookWindowsHookEx(renderer::g_msgHook);
             }
+            config::Save();
             break;
     }
     return TRUE;
