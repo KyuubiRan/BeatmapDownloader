@@ -7,8 +7,10 @@ namespace GuiHelper
 
 	void ShowTooltip(const char *s, bool marked)
 	{
-		if (marked)
+		if (marked) {
+			ImGui::SameLine();
 			ImGui::TextDisabled("(?)");
+		}
 		if (!ImGui::IsItemHovered() && marked)
 			return;
 

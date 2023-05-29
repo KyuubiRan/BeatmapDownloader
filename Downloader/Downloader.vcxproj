@@ -191,6 +191,7 @@
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\config\ISerializable.h" />
     <ClInclude Include="src\HookManager.hpp" />
+    <ClInclude Include="src\osu\BeatmapManager.h" />
     <ClInclude Include="src\renderer\backend\DirectX.h" />
     <ClInclude Include="src\renderer\backend\OpenGL.h" />
     <ClInclude Include="src\renderer\renderer.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="src\config\Field.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\hook\HandleLinkHook.cpp" />
+    <ClCompile Include="src\osu\BeatmapManager.cpp" />
     <ClCompile Include="src\renderer\backend\DirectX.cpp" />
     <ClCompile Include="src\renderer\backend\OpenGL.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
@@ -290,6 +292,9 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\MiSans-Normal.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\api\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,9 +2,9 @@
 #include "Utils.h"
 
 namespace utils {
-
 static HMODULE g_hModule = NULL;
 static std::filesystem::path g_curDirPath;
+static std::filesystem::path g_osuDirPath;
 
 void SetMyModuleHandle(HMODULE hModule) {
     g_hModule = hModule;
@@ -24,8 +24,16 @@ std::filesystem::path GetModulePath(HMODULE *hModule) {
     return std::filesystem::path(pathOut);
 }
 
+void SetOsuDirPath(const std::filesystem::path &path) {
+    g_osuDirPath = path;
+}
+
 std::filesystem::path GetCurrentDirPath() {
     return g_curDirPath;
+}
+
+std::filesystem::path GetOsuDirPath() {
+    return g_osuDirPath;
 }
 
 std::wstring s2ws(const std::string &s) {
@@ -49,6 +57,4 @@ std::string ws2s(const std::wstring &s) {
     delete[] buf;
     return r;
 }
-
 }
-

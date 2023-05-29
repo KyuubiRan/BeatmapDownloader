@@ -12,5 +12,7 @@
   "Enabled": "启用",
   "Disabled": "禁用",
   "Domain": "域名",
-  "HandleLink": "代理下载链接"
+  "HandleLink": "代理下载链接",
+  "HandleLinkDesc": "如果启用，下载器会代理谱面链接。\n你可以通过按住Shift键点击链接来临时跳过代理。",
+  "HandleLinkDomainDesc": "如果你在游玩私服，请修改此项，否则请保持默认。"
 }

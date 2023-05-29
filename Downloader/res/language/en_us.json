@@ -1,6 +1,6 @@
 ﻿{
   "Download": "Download",
-  "Downloader" : "Downloader",
+  "Downloader": "Downloader",
   "OsuBeatmapDownloader": "Osu! Beatmap Downloader",
   "Settings": "Settings",
   "Mirror": "Mirror",
@@ -12,5 +12,8 @@
   "Enabled": "Enabled",
   "Disabled": "Disabled",
   "Domain": "Domain",
-  "HandleLink": "Handle download link"
+  "HandleLink": "Handle download link",
+  "HandleLinkDesc": "If enabled, the download link will be handled by the downloader.\nYou can hold the shift and click the link to skip handle the link.",
+  "HandleLinkDomainDesc": "If you are in private server, you should change this, otherwise, keep it default."
+  
 }

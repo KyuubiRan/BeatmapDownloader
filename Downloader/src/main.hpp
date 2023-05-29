@@ -9,7 +9,7 @@
 #include "utils/Utils.h"
 #include "config/Field.h"
 #include "misc/ResourcesLoader.hpp"
-#include "../resource.h"
+#include "osu/BeatmapManager.h"
 #include "ui/MainUi.h"
 #include "ui/Settings.h"
 
@@ -27,11 +27,14 @@ void Run(HMODULE *phModule) {
     freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
 
     LOGI("Waiting for osu! initialization...");
-    Sleep(3000);
+    Sleep(5000);
+
+    osu::BeatmapManager::GetInstance();
 
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     auto s = (utils::GetCurrentDirPath() / "imgui.ini").string();
+    LOGD("Imgui config path: %s", s.c_str());
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.IniFilename = s.c_str();
     io.SetPlatformImeDataFn = nullptr;
@@ -51,6 +54,7 @@ void Run(HMODULE *phModule) {
     wchar_t processPath[MAX_PATH];
     GetModuleFileNameW(nullptr, processPath, MAX_PATH);
     auto path = std::filesystem::path(processPath);
+    utils::SetOsuDirPath(path.parent_path());
     wchar_t username[256 + 1];
     DWORD usernameLen = 256 + 1;
     GetUserNameW(username, &usernameLen);
