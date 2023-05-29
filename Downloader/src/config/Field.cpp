@@ -18,7 +18,11 @@ void config::Init() {
     auto cfgPath = utils::GetCurrentDirPath() / "cfg.json";
     if (exists(cfgPath)) {
         std::ifstream ifs(cfgPath, std::ios::binary);
-        ifs >> g_config;
+        try {
+            ifs >> g_config;
+        } catch (...) {
+            LOGW("Config file broken, reset to default");
+        }
     }
 }
 

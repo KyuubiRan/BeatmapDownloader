@@ -10,5 +10,7 @@
   "ProjectLink": "项目链接: https://github.com/KyuubiRan/BeatmapDownloader",
   "Language": "语言",
   "Enabled": "启用",
-  "Domain": "域名"
+  "Disabled": "禁用",
+  "Domain": "域名",
+  "HandleLink": "代理下载链接"
 }

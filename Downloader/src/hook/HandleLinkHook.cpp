@@ -8,12 +8,8 @@
 namespace hook {
 void HandleLinkHook::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
-    
     ImGui::Checkbox(lang.GetTextCStr("Enabled"), f_Enabled.getPtr());
-    
-    if (static char linkBuf[256] = {0}; ImGui::InputText(lang.GetTextCStr("Domain"), linkBuf, 256)) {
-        this->f_Domain.setValue(linkBuf);
-    }
+    ImGui::InputText(lang.GetTextCStr("Domain"), f_Domain.getPtr());
 }
 
 FeatureInfo& HandleLinkHook::getInfo() {
@@ -39,6 +35,7 @@ HandleLinkHook::HandleLinkHook() :
     Feature(),
     f_Enabled("HandleLinkEnabled", true),
     f_Domain("HandleLinkDomain", "osu.ppy.sh") {
+    
     const HMODULE hMod = GetModuleHandleA("shell32.dll");
     if (!hMod) {
         LOGE("Cannot get shell32.dll handle! Error code: %d, HandleLink hook will not be initilized!", GetLastError());

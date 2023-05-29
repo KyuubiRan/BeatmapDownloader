@@ -10,5 +10,7 @@
   "ProjectLink": "Project link: https://github.com/KyuubiRan/BeatmapDownloader",
   "Language": "Language",
   "Enabled": "Enabled",
-  "Domain": "Domain"
+  "Disabled": "Disabled",
+  "Domain": "Domain",
+  "HandleLink": "Handle download link"
 }

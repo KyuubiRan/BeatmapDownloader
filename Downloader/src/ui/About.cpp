@@ -10,7 +10,7 @@ ui::misc::About::About() : Feature() {
 ui::main::FeatureInfo& ui::misc::About::getInfo() {
     static auto info = main::FeatureInfo{
         .category = "About",
-        .groupName = "About"
+        .groupName = ""
     };
 
     return info;

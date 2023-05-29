@@ -18,7 +18,7 @@ void ui::misc::Settings::drawMain() {
 ui::main::FeatureInfo & ui::misc::Settings::getInfo() {
     static auto info = main::FeatureInfo{
         .category = "Settings",
-        .groupName = "Settings"
+        .groupName = ""
     };
     return info;
 }

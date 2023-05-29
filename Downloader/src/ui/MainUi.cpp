@@ -67,18 +67,21 @@ void Update() {
     if (s_CurrentSelectedCategory) {
         for (auto &needDrawFeatures = s_Features[*s_CurrentSelectedCategory]; const auto feature :
              std::ranges::reverse_view(needDrawFeatures)) {
-            auto &info = feature->getInfo();
+            const auto &info = feature->getInfo();
             auto group = lang.GetText(info.groupName);
-            if (group.empty())
-                continue;
+            
+            if (group.empty()) {
+                feature->drawMain();
+            } else {
+                ImGui::BeginGroupPanel(group.data());
 
-            ImGui::BeginGroupPanel(group.data());
+                ImGui::PushID(feature);
+                feature->drawMain();
+                ImGui::PopID();
 
-            ImGui::PushID(feature);
-            feature->drawMain();
-            ImGui::PopID();
-
-            ImGui::EndGroupPanel();
+                ImGui::EndGroupPanel();
+            }
+            
         }
     }
 

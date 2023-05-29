@@ -43,7 +43,7 @@ public:
         return *this;
     }
 
-    T *getPtr() const {
+    T *getPtr() {
         return &value;
     }
 
