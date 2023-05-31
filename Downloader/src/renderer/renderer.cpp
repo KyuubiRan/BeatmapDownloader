@@ -10,11 +10,11 @@
 #include "backend/OpenGL.h"
 #include "ui/MainUi.h"
 #include <set>
+#include <imgui_internal.h>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace renderer {
-
 static HWND osuHwnd;
 
 void Update() {
@@ -73,7 +73,8 @@ DWORD WINAPI MsgHookThread(LPVOID lpParam) {
 
 void OnRenderGL(HDC hdc) {
     ImGuiIO &io = ImGui::GetIO();
-    if (ImGui::GetCurrentContext() == nullptr)
+    ImGuiContext *g = ImGui::GetCurrentContext();
+    if (g == nullptr)
         return;
 
     if (!io.BackendRendererUserData) {
@@ -81,7 +82,7 @@ void OnRenderGL(HDC hdc) {
         osuHwnd = WindowFromDC(hdc);
         ImGui_ImplWin32_InitForOpenGL(osuHwnd);
         DWORD tid = GetCurrentThreadId();
-        CreateThread(NULL, 0, MsgHookThread, &tid, 0, NULL);
+        CreateThread(nullptr, 0, MsgHookThread, &tid, 0, nullptr);
     }
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -90,8 +91,14 @@ void OnRenderGL(HDC hdc) {
     if (_currentFont != nullptr)
         io.FontDefault = _currentFont;
 
+
     ImGui::NewFrame();
-    Update();
+    __try {
+        Update();
+    } __except (1) {
+        // LOGW("Exception on update");
+    }
+    ImGui::EndFrame();
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -100,6 +107,7 @@ void OnRenderGL(HDC hdc) {
 void Init(GraphicsApiType version) {
     switch (version) {
     case GraphicsApiType::D3D11:
+        LOGE("D3D is not impl yet! Please turn off the compatibility mode!");
         backend::InitDX11Hooks();
         break;
     case GraphicsApiType::OpenGL3:

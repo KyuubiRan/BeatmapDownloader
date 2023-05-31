@@ -15,7 +15,7 @@ enum class Language : uint8_t {
 class I18nManager {
     // i18nMap["en_us"]["Downloader"] -> "Downloader"
     inline static std::map<std::string, std::map<std::string, std::string>> i18nMap;
-    
+
     static const char* GetLanguageName(Language lang) {
         switch (lang) {
         case Language::EN_US:
@@ -29,7 +29,7 @@ class I18nManager {
 
 public:
     config::Field<Language> lang;
-    
+
     static I18nManager& GetInstance() {
         static I18nManager instance;
         return instance;
@@ -70,17 +70,19 @@ public:
 private:
     I18nManager() : lang(config::Field("Language", Language::EN_US)) {
         BYTE *data = nullptr;
-#define LOAD_LANG_FILE(lang) \
-        if (res::LoadEx(IDR_LANG_##lang, L"LANG", &data)) { \
+
+#define LOAD_LANG_FILE(lang)    if (res::LoadEx(IDR_LANG_##lang, L"LANG", &data)) { \
             std::string s = std::string(reinterpret_cast<char *>(data)); \
             nlohmann::json j = nlohmann::json::parse(s); \
             for (auto &i : j.items()) i18nMap[#lang][i.key()] = i.value(); \
             LOGD("Loaded language file: %s, json size: %zu, map size: %zu", #lang, j.size(), i18nMap[#lang].size()); \
+        } else { \
+            LOGD("Cannot load language file: %s", #lang); \
         }
-
+        
         LOAD_LANG_FILE(EN_US)
         LOAD_LANG_FILE(ZH_CN)
-
+        
 #undef LOAD_LANG_FILE
     }
 };

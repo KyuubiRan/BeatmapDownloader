@@ -90,9 +90,6 @@
     <ClInclude Include="libraries\imgui\backends\imgui_impl_dx11.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\hook\HandleLinkHook.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\Feature.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -112,6 +109,30 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\gui_utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\HandleLinkHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\BeatmapManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\About.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\Settings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\utility\Event.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\utility\Random.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\utility\Sequence.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\utility\BlockingContainer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -158,9 +179,6 @@
     <ClCompile Include="libraries\imgui\backends\imgui_impl_dx11.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\hook\HandleLinkHook.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\utils\Utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -168,6 +186,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\gui_utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\HandleLinkHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\BeatmapManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\About.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\Settings.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,6 +18,6 @@ ui::main::FeatureInfo& ui::misc::About::getInfo() {
 
 void ui::misc::About::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
-    ImGui::Text("%s", lang.GetTextCStr("Author"));
+    ImGui::Text("%s", lang.GetTextCStr("ProjectAuthor"));
     ImGui::Text("%s", lang.GetTextCStr("ProjectLink"));
 }

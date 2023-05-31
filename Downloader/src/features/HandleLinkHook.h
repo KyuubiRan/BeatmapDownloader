@@ -3,7 +3,7 @@
 #include "config/Field.h"
 #include "ui/Feature.h"
 
-namespace hook {
+namespace features {
 
 using namespace ui::main;
 

@@ -4,13 +4,13 @@
 #include "config/I18nManager.h"
 
 #include <ranges>
-#include <set>
+#include <unordered_set>
 
 #include "utils/gui_utils.h"
 
 namespace ui::main {
 static bool show = true;
-static std::unordered_map<std::string_view, std::set<Feature*>> s_Features;
+static std::unordered_map<std::string_view, std::unordered_set<Feature*>> s_Features;
 static const std::string_view *s_CurrentSelectedCategory = nullptr;
 
 bool IsShowed() {
@@ -23,24 +23,22 @@ void ToggleShow() {
 
 void Update() {
     ImGuiIO &io = ImGui::GetIO();
-    i18n::I18nManager &lang = i18n::I18nManager::GetInstance();
     io.MouseDrawCursor = show;
     if (!show) return;
 
     ImGui::SetNextWindowSize(ImVec2(600, 300), ImGuiCond_FirstUseEver);
 
-    if (!ImGui::Begin(lang.GetTextCStr("OsuBeatmapDownloader"), nullptr, ImGuiWindowFlags_None)) {
-        ImGui::End();
+    i18n::I18nManager &lang = i18n::I18nManager::GetInstance();
+    if (!ImGui::Begin(lang.GetTextCStr("OsuBeatmapDownloader"), nullptr, ImGuiWindowFlags_None)) 
         return;
-    }
-
+    
     ImGui::BeginGroup();
 
     // Draw category
     if (ImGui::BeginListBox("##feature category list", ImVec2(100, -FLT_MIN))) {
         for (const auto &category : s_Features | std::views::keys) {
             const bool isSelected = s_CurrentSelectedCategory == &category;
-
+            
             if (ImGui::Selectable(lang.GetTextCStr(category), isSelected)) {
                 s_CurrentSelectedCategory = &category;
             }
@@ -49,7 +47,7 @@ void Update() {
                 ImGui::SetItemDefaultFocus();
             }
         }
-
+        
         ImGui::EndListBox();
     }
 
@@ -62,7 +60,7 @@ void Update() {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
     ImGui::BeginChild("ChildR", ImVec2(0, 0), true, window_flags);
-
+    
     // Draw group
     if (s_CurrentSelectedCategory) {
         for (auto &needDrawFeatures = s_Features[*s_CurrentSelectedCategory]; const auto feature :

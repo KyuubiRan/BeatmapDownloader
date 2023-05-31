@@ -1,3 +1,6 @@
 [submodule "imgui"]
 	path = Downloader/libraries/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule ".\\Downloader\\libraries\\utility"]
+	path = .\\Downloader\\libraries\\utility
+	url = https://github.com/KyuubiRan/utility

@@ -5,11 +5,13 @@
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
-namespace hook {
+namespace features {
 void HandleLinkHook::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
+    
     ImGui::Checkbox(lang.GetTextCStr("Enabled"), f_Enabled.getPtr());
     GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDesc"));
+    
     ImGui::InputText(lang.GetTextCStr("Domain"), f_Domain.getPtr());
     GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDomainDesc"));
 }
@@ -28,7 +30,7 @@ BOOL ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo) {
     if (!inst.f_Enabled.getValue())
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
 
-    if (GetAsyncKeyState(VK_SHIFT) & 8000) {
+    if (GetAsyncKeyState(VK_CONTROL) & 8000) {
         LOGI("Shift pressed, skip handle link");
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
     }

@@ -68,7 +68,7 @@ void Run(HMODULE *phModule) {
     while (std::getline(ifs, line)) {
         if (line.starts_with("CompatibilityContext")) {
             LOGD("%s", line.c_str());
-            graphicsApiType = line.find("0") != std::string::npos ? renderer::GraphicsApiType::OpenGL3 : renderer::GraphicsApiType::D3D11;
+            graphicsApiType = line.find('0') != std::string::npos ? renderer::GraphicsApiType::OpenGL3 : renderer::GraphicsApiType::D3D11;
             break;
         }
     }
@@ -80,10 +80,12 @@ void Run(HMODULE *phModule) {
 }
 
 #include "ui/About.h"
-#include "hook/HandleLinkHook.h"
+#include "features/HandleLinkHook.h"
+#include "features/Downloader.h"
 
 inline void InitFeatures() {
     AddFeature(&ui::misc::About::GetInstance());
     AddFeature(&ui::misc::Settings::GetInstance());
-    AddFeature(&hook::HandleLinkHook::GetInstance());
+    AddFeature(&features::Downloader::GetInstance());
+    AddFeature(&features::HandleLinkHook::GetInstance());
 }

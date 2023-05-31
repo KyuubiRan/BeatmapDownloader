@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;$(ProjectDir)libraries\utility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,7 +117,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;$(ProjectDir)libraries\utility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +137,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;$(ProjectDir)libraries\utility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,7 +157,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)libraries\imgui;$(ProjectDir)libraries\json;$(ProjectDir)libraries\detours;$(ProjectDir)libraries\utility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,15 +183,24 @@
     <ClInclude Include="libraries\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="libraries\imgui\misc\single_file\imgui_single_file.h" />
     <ClInclude Include="libraries\json\json.hpp" />
+    <ClInclude Include="libraries\utility\BlockingContainer.hpp" />
+    <ClInclude Include="libraries\utility\Event.hpp" />
+    <ClInclude Include="libraries\utility\Random.hpp" />
+    <ClInclude Include="libraries\utility\Sequence.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\config\Field.h" />
     <ClInclude Include="src\config\I18nManager.h" />
-    <ClInclude Include="src\misc\ResourcesLoader.hpp" />
-    <ClInclude Include="src\hook\HandleLinkHook.h" />
+    <ClInclude Include="src\features\Downloader.h" />
+    <ClInclude Include="src\features\HandleLinkHook.h" />
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\config\ISerializable.h" />
     <ClInclude Include="src\HookManager.hpp" />
+    <ClInclude Include="src\misc\Color.h" />
+    <ClInclude Include="src\misc\ResourcesLoader.hpp" />
+    <ClInclude Include="src\osu\Account.h" />
     <ClInclude Include="src\osu\BeatmapManager.h" />
+    <ClInclude Include="src\osu\Beatmap.h" />
+    <ClInclude Include="src\osu\Crypto.h" />
     <ClInclude Include="src\renderer\backend\DirectX.h" />
     <ClInclude Include="src\renderer\backend\OpenGL.h" />
     <ClInclude Include="src\renderer\renderer.h" />
@@ -202,6 +211,7 @@
     <ClInclude Include="src\ui\Feature.h" />
     <ClInclude Include="src\ui\MainUi.h" />
     <ClInclude Include="src\ui\Settings.h" />
+    <ClInclude Include="src\utils\Base64.h" />
     <ClInclude Include="src\utils\gui_utils.h" />
     <ClInclude Include="src\utils\Utils.h" />
   </ItemGroup>
@@ -256,8 +266,12 @@
     </ClCompile>
     <ClCompile Include="src\config\Field.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\hook\HandleLinkHook.cpp" />
+    <ClCompile Include="src\features\Downloader.cpp" />
+    <ClCompile Include="src\features\HandleLinkHook.cpp" />
+    <ClCompile Include="src\osu\Account.cpp" />
     <ClCompile Include="src\osu\BeatmapManager.cpp" />
+    <ClCompile Include="src\osu\Beatmap.cpp" />
+    <ClCompile Include="src\osu\Crypto.cpp" />
     <ClCompile Include="src\renderer\backend\DirectX.cpp" />
     <ClCompile Include="src\renderer\backend\OpenGL.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
@@ -270,6 +284,81 @@
     <ClCompile Include="src\ui\About.cpp" />
     <ClCompile Include="src\ui\MainUi.cpp" />
     <ClCompile Include="src\ui\Settings.cpp" />
+    <ClCompile Include="src\utils\Base64.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</ModuleDependenciesFile>
+      <ModuleOutputFile>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\Downloader.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\Downloader.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>F:\Projects\Cpp\OsuBeatmapDownloader\bin\Debug-x64\obj\Downloader\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <BuildStlModules>true</BuildStlModules>
+      <PreprocessorDefinitions>_DEBUG;OSUBEATMAPDOWNLOADER_EXPORTS;_WINDOWS;_USRDLL;_WINDLL;_UNICODE;UNICODE;;DETOURS_INTERNAL;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\src;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\json;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\detours;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\utility</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
     <ClCompile Include="src\utils\gui_utils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
   </ItemGroup>
