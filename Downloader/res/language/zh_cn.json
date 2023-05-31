@@ -16,5 +16,5 @@
   "HandleLinkDomainDesc": "如果你在游玩私服，请修改此项，否则请保持默认。",
   "GrantOsuAccount": "授权使用osu!账号",
   "GrantOsuAccountDesc": "授权使用osu!账号，你可以选择使用osu!官方渠道下载谱面，就像osu!direct一样。\n注意：如果你在游玩私有服务器，请不要勾选此项。",
-  "NotGrantOsuAccountButUseOfficialWarn": "警告：你没有授权使用osu!账号，但是你选择了官方下载渠道。所有的下载任务将会被自动取消！"
+  "NotGrantOsuAccountButUseOfficialWarn": "警告：你没有授权使用osu!账号，但是你选择了官方下载渠道。\n所有的下载任务将会被自动取消！"
 }

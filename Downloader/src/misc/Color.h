@@ -3,8 +3,8 @@
 #include "imgui.h"
 
 namespace color {
-inline static ImVec4 Red{255, 0, 0, 255};
-inline static ImVec4 Green{ 0, 255, 0, 255 };
-inline static ImVec4 Blue{ 0, 0, 255, 255 };
-inline static ImVec4 Orange{249, 180, 45, 255};
+inline static ImVec4 Red{1.0f, 0.0f, 0.0f, 1.0f};
+inline static ImVec4 Green{0.0f, 1.0f, 0.0f, 1.0f};
+inline static ImVec4 Blue{0.0f, 0.0f, 1.0f, 1.0f};
+inline static ImVec4 Orange{1.0f, 0.5f, 0.0f, 1.0f};
 }
