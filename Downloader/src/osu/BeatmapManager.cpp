@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include <fstream>
 
+#include <shellapi.h>
 #include "BeatmapManager.h"
 #include "utils/Utils.h"
 
@@ -54,7 +55,7 @@ void osu::BeatmapManager::initDatabase() {
         LOGW("osu!.db not found!");
         return;
     }
-    
+
     LOGI("Start initialize osu! database...");
     std::ifstream fs;
     int bid, sid;
@@ -100,6 +101,16 @@ void osu::BeatmapManager::initDatabase() {
         }
     }
     LOGI("Finished initialize osu! database! sid size = %zu, bid size = %zu", m_BeatmapSetIds.size(), m_BeatmapIds.size());
+}
+
+void osu::BeatmapManager::openBeatmapPage(features::downloader::BeatmapInfo bi) {
+    if (bi.id <= 0) {
+        LOGW("Cannot open website: Invalid beatmap id %d!", bi.id);
+        return;
+    }
+    const std::string s = std::format("https://osu.ppy.sh/{0}/{1}", bi.type == features::downloader::BeatmapType::Sid ? "s" : "b", bi.id);
+    LOGI("Opening website: %s", s.c_str());
+    ShellExecuteA(nullptr, "open", s.c_str(), nullptr, nullptr, SW_HIDE);
 }
 
 #undef fr

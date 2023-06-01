@@ -40,6 +40,9 @@ public:
         if (map.contains(key.data())) {
             return map[key.data()];
         }
+        if (i18nMap["EN_US"].contains(key.data())) {
+            return i18nMap["EN_US"][key.data()];
+        }
         return key;
     }
 
@@ -47,6 +50,9 @@ public:
         auto &map = i18nMap[GetLanguageName(lang)];
         if (map.contains(key)) {
             return map[key];
+        }
+        if (i18nMap["EN_US"].contains(key)) {
+            return i18nMap["EN_US"][key];
         }
         return key;
     }
@@ -56,6 +62,9 @@ public:
         if (map.contains(key.data())) {
             return map[key.data()].c_str();
         }
+        if (i18nMap["EN_US"].contains(key.data())) {
+            return i18nMap["EN_US"][key.data()].c_str();
+        }
         return key.data();
     }
 
@@ -63,6 +72,9 @@ public:
         auto &map = i18nMap[GetLanguageName(lang)];
         if (map.contains(key)) {
             return map[key].c_str();
+        }
+        if (i18nMap["EN_US"].contains(key)) {
+            return i18nMap["EN_US"][key].c_str();
         }
         return key;
     }

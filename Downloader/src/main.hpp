@@ -77,6 +77,7 @@ void Run(HMODULE *phModule) {
     LOGD("Api detected: %s", graphicsApiType == renderer::GraphicsApiType::OpenGL3 ? "OpenGL" : "DirectX");
 
     renderer::Init(graphicsApiType);
+    ui::main::ToggleShow();
 }
 
 #include "ui/About.h"

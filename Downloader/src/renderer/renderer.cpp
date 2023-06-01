@@ -11,11 +11,12 @@
 #include "ui/MainUi.h"
 #include <set>
 #include <imgui_internal.h>
+#include "../ui/BlockingInput.hpp"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace renderer {
-static HWND osuHwnd;
+static HWND s_OsuHwnd;
 
 void Update() {
     ui::main::Update();
@@ -37,10 +38,11 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
             }
         }
 
-        ImGui_ImplWin32_WndProcHandler(msg->hwnd, msg->message, msg->wParam, msg->lParam);
+        if (ui::InputBlock::IsBlocked())
+            ImGui_ImplWin32_WndProcHandler(msg->hwnd, msg->message, msg->wParam, msg->lParam);
     }
 
-    if (ui::main::IsShowed()) {
+    if (ui::InputBlock::IsBlocked()) {
         if (msg->message == WM_CHAR) {
             msg->message = WM_NULL;
             return 1;
@@ -79,8 +81,8 @@ void OnRenderGL(HDC hdc) {
 
     if (!io.BackendRendererUserData) {
         ImGui_ImplOpenGL3_Init();
-        osuHwnd = WindowFromDC(hdc);
-        ImGui_ImplWin32_InitForOpenGL(osuHwnd);
+        s_OsuHwnd = WindowFromDC(hdc);
+        ImGui_ImplWin32_InitForOpenGL(s_OsuHwnd);
         DWORD tid = GetCurrentThreadId();
         CreateThread(nullptr, 0, MsgHookThread, &tid, 0, nullptr);
     }

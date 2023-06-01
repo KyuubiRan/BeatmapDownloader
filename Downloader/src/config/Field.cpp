@@ -5,10 +5,10 @@
 #include "utils/Utils.h"
 
 static nlohmann::json g_config;
-static std::vector<config::ISerializable *> g_fields;
+static std::vector<ISerializable *> g_fields;
 static std::mutex g_lock;
 
-void config::Register(config::ISerializable *cfg) {
+void config::Register(ISerializable *cfg) {
     g_fields.push_back(cfg);
 }
 

@@ -1,6 +1,6 @@
 ﻿{
   "Download": "下载",
-  "Downloader" : "下载器",
+  "Downloader": "下载器",
   "OsuBeatmapDownloader": "Osu! 谱面下载器",
   "Settings": "设置",
   "Mirror": "镜像站",
@@ -16,5 +16,18 @@
   "HandleLinkDomainDesc": "如果你在游玩私服，请修改此项，否则请保持默认。",
   "GrantOsuAccount": "授权使用osu!账号",
   "GrantOsuAccountDesc": "授权使用osu!账号，你可以选择使用osu!官方渠道下载谱面，就像osu!direct一样。\n注意：如果你在游玩私有服务器，请不要勾选此项。",
-  "NotGrantOsuAccountButUseOfficialWarn": "警告：你没有授权使用osu!账号，但是你选择了官方下载渠道。\n所有的下载任务将会被自动取消！"
+  "NotGrantOsuAccountButUseOfficialWarn": "警告：你没有授权使用osu!账号，但是你选择了官方下载渠道。\n所有的下载任务将会被自动取消！",
+  "EnableProxyServer": "启用代理服务器",
+  "ProxyServerDesc": "使用代理服务器下载谱面。\ne.g.: https://localhost:7890",
+  "ProxyServer": "代理服务器",
+  "ProxyServerPassword": "代理服务器密码",
+  "EnableCustomUserAgent": "启用自定义User-Agent",
+  "CustomUserAgentDesc": "启用自定义User-Agent，如果你不知道它是什么，请禁用它。",
+  "DownloadType": "下载类型",
+  "Title": "标题： %s",
+  "Artist": "艺术家： %s",
+  "Mapper": "谱面作者： %s",
+  "Cancel": "取消",
+  "ReDownload": "重新下载",
+  "ViewWebsite": "查看网页"
 }

@@ -7,9 +7,10 @@
 #include <unordered_set>
 
 #include "utils/gui_utils.h"
+#include "BlockingInput.hpp"
 
 namespace ui::main {
-static bool show = true;
+static bool show = false;
 static std::unordered_map<std::string_view, std::unordered_set<Feature*>> s_Features;
 static const std::string_view *s_CurrentSelectedCategory = nullptr;
 
@@ -19,6 +20,7 @@ bool IsShowed() {
 
 void ToggleShow() {
     show = !show;
+    show ? InputBlock::Push() : InputBlock::Pop();
 }
 
 void Update() {

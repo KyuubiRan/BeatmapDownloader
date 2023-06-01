@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "ISerializable.h"
+#include "misc/ISerializable.h"
 
 namespace config {
 
@@ -51,11 +51,11 @@ public:
         value = defaultValue;
     }
     
-    void to_json(nlohmann::json &j) override {
+    void to_json(nlohmann::json &j) const override {
         j[name] = value;
     }
 
-    void from_json(nlohmann::json &j) override {
+    void from_json(const nlohmann::json &j) override {
         if (j.contains(name)) {
             value = j[name].get<T>();
         } else {
