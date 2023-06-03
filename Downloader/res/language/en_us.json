@@ -32,5 +32,11 @@
   "ViewWebsite": "View Website",
   "BeatmapInfo": "Beatmap Info",
   "DownloadQueue": "Download Queue",
-  "CancelDownload": "Cancel Download"
+  "CancelDownload": "Cancel Download",
+  "Hotkey": "Hotkey",
+  "HotkeyDesc": "[Home] Toggle MainUi Show.\n[End] Toggle BeatmapIdSearchUi Show.\nHold [LCTRL] + Click the link to skip handle the link.",
+  "SearchBeatmapId": "BeatmapId Searcher",
+  "Search": "Search",
+  "SearchBeatmapIdDesc": "Search beatmap by id.By BeatmapSetsId: beatmapsets123456 | s123456 | 123456。\nBy BeatmapId: beatmaps123456 | b123456 | 123456(Low priority)",
+  "Clear": "Clear"
 }

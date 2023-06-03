@@ -9,22 +9,25 @@
 #include "osu/BeatmapManager.h"
 #include "utils/gui_utils.h"
 
+
+namespace ui::search::result {
+
 static bool isShow = false;
 
-bool ui::search::IsShowed() {
+bool IsShowed() {
     return isShow;
 }
 
 std::optional<osu::Beatmap> curShowBm;
 
-void ui::search::ShowSearchInfo(osu::Beatmap &bm) {
+void ShowSearchInfo(osu::Beatmap &bm) {
     curShowBm = bm;
     if (isShow) return;
     isShow = true;
     InputBlock::Push();
 }
 
-void ui::search::Update() {
+void Update() {
     if (!isShow) return;
     if (!curShowBm.has_value()) return;
 
@@ -63,3 +66,6 @@ void ui::search::Update() {
     
     ImGui::End();
 }
+}
+
+

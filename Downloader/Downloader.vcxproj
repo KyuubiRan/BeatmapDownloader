@@ -225,6 +225,7 @@
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\ui\About.h" />
+    <ClInclude Include="src\ui\BeatmapIdSearchUi.h" />
     <ClInclude Include="src\ui\BlockingInput.hpp" />
     <ClInclude Include="src\ui\Feature.h" />
     <ClInclude Include="src\ui\MainUi.h" />
@@ -304,6 +305,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\ui\About.cpp" />
+    <ClCompile Include="src\ui\BeatmapIdSearchUi.cpp" />
     <ClCompile Include="src\ui\MainUi.cpp" />
     <ClCompile Include="src\ui\SearchResultUi.cpp" />
     <ClCompile Include="src\ui\Settings.cpp" />

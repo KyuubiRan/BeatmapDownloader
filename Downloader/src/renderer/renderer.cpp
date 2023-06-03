@@ -12,6 +12,7 @@
 #include <set>
 #include <imgui_internal.h>
 #include "../ui/BlockingInput.hpp"
+#include "ui/BeatmapIdSearchUi.h"
 #include "ui/SearchResultUi.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -23,7 +24,8 @@ void Update() {
     ImGuiIO &io = ImGui::GetIO();
     io.MouseDrawCursor = ui::InputBlock::IsBlocked();
     ui::main::Update();
-    ui::search::Update();
+    ui::search::result::Update();
+    ui::search::beatmapid::Update();
 }
 
 ImFont *_currentFont = nullptr;
@@ -37,8 +39,13 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     if (wParam == PM_REMOVE) {
         if (msg->message == WM_KEYDOWN) {
-            if (msg->wParam == VK_HOME) {
+            switch (msg->wParam) {
+            case VK_HOME:
                 ui::main::ToggleShow();
+                break;
+            case VK_END:
+                ui::search::beatmapid::ToggleShow();
+                break;
             }
         }
 

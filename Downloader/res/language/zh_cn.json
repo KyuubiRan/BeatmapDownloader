@@ -32,5 +32,12 @@
   "ViewWebsite": "查看网页",
   "BeatmapInfo": "谱面信息",
   "DownloadQueue": "下载队列",
-  "CancelDownload": "取消下载"
+  "CancelDownload": "取消下载",
+  "Hotkey": "快捷键",
+  "HotkeyDesc": "[Home] 切换主菜单显示。\n[End] 切换谱面ID搜索显示。\n长按 [左CTRL] + 点击链接跳过代理搜图。",
+  "Empty": "空空如也~",
+  "SearchBeatmapId": "谱面ID搜索器",
+  "Search": "搜索",
+  "SearchBeatmapIdDesc": "根据ID来搜索谱面。支持的格式如下：\n根据BeatmapSetsId: beatmapsets123456 | s123456 | 123456。\n根据BeatmapId: beatmaps123456 | b123456 | 123456(低优先级)。",
+  "Clear": "清除"
 }

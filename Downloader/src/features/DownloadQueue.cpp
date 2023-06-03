@@ -67,6 +67,14 @@ void features::DownloadQueue::drawTaskItem(const DownloadTask &item) {
 
 
 void features::DownloadQueue::drawMain() {
+    auto &lang = i18n::I18nManager::GetInstance();
+    if (m_InQueueMap.empty()) {
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).x) * 0.5f);
+        ImGui::SetCursorPosY( (ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).y) * 0.5f);
+        ImGui::Text(lang.GetTextCStr("Empty"));
+        return;
+    }
+    
     for (auto &item : m_InQueueMap | std::views::values) {
         drawTaskItem(item);
     }

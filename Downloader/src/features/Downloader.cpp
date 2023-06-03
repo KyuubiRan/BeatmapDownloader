@@ -105,7 +105,7 @@ features::Downloader::Downloader() :
             if (ret.has_value()) {
                 if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
                     auto bm = sayo.data->to_beatmap();
-                    ui::search::ShowSearchInfo(bm);
+                    ui::search::result::ShowSearchInfo(bm);
                 } else {
                     LOGW("No such map found on Sayobot. ID=%d, Type=%s", info.id,
                          info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");

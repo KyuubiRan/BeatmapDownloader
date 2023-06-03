@@ -18,6 +18,12 @@ ui::main::FeatureInfo& ui::misc::About::getInfo() {
 
 void ui::misc::About::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
+    ImGui::BeginGroupPanel(lang.GetTextCStr("About"));
     ImGui::Text("%s", lang.GetTextCStr("ProjectAuthor"));
     ImGui::Text("%s", lang.GetTextCStr("ProjectLink"));
+    ImGui::EndGroupPanel();
+
+    ImGui::BeginGroupPanel(lang.GetTextCStr("Hotkey"));
+    ImGui::Text("%s", lang.GetTextCStr("HotkeyDesc"));
+    ImGui::EndGroupPanel();
 }
