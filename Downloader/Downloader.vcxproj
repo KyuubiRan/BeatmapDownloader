@@ -381,6 +381,10 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\src;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\json;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\detours;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\utility</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\utils\gui_utils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />

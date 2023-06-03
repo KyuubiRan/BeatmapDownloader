@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include "Base64.h"
+﻿#include "Base64.h"
 
 #include <vector>
 

@@ -207,6 +207,9 @@
     <ClInclude Include="src\network\HttpRequest.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\features\DownloadQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -294,6 +297,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\network\HttpRequest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\DownloadQueue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
