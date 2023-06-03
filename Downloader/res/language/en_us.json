@@ -17,8 +17,8 @@
   "GrantOsuAccount": "Grant osu! account",
   "GrantOsuAccountDesc": "Grant osu! account, then you can download beatmaps by officially, just like osu!direct.\nNOTICE: If you are in private server, please don not enable this.",
   "NotGrantOsuAccountButUseOfficialWarn": "WARNING: You are NOT grant osu! account but using official download!\nThe all of download tasks will AUTO CANCELLED!",
-  "EnableProxyServer": "Enable Proxy Server",
-  "ProxyServerDesc": "Use proxy server to download beatmaps.\ne.g.: https://localhost:7890",
+  "ProxyServerType": "Set Proxy Server",
+  "ProxyServerDesc": "Use proxy server to search/download beatmaps.",
   "ProxyServer": "Proxy Server",
   "ProxyServerPassword": "Proxy Server Password",
   "EnableCustomUserAgent": "Enable Custom User-Agent",
@@ -29,5 +29,8 @@
   "Mapper": "Mapper: %s",
   "Cancel": "Cancel",
   "ReDownload": "Re-Download",
-  "ViewWebsite": "View Website"
+  "ViewWebsite": "View Website",
+  "BeatmapInfo": "Beatmap Info",
+  "DownloadQueue": "Download Queue",
+  "CancelDownload": "Cancel Download"
 }

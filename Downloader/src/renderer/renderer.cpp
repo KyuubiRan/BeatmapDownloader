@@ -12,6 +12,7 @@
 #include <set>
 #include <imgui_internal.h>
 #include "../ui/BlockingInput.hpp"
+#include "ui/SearchResultUi.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -19,7 +20,10 @@ namespace renderer {
 static HWND s_OsuHwnd;
 
 void Update() {
+    ImGuiIO &io = ImGui::GetIO();
+    io.MouseDrawCursor = ui::InputBlock::IsBlocked();
     ui::main::Update();
+    ui::search::Update();
 }
 
 ImFont *_currentFont = nullptr;
@@ -98,7 +102,7 @@ void OnRenderGL(HDC hdc) {
     __try {
         Update();
     } __except (1) {
-        // LOGW("Exception on update");
+        LOGW("Exception on update");
     }
     ImGui::EndFrame();
     ImGui::Render();

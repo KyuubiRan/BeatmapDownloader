@@ -20,63 +20,46 @@ std::optional<osu::Beatmap> curShowBm;
 void ui::search::ShowSearchInfo(osu::Beatmap &bm) {
     curShowBm = bm;
     if (isShow) return;
-
     isShow = true;
     InputBlock::Push();
 }
 
-
 void ui::search::Update() {
     if (!isShow) return;
-    if (!curShowBm) return;
+    if (!curShowBm.has_value()) return;
+
     auto &bm = *curShowBm;
-    ImGui::SetNextWindowSize(ImVec2(100, 200));
+    ImGui::SetNextWindowSize(ImVec2(300, 225), ImGuiCond_FirstUseEver);
     auto &lang = i18n::I18nManager::GetInstance();
-    if (ImGui::Begin(lang.GetTextCStr("BeatmapInfo"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
-        ImGui::Indent();
-        ImGui::Text(lang.GetTextCStr("Title"), bm.title.c_str());
-        ImGui::Text(lang.GetTextCStr("Artist"), bm.artist.c_str());
-        ImGui::Text(lang.GetTextCStr("Mapper"), bm.author.c_str());
-        ImGui::Indent();
 
-        ImGui::NewLine();
-        ImGui::NewLine();
+    ImGui::Begin(lang.GetTextCStr("BeatmapInfo"), nullptr, ImGuiWindowFlags_NoCollapse);
+    
+    ImGui::Text(lang.GetTextCStr("Title"), bm.title.c_str());
+    ImGui::Text(lang.GetTextCStr("Artist"), bm.artist.c_str());
+    ImGui::Text(lang.GetTextCStr("Mapper"), bm.author.c_str());
 
-        const bool hasMap = osu::BeatmapManager::GetInstance().hasBeatmap(bm);
-        
-        bool downloadPressed;
-        if (!hasMap) {
-            downloadPressed = ImGui::Button(lang.GetTextCStr("Download"));
-        } else {
-            downloadPressed = ImGui::Button(lang.GetTextCStr("ReDownload"));
-        }
+    ImGui::NewLine();
 
-        features::downloader::BeatmapInfo bi{.id = -1};
-        if (bm.sid > 0) {
-            bi = {features::downloader::BeatmapType::Sid, bm.sid};
-        } else if (!bm.bid.empty()) {
-            bi = {features::downloader::BeatmapType::Bid, bm.bid[0]};
-        }
+    const bool hasMap = osu::BeatmapManager::GetInstance().hasBeatmap(bm);
 
-        if (downloadPressed) {
-            features::Downloader::GetInstance().postDownload(bm.sid);
-            isShow = false;
-            InputBlock::Pop();
-        }
-
-        if (ImGui::Button(lang.GetTextCStr("ViewWebsite"))) {
-            osu::BeatmapManager::GetInstance().openBeatmapPage(bi);
-        }
-
-        if (ImGui::Button(lang.GetTextCStr("Cancel"))) {
-            curShowBm = {};
-            isShow = false;
-            InputBlock::Pop();
-        }
-
-        ImGui::Unindent();
-        ImGui::Unindent();
-
-        ImGui::End();
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr(hasMap ? "ReDownload" : "Download")).x) * 0.5f);
+    if (ImGui::Button(lang.GetTextCStr(hasMap ? "ReDownload" : "Download"))) {
+        features::Downloader::GetInstance().postDownload(bm);
+        isShow = false;
+        InputBlock::Pop();
     }
+
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("ViewWebsite")).x) * 0.5f);
+    if (ImGui::Button(lang.GetTextCStr("ViewWebsite"))) {
+        osu::BeatmapManager::GetInstance().openBeatmapPage(bm);
+    }
+
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("Cancel")).x) * 0.5f);
+    if (ImGui::Button(lang.GetTextCStr("Cancel"))) {
+        curShowBm = {};
+        isShow = false;
+        InputBlock::Pop();
+    }
+    
+    ImGui::End();
 }

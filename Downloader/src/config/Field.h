@@ -3,7 +3,6 @@
 #include "misc/ISerializable.h"
 
 namespace config {
-
 void Register(ISerializable *cfg);
 void Load(ISerializable *cfg);
 void Init();
@@ -16,7 +15,6 @@ class Field : ISerializable {
     T defaultValue;
 
 public:
-
     Field(std::string_view name, T defaultValue = T{}) : name(name), defaultValue(defaultValue) {
         Register(this);
         Load(this);
@@ -26,7 +24,7 @@ public:
         return name;
     }
 
-    T &getValue() {
+    T& getValue() {
         return value;
     }
 
@@ -34,23 +32,27 @@ public:
         this->value = _value;
     }
 
-    operator T &() {
+    operator T&() {
         return value;
     }
 
-    Field &operator=(T _value) {
+    Field& operator=(T _value) {
         setValue(_value);
         return *this;
     }
+    
+    T* operator->() {
+        return &value;
+    }
 
-    T *getPtr() {
+    T* getPtr() {
         return &value;
     }
 
     void reset() {
         value = defaultValue;
     }
-    
+
     void to_json(nlohmann::json &j) const override {
         j[name] = value;
     }
@@ -63,5 +65,4 @@ public:
         }
     }
 };
-
 }

@@ -6,7 +6,6 @@
 #include "features/Downloader.h"
 
 namespace api::sayobot {
-
 struct BidData : ISerializable {
     int bid;
     int mode;
@@ -29,6 +28,8 @@ struct SayoBeatmapDataV2 : ISerializable {
 
     void to_json(nlohmann::json &j) const override;
     void from_json(const nlohmann::json &j) override;
+
+    osu::Beatmap to_beatmap() const;
 };
 
 template <typename T, std::enable_if_t<std::is_base_of_v<ISerializable, T>>* = nullptr>
@@ -44,7 +45,8 @@ template <typename T, std::enable_if_t<std::is_base_of_v<ISerializable, T>>*E0>
 void SayoResult<T, E0>::to_json(nlohmann::json &j) const {
     j["status"] = status;
     if (data) {
-        ((ISerializable)*data).to_json(j);
+        auto &d = *data;
+        d.to_json(j["data"]);
     }
 }
 
@@ -52,13 +54,15 @@ template <typename T, std::enable_if_t<std::is_base_of_v<ISerializable, T>>*E0>
 void SayoResult<T, E0>::from_json(const nlohmann::json &j) {
     status = j["status"];
     if (status == 0) {
-        ((ISerializable)*data).from_json(j);
+        if (!data) data = T();
+        auto &d = *data;
+        d.from_json(j["data"]);
     }
 }
 
 std::optional<SayoResult<SayoBeatmapDataV2>> SearchBeatmapV2(const features::downloader::BeatmapInfo &info);
 
-std::vector<BYTE> DownloadBeatmap(features::downloader::BeatmapInfo &info, uint64_t *cur = nullptr, uint64_t *ttl = nullptr);
+bool DownloadBeatmap(osu::Beatmap &bm);
 }
 
 template <>

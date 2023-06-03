@@ -21,7 +21,7 @@ void SetCurrentDirPath(const std::filesystem::path &path) {
 std::filesystem::path GetModulePath(HMODULE *hModule) {
     wchar_t pathOut[MAX_PATH] = {0};
     GetModuleFileNameW(*hModule, pathOut, MAX_PATH);
-    return std::filesystem::path(pathOut);
+    return {pathOut};
 }
 
 void SetOsuDirPath(const std::filesystem::path &path) {

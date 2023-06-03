@@ -36,8 +36,7 @@ public:
     }
 
     std::string_view GetText(std::string_view key) {
-        auto &map = i18nMap[GetLanguageName(lang)];
-        if (map.contains(key.data())) {
+        if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key.data())) {
             return map[key.data()];
         }
         if (i18nMap["EN_US"].contains(key.data())) {
@@ -47,8 +46,7 @@ public:
     }
 
     std::string_view GetText(const char *key) {
-        auto &map = i18nMap[GetLanguageName(lang)];
-        if (map.contains(key)) {
+        if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key)) {
             return map[key];
         }
         if (i18nMap["EN_US"].contains(key)) {
@@ -58,8 +56,7 @@ public:
     }
 
     const char* GetTextCStr(std::string_view key) {
-        auto &map = i18nMap[GetLanguageName(lang)];
-        if (map.contains(key.data())) {
+        if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key.data())) {
             return map[key.data()].c_str();
         }
         if (i18nMap["EN_US"].contains(key.data())) {
@@ -69,8 +66,7 @@ public:
     }
 
     const char* GetTextCStr(const char *key) {
-        auto &map = i18nMap[GetLanguageName(lang)];
-        if (map.contains(key)) {
+        if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key)) {
             return map[key].c_str();
         }
         if (i18nMap["EN_US"].contains(key)) {
@@ -83,18 +79,22 @@ private:
     I18nManager() : lang(config::Field("Language", Language::EN_US)) {
         BYTE *data = nullptr;
 
-#define LOAD_LANG_FILE(lang)    if (res::LoadEx(IDR_LANG_##lang, L"LANG", &data)) { \
-            std::string s = std::string(reinterpret_cast<char *>(data)); \
-            nlohmann::json j = nlohmann::json::parse(s); \
-            for (auto &i : j.items()) i18nMap[#lang][i.key()] = i.value(); \
-            LOGD("Loaded language file: %s, json size: %zu, map size: %zu", #lang, j.size(), i18nMap[#lang].size()); \
-        } else { \
-            LOGD("Cannot load language file: %s", #lang); \
+#define LOAD_LANG_FILE(lang) try { \
+            if (res::LoadEx(IDR_LANG_##lang, L"LANG", &data)) { \
+                std::string s = std::string(reinterpret_cast<char *>(data)); \
+                nlohmann::json j = nlohmann::json::parse(s); \
+                for (auto &i : j.items()) i18nMap[#lang][i.key()] = i.value(); \
+                LOGD("Loaded language file: %s, json size: %zu, map size: %zu", #lang, j.size(), i18nMap[#lang].size()); \
+            } else { \
+                LOGD("Cannot load language file: %s", #lang); \
+            } \
+        } catch (...) { \
+            LOGE("Cannot initialize language file: %s", #lang); \
         }
         
         LOAD_LANG_FILE(EN_US)
         LOAD_LANG_FILE(ZH_CN)
-        
+
 #undef LOAD_LANG_FILE
     }
 };

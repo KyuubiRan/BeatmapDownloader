@@ -33,7 +33,7 @@ void Run(HMODULE *phModule) {
 
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    auto s = (utils::GetCurrentDirPath() / "imgui.ini").string();
+    static auto s = (utils::GetCurrentDirPath() / "imgui.ini").string();
     LOGD("Imgui config path: %s", s.c_str());
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.IniFilename = s.c_str();
@@ -83,10 +83,12 @@ void Run(HMODULE *phModule) {
 #include "ui/About.h"
 #include "features/HandleLinkHook.h"
 #include "features/Downloader.h"
+#include "features/DownloadQueue.h"
 
 inline void InitFeatures() {
     AddFeature(&ui::misc::About::GetInstance());
     AddFeature(&ui::misc::Settings::GetInstance());
     AddFeature(&features::Downloader::GetInstance());
     AddFeature(&features::HandleLinkHook::GetInstance());
+    AddFeature(&features::DownloadQueue::GetInstance());
 }

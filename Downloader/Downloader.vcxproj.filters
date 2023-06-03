@@ -81,9 +81,6 @@
     <ClInclude Include="libraries\detours\detver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\config\ISerializable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\MainUi.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -133,6 +130,81 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libraries\utility\BlockingContainer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\Sayobot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\Downloader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\Color.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\ISerializable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Account.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Beatmap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Crypto.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\BlockingInput.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\SearchResultUi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Base64.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\cpp-httplib\httplib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\curl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\curlver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\easy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\header.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\mprintf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\multi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\options.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\stdcheaders.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\system.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\typecheck-gcc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\urlapi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\websockets.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\curl\httplib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network\HttpRequest.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -200,10 +272,36 @@
     <ClCompile Include="src\ui\Settings.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\api\Sayobot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\Downloader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Account.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Beatmap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Crypto.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\SearchResultUi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\Base64.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\HttpRequest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\detours\detours-x64.lib" />
     <Library Include="libraries\detours\detours-x86.lib" />
+    <Library Include="libraries\curl\libcurl-x64.lib" />
+    <Library Include="libraries\curl\libcurl-x86.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">

@@ -2,16 +2,19 @@
 #include <shellapi.h>
 #include "HandleLinkHook.h"
 
+#include <regex>
+
+#include "Downloader.h"
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
 namespace features {
 void HandleLinkHook::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
-    
+
     ImGui::Checkbox(lang.GetTextCStr("Enabled"), f_Enabled.getPtr());
     GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDesc"));
-    
+
     ImGui::InputText(lang.GetTextCStr("Domain"), f_Domain.getPtr());
     GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDomainDesc"));
 }
@@ -30,12 +33,43 @@ BOOL ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo) {
     if (!inst.f_Enabled.getValue())
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
 
-    if (GetAsyncKeyState(VK_CONTROL) & 8000) {
-        LOGI("Shift pressed, skip handle link");
+    if (GetAsyncKeyState(VK_LCONTROL) & 8000) {
+        LOGI("Ctrl pressed, skip handle link");
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
     }
 
-    LOGD("ShellExecuteExW call");
+    static std::string https = "https://";
+    static std::string http = "http://";
+    auto s = inst.f_Domain.getValue();
+    if (s.find(http) == 0) {
+        s.erase(0, http.size());
+    } else if (s.find(https) == 0) {
+        s.erase(0, https.size());
+    }
+    if (s.back() == '/') {
+        s.pop_back();
+    }
+
+    auto &dl = Downloader::GetInstance();
+    auto url = utils::ws2s(pExecInfo->lpFile);
+
+    const std::string domainPattern1 = s + R"(/(beatmapsets|s)/(\d+))";
+    std::smatch match;
+    if (std::regex re1(domainPattern1); std::regex_search(url, match, re1) && match.size() > 2) {
+        const int id = std::stoi(match[2].str());
+        LOGI("Handle link beatmapsets: %d", id);
+        dl.postSearch({downloader::BeatmapType::Sid, id});
+        return false;
+    }
+
+    std::string domainPattern2 = s + R"(/(beatmaps|b)/(\d+))";
+
+    if (std::regex re2(domainPattern2); std::regex_search(url, match, re2) && match.size() > 2) {
+        const int id = std::stoi(match[2].str());
+        LOGI("Handle link beatmaps: %d", id);
+        dl.postSearch({downloader::BeatmapType::Bid, id});
+        return false;
+    }
 
     return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
 }

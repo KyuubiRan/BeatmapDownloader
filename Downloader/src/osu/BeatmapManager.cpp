@@ -103,12 +103,13 @@ void osu::BeatmapManager::initDatabase() {
     LOGI("Finished initialize osu! database! sid size = %zu, bid size = %zu", m_BeatmapSetIds.size(), m_BeatmapIds.size());
 }
 
-void osu::BeatmapManager::openBeatmapPage(features::downloader::BeatmapInfo bi) {
-    if (bi.id <= 0) {
-        LOGW("Cannot open website: Invalid beatmap id %d!", bi.id);
+void osu::BeatmapManager::openBeatmapPage(Beatmap &bm) {
+    if (bm.sid <= 0) {
+        LOGW("Cannot open website: Invalid beatmap id %d!", bm.sid);
         return;
     }
-    const std::string s = std::format("https://osu.ppy.sh/{0}/{1}", bi.type == features::downloader::BeatmapType::Sid ? "s" : "b", bi.id);
+    std::string s = std::format("https://osu.ppy.sh/s/");
+    s.append(std::to_string(bm.sid));
     LOGI("Opening website: %s", s.c_str());
     ShellExecuteA(nullptr, "open", s.c_str(), nullptr, nullptr, SW_HIDE);
 }

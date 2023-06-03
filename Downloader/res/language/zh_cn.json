@@ -17,8 +17,8 @@
   "GrantOsuAccount": "授权使用osu!账号",
   "GrantOsuAccountDesc": "授权使用osu!账号，你可以选择使用osu!官方渠道下载谱面，就像osu!direct一样。\n注意：如果你在游玩私有服务器，请不要勾选此项。",
   "NotGrantOsuAccountButUseOfficialWarn": "警告：你没有授权使用osu!账号，但是你选择了官方下载渠道。\n所有的下载任务将会被自动取消！",
-  "EnableProxyServer": "启用代理服务器",
-  "ProxyServerDesc": "使用代理服务器下载谱面。\ne.g.: https://localhost:7890",
+  "ProxyServerType": "设置代理服务器",
+  "ProxyServerDesc": "使用代理服务器下载/搜索谱面。",
   "ProxyServer": "代理服务器",
   "ProxyServerPassword": "代理服务器密码",
   "EnableCustomUserAgent": "启用自定义User-Agent",
@@ -29,5 +29,8 @@
   "Mapper": "谱面作者： %s",
   "Cancel": "取消",
   "ReDownload": "重新下载",
-  "ViewWebsite": "查看网页"
+  "ViewWebsite": "查看网页",
+  "BeatmapInfo": "谱面信息",
+  "DownloadQueue": "下载队列",
+  "CancelDownload": "取消下载"
 }

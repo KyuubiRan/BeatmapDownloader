@@ -43,6 +43,6 @@ public:
         return false;
     }
 
-    void openBeatmapPage(features::downloader::BeatmapInfo bi);
+    void openBeatmapPage(Beatmap &bm);
 };
 }
