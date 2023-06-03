@@ -7,7 +7,8 @@
 #pragma comment(lib, "Wldap32.lib")
 
 size_t string_write_fn(char *data, size_t size, size_t nmemb, std::string *writerData) {
-    if (!data)return 0;
+    if (!data)
+        return 0;
     writerData->append(data, size * nmemb);
     return size * nmemb;
 }
@@ -15,6 +16,7 @@ size_t string_write_fn(char *data, size_t size, size_t nmemb, std::string *write
 CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::string> &extraHeader, int32_t *resCode) {
     CURL *curl = curl_easy_init();
     if (!curl) {
+        LOGE("Cannot init curl");
         return CURLE_FAILED_INIT;
     }
 
@@ -25,8 +27,8 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
         curl_slist_append(headers, s.c_str());
     }
     const std::string ua = "User-Agent: " + (dl.f_EnableCustomUserAgent.getValue()
-                                                 ? dl.f_CustomUserAgent.getValue()
-                                                 : features::Downloader::DEFAULT_USER_AGENT);
+        ? dl.f_CustomUserAgent.getValue()
+        : features::Downloader::DEFAULT_USER_AGENT);
     curl_slist_append(headers, ua.c_str());
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -53,7 +55,8 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
     if (res == CURLE_OK) {
         int32_t code;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
-        if (resCode) *resCode = code;
+        if (resCode)
+            *resCode = code;
     }
 
     curl_slist_free_all(headers);
@@ -62,13 +65,14 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
 }
 
 size_t file_writer(char *data, size_t size, size_t nmemb, FILE *pFile) {
-    if (!data) return 0;
+    if (!data)
+        return 0;
     fwrite(data, size, nmemb, pFile);
     return size * nmemb;
 }
 
 int xferinfo_fn(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
-    const auto pTask = (features::DownloadTask*)clientp;
+    const auto pTask = (features::DownloadTask *)clientp;
     pTask->currentDownloaded = static_cast<double>(dlnow);
     pTask->totalSize = static_cast<double>(dltotal);
     return 0;
@@ -78,10 +82,14 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
                             int32_t *resCode) {
     CURL *curl = curl_easy_init();
     if (!curl) {
+        LOGE("Cannot init curl");
         return CURLE_FAILED_INIT;
     }
 
     FILE *f;
+    if (!exists(path.parent_path()))
+        create_directory(path.parent_path());
+    
     fopen_s(&f, path.string().c_str(), "wb");
     if (!f) {
         LOGW("Cannot open file %s", path.string().c_str());
@@ -92,8 +100,8 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
 
     curl_slist *headers = nullptr;
     const std::string ua = "User-Agent: " + (dl.f_EnableCustomUserAgent.getValue()
-                                                 ? dl.f_CustomUserAgent.getValue()
-                                                 : features::Downloader::DEFAULT_USER_AGENT);
+        ? dl.f_CustomUserAgent.getValue()
+        : features::Downloader::DEFAULT_USER_AGENT);
 
     for (const auto &s : extraHeader) {
         curl_slist_append(headers, s.c_str());
@@ -127,7 +135,8 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
     if (res == CURLE_OK) {
         int32_t code;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
-        if (resCode) *resCode = code;
+        if (resCode)
+            *resCode = code;
     }
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
