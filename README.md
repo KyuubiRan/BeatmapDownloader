@@ -7,3 +7,6 @@ WIP
 - [ ] Bancho Search & Download
 - [ ] (Maybe) Chimu(Bloodcat) Search & Download
 - [ ] Sid/Bid quick search
+
+## Thanks
+Osu-Ingame-Downloader: https://github.com/veritas501/Osu-Ingame-Downloader
