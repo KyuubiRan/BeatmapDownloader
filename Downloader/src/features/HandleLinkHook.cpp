@@ -19,7 +19,7 @@ void HandleLinkHook::drawMain() {
     GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDomainDesc"));
 }
 
-FeatureInfo& HandleLinkHook::getInfo() {
+FeatureInfo &HandleLinkHook::getInfo() {
     static auto info = FeatureInfo{
         .category = "Downloader",
         .groupName = "HandleLink"
@@ -28,10 +28,15 @@ FeatureInfo& HandleLinkHook::getInfo() {
     return info;
 }
 
-BOOL ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo) {
-    auto &inst = HandleLinkHook::GetInstance();
+BOOL __stdcall HandleLinkHook::ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo) {
+    auto &inst = GetInstance();
     if (!inst.f_Enabled.getValue())
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
+
+    if (std::wstring ws = pExecInfo->lpFile; !ws.starts_with(L"http")) {
+        LOGD("Not a link, skip handle link");
+        return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
+    }
 
     if (GetAsyncKeyState(VK_LCONTROL) & 8000) {
         LOGI("Ctrl pressed, skip handle link");

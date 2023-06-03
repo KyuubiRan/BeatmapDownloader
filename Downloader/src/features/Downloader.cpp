@@ -6,6 +6,7 @@
 #include <shellapi.h>
 
 #include "DownloadQueue.h"
+#include "HandleLinkHook.h"
 #include "api/Sayobot.h"
 #include "config/I18nManager.h"
 #include "misc/Color.h"
@@ -77,7 +78,9 @@ features::Downloader::Downloader() :
 
         std::string fn = std::to_string(bm.sid) + ".osz";
         auto path = utils::GetCurrentDirPath() / L"downloads";
-        if (!exists(path)) create_directory(path);
+        if (!exists(path))
+            create_directory(path);
+        
         path /= fn;
 
         if (!exists(path)) {
@@ -177,7 +180,7 @@ void features::Downloader::drawMain() {
     }
 }
 
-ui::main::FeatureInfo& features::Downloader::getInfo() {
+ui::main::FeatureInfo &features::Downloader::getInfo() {
     static ui::main::FeatureInfo info = {"Downloader", "Download"};
     return info;
 }
