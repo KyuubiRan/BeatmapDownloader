@@ -25,6 +25,7 @@ void Run(HMODULE *phModule) {
     freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
     freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
     freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
+    DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
 
     LOGI("Waiting for osu! initialization...");
     Sleep(5000);

@@ -31,13 +31,13 @@
   "ReDownload": "Re-Download",
   "ViewWebsite": "View Website",
   "BeatmapInfo": "Beatmap Info",
-  "DownloadQueue": "Download Queue",
+  "DownloadQueue": "Queue",
   "CancelDownload": "Cancel Download",
   "Hotkey": "Hotkey",
   "HotkeyDesc": "[Home] Toggle MainUi Show.\n[End] Toggle BeatmapIdSearchUi Show.\nHold [LCTRL] + Click the link to skip handle the link.",
   "Empty": "Nothing here~",
-  "SearchBeatmapId": "BeatmapId Searcher",
+  "SearchBeatmapId": "Beatmap Id Searcher",
   "Search": "Search",
-  "SearchBeatmapIdDesc": "Search beatmap by id.By BeatmapSetsId: beatmapsets123456 | s123456 | 123456。\nBy BeatmapId: beatmaps123456 | b123456 | 123456(Low priority)",
+  "SearchBeatmapIdDesc": "Search beatmap by id.By BeatmapSetsId: beatmapsets123456 | s123456。\nBy BeatmapId: beatmaps123456 | b123456\nOnly number id: by left combo box selected.",
   "Clear": "Clear"
 }
