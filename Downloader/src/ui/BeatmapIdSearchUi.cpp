@@ -10,12 +10,15 @@
 
 static bool show = false;
 
+static bool focus = false;
+
 bool ui::search::beatmapid::IsShowed() {
     return show;
 }
 
 void ui::search::beatmapid::ToggleShow() {
     show = !show;
+    focus = false;
     show ? InputBlock::Push() : InputBlock::Pop();
 }
 
@@ -80,17 +83,20 @@ void ui::search::beatmapid::Update() {
         ImGui::SetNextWindowPos(windowPos);
         inited = true;
     }
-    
+
     ImGui::Begin(lang.GetTextCStr("SearchBeatmapId"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static std::string input;
     static const char *items[] = {"Sid", "Bid"};
-    
+
     ImGui::SetNextItemWidth(ImGui::GetFontSize() * 3);
     ImGui::Combo("##type", &selected, items, IM_ARRAYSIZE(items));
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetFontSize() * 10);
-    ImGui::SetKeyboardFocusHere();
+    if (!focus) {
+        ImGui::SetKeyboardFocusHere();
+        focus = true;
+    }
     ImGui::InputText("##search", &input);
 
     ImGui::SameLine();
