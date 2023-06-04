@@ -25,10 +25,10 @@ void ui::search::beatmapid::ToggleShow() {
 // 0 = Sid, 1 = Bid
 static int selected = 0;
 
-void parseAndPostSearch(const std::string &s) {
+void parseAndPostSearch(std::string *s) {
     static const std::string regex0 = "^(\\d+)$";
     std::smatch m;
-    if (const std::regex re0(regex0); std::regex_search(s, m, re0) && m.size() > 1) {
+    if (const std::regex re0(regex0); std::regex_search(*s, m, re0) && m.size() > 1) {
         try {
             features::Downloader::GetInstance().postSearch(features::downloader::BeatmapInfo{
                 selected == 0 ? features::downloader::BeatmapType::Sid : features::downloader::BeatmapType::Bid,
@@ -40,8 +40,12 @@ void parseAndPostSearch(const std::string &s) {
         return;
     }
 
+    std::string s2;
+    std::regex_replace(std::back_inserter(s2), s->begin(), s->end(), std::regex(R"((https?:\/\/)?osu\.ppy\.sh\/)"), "");
+    s = &s2;
+
     static const std::string regex1 = "^(beatmapset)?s\\/?(\\d+)$";
-    if (const std::regex re1(regex1); std::regex_search(s, m, re1) && m.size() > 2) {
+    if (const std::regex re1(regex1); std::regex_search(*s, m, re1) && m.size() > 2) {
         try {
             features::Downloader::GetInstance().postSearch(features::downloader::BeatmapInfo{
                 features::downloader::BeatmapType::Sid,
@@ -54,7 +58,7 @@ void parseAndPostSearch(const std::string &s) {
     }
 
     static const std::string regex2 = "^b(eatmaps)?\\/?(\\d+)$";
-    if (const std::regex re2(regex2); std::regex_search(s, m, re2) && m.size() > 2) {
+    if (const std::regex re2(regex2); std::regex_search(*s, m, re2) && m.size() > 2) {
         try {
             features::Downloader::GetInstance().postSearch(features::downloader::BeatmapInfo{
                 features::downloader::BeatmapType::Bid,
@@ -66,7 +70,7 @@ void parseAndPostSearch(const std::string &s) {
         return;
     }
 
-    LOGI("Invalid input: %s", s.c_str());
+    LOGI("Invalid input: %s", s->c_str());
 }
 
 void ui::search::beatmapid::Update() {
@@ -106,7 +110,7 @@ void ui::search::beatmapid::Update() {
 
     ImGui::SameLine();
     if (ImGui::Button(lang.GetTextCStr("Search"))) {
-        parseAndPostSearch(input);
+        parseAndPostSearch(&input);
     }
 
     GuiHelper::ShowTooltip(lang.GetTextCStr("SearchBeatmapIdDesc"));

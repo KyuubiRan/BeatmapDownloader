@@ -17,6 +17,8 @@ void features::DownloadQueue::cancel(const int sid) {
 }
 
 features::DownloadTask *features::DownloadQueue::addTask(const osu::Beatmap &bm) {
+    std::unique_lock _g(m_Mutex);
+
     if (m_InQueueMap.contains(bm.sid)) {
         LOGW("Already has download task: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
         return &m_InQueueMap[bm.sid];
@@ -31,6 +33,8 @@ features::DownloadTask *features::DownloadQueue::addTask(const osu::Beatmap &bm)
 }
 
 void features::DownloadQueue::notifyFinished(int sid) {
+    std::unique_lock _g(m_Mutex);
+
     if (m_InQueueMap.contains(sid)) {
         m_InQueueMap.erase(sid);
     }
@@ -68,13 +72,16 @@ void features::DownloadQueue::drawTaskItem(const DownloadTask &item) {
 
 void features::DownloadQueue::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
+
+    std::shared_lock _g(m_Mutex);
+
     if (m_InQueueMap.empty()) {
         ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).x) * 0.5f);
-        ImGui::SetCursorPosY( (ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).y) * 0.5f);
+        ImGui::SetCursorPosY((ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).y) * 0.5f);
         ImGui::Text(lang.GetTextCStr("Empty"));
         return;
     }
-    
+
     for (auto &item : m_InQueueMap | std::views::values) {
         drawTaskItem(item);
     }
@@ -106,7 +113,7 @@ void features::DownloadQueue::drawMain() {
     */
 }
 
-ui::main::FeatureInfo& features::DownloadQueue::getInfo() {
+ui::main::FeatureInfo &features::DownloadQueue::getInfo() {
     static auto info = ui::main::FeatureInfo{
         "DownloadQueue",
         ""

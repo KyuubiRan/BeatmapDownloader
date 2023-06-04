@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <shared_mutex>
+
 #include "osu/Beatmap.h"
 #include "ui/Feature.h"
 
@@ -17,30 +19,34 @@ class DownloadQueue : public ui::main::Feature {
     DownloadQueue();
 
     std::map<int, DownloadTask> m_InQueueMap;
+    
+    inline static std::shared_mutex m_Mutex{};
 
     void drawTaskItem(const DownloadTask &item);
 
     void cancel(int sid);
 
 public:
-    static DownloadQueue& GetInstance() {
+    static DownloadQueue &GetInstance() {
         static DownloadQueue instance;
         return instance;
     }
 
     bool hasDownloadMapSet(const int id) const {
+        std::shared_lock _g(m_Mutex);
         return m_InQueueMap.contains(id);
     }
 
     bool hasDownloadMap(const osu::Beatmap &bm) const {
+        std::shared_lock _g(m_Mutex);
         return m_InQueueMap.contains(bm.sid);
     }
 
-    DownloadTask* addTask(const osu::Beatmap &bm);
+    DownloadTask *addTask(const osu::Beatmap &bm);
 
     void notifyFinished(int sid);
 
     void drawMain() override;
-    ui::main::FeatureInfo& getInfo() override;
+    ui::main::FeatureInfo &getInfo() override;
 };
 }
