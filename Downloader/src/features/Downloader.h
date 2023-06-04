@@ -29,6 +29,7 @@ enum class DownloadType : uint8_t {
 struct BeatmapInfo {
     BeatmapType type;
     int32_t id;
+    bool directDownload = false;
 };
 
 struct DownloadInfo {
@@ -64,7 +65,7 @@ public:
     config::Field<bool> f_GrantOsuAccount;
     config::Field<downloader::DownloadMirror> f_Mirror;
     config::Field<downloader::DownloadType> f_DownloadType;
-    
+
     config::Field<downloader::ProxyServerType> f_ProxySeverType;
     config::Field<std::string> f_ProxySever;
     config::Field<std::string> f_ProxySeverPassword;
@@ -72,14 +73,14 @@ public:
     config::Field<bool> f_EnableCustomUserAgent;
     config::Field<std::string> f_CustomUserAgent;
 
-    static Downloader& GetInstance() {
+    static Downloader &GetInstance() {
         static Downloader instance;
         return instance;
     }
 
     void drawMain() override;
-    ui::main::FeatureInfo& getInfo() override;
-    
+    ui::main::FeatureInfo &getInfo() override;
+
     static void cancelDownload(int sid);
     static void removeCancelDownload(int sid);
 

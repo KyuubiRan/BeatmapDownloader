@@ -34,7 +34,7 @@
   "DownloadQueue": "Queue",
   "CancelDownload": "Cancel Download",
   "Hotkey": "Hotkey",
-  "HotkeyDesc": "[Home] Toggle MainUi Show.\n[End] Toggle BeatmapIdSearchUi Show.\nHold [LCTRL] + Click the link to skip handle the link.",
+  "HotkeyDesc": "[Home] Toggle MainUi Show.\n[End] Toggle BeatmapIdSearchUi Show.\nHold [Ctrl] + Click the link to skip handle the link.\nHold [SHIFT] + Click the link to direct download the beatmap(except exists beatmap).",
   "Empty": "Nothing here~",
   "SearchBeatmapId": "Beatmap Id Searcher",
   "Search": "Search",

@@ -12,6 +12,7 @@
 #include <set>
 #include <imgui_internal.h>
 #include "../ui/BlockingInput.hpp"
+#include "misc/Hotkey.hpp"
 #include "ui/BeatmapIdSearchUi.h"
 #include "ui/SearchResultUi.h"
 
@@ -35,10 +36,12 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode != HC_ACTION) {
         return CallNextHookEx(g_msgHook, nCode, wParam, lParam);
     }
-    MSG *msg = (MSG*)lParam;
+    MSG *msg = (MSG *)lParam;
 
     if (wParam == PM_REMOVE) {
-        if (msg->message == WM_KEYDOWN) {
+        switch (msg->message) {
+        case WM_KEYDOWN: {
+            misc::Hotkey::AddKeyDown(msg->wParam);
             switch (msg->wParam) {
             case VK_HOME:
                 ui::main::ToggleShow();
@@ -47,6 +50,12 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
                 ui::search::beatmapid::ToggleShow();
                 break;
             }
+            break;
+        }
+        case WM_KEYUP: {
+            misc::Hotkey::RemoveKeyDown(msg->wParam);
+            break;
+        }
         }
 
         if (ui::InputBlock::IsBlocked())
@@ -68,7 +77,7 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 DWORD WINAPI MsgHookThread(LPVOID lpParam) {
-    DWORD tid = *(DWORD*)lpParam;
+    DWORD tid = *(DWORD *)lpParam;
     g_msgHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, GetModuleHandle(NULL), tid);
     if (!g_msgHook) {
         LOGE("Cannot set message hook!");
@@ -84,6 +93,18 @@ DWORD WINAPI MsgHookThread(LPVOID lpParam) {
     return 0;
 }
 
+LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_ACTIVATE:
+        if (wParam == WA_INACTIVE)
+            misc::Hotkey::Clear();
+        break;
+    }
+
+    return CallWindowProc(OriginalWndProcHandler, hwnd, msg, wParam, lParam);
+}
+
+
 void OnRenderGL(HDC hdc) {
     ImGuiIO &io = ImGui::GetIO();
     ImGuiContext *g = ImGui::GetCurrentContext();
@@ -96,6 +117,7 @@ void OnRenderGL(HDC hdc) {
         ImGui_ImplWin32_InitForOpenGL(s_OsuHwnd);
         DWORD tid = GetCurrentThreadId();
         CreateThread(nullptr, 0, MsgHookThread, &tid, 0, nullptr);
+        OriginalWndProcHandler = (WNDPROC)SetWindowLongPtr(s_OsuHwnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
     }
 
     ImGui_ImplOpenGL3_NewFrame();

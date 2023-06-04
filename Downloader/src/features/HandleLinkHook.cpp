@@ -6,6 +6,8 @@
 
 #include "Downloader.h"
 #include "config/I18nManager.h"
+#include "misc/Hotkey.hpp"
+#include "osu/BeatmapManager.h"
 #include "utils/gui_utils.h"
 
 namespace features {
@@ -38,10 +40,12 @@ BOOL __stdcall HandleLinkHook::ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
     }
 
-    if (GetAsyncKeyState(VK_LCONTROL) & 8000) {
+    if (misc::Hotkey::IsDown(VK_CONTROL)) {
         LOGI("Ctrl pressed, skip handle link");
         return HookManager::CallOriginal(ShellExecuteExW_Hook, pExecInfo);
     }
+
+    bool LShiftDown = misc::Hotkey::IsDown(VK_SHIFT);
 
     static std::string https = "https://";
     static std::string http = "http://";
@@ -55,6 +59,7 @@ BOOL __stdcall HandleLinkHook::ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo
         s.pop_back();
     }
 
+    auto &bmmgr = osu::BeatmapManager::GetInstance();
     auto &dl = Downloader::GetInstance();
     auto url = utils::ws2s(pExecInfo->lpFile);
 
@@ -63,7 +68,7 @@ BOOL __stdcall HandleLinkHook::ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo
     if (std::regex re1(domainPattern1); std::regex_search(url, match, re1) && match.size() > 2) {
         const int id = std::stoi(match[2].str());
         LOGI("Handle link beatmapsets: %d", id);
-        dl.postSearch({downloader::BeatmapType::Sid, id});
+        dl.postSearch({downloader::BeatmapType::Sid, id, LShiftDown && !bmmgr.hasBeatmapSet(id)});
         return false;
     }
 
@@ -72,7 +77,7 @@ BOOL __stdcall HandleLinkHook::ShellExecuteExW_Hook(SHELLEXECUTEINFOW *pExecInfo
     if (std::regex re2(domainPattern2); std::regex_search(url, match, re2) && match.size() > 2) {
         const int id = std::stoi(match[2].str());
         LOGI("Handle link beatmaps: %d", id);
-        dl.postSearch({downloader::BeatmapType::Bid, id});
+        dl.postSearch({downloader::BeatmapType::Bid, id, LShiftDown && !bmmgr.hasBeatmap(id)});
         return false;
     }
 

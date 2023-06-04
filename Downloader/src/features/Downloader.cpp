@@ -80,7 +80,7 @@ features::Downloader::Downloader() :
         auto path = utils::GetCurrentDirPath() / L"downloads";
         if (!exists(path))
             create_directory(path);
-        
+
         path /= fn;
 
         if (!exists(path)) {
@@ -108,7 +108,7 @@ features::Downloader::Downloader() :
             if (ret.has_value()) {
                 if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
                     auto bm = sayo.data->to_beatmap();
-                    ui::search::result::ShowSearchInfo(bm);
+                    info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
                 } else {
                     LOGW("No such map found on Sayobot. ID=%d, Type=%s", info.id,
                          info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
