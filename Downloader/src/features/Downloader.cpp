@@ -10,6 +10,7 @@
 #include "api/Sayobot.h"
 #include "config/I18nManager.h"
 #include "misc/Color.h"
+#include "osu/BeatmapManager.h"
 #include "ui/SearchResultUi.h"
 #include "utils/gui_utils.h"
 
@@ -75,7 +76,7 @@ features::Downloader::Downloader() :
             LOGW("Download failed (out of retry times): %d", bm.sid);
             continue;
         }
-
+        
         std::string fn = std::to_string(bm.sid) + ".osz";
         auto path = utils::GetCurrentDirPath() / L"downloads";
         if (!exists(path))
@@ -89,6 +90,8 @@ features::Downloader::Downloader() :
         }
 
         ShellExecuteW(nullptr, L"open", path.c_str(), nullptr, nullptr, SW_HIDE);
+
+        osu::BeatmapManager::GetInstance().addBeatmap(bm);
 
         LOGD("Finished download beatmapsets: %d", bm.sid);
     }

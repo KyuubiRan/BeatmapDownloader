@@ -17,7 +17,7 @@ class BeatmapManager {
     void initDatabase();
 
 public:
-    static BeatmapManager& GetInstance() {
+    static BeatmapManager &GetInstance() {
         static BeatmapManager instance;
         return instance;
     }
@@ -34,7 +34,8 @@ public:
 
     bool hasBeatmap(const Beatmap &bm) {
         std::shared_lock _g(m_rwlock);
-        if (bm.sid > 0 && m_BeatmapSetIds.contains(bm.sid)) return true;
+        if (bm.sid > 0 && m_BeatmapSetIds.contains(bm.sid))
+            return true;
         if (!bm.bid.empty() && std::ranges::any_of(bm.bid, [&](const int32_t i) {
             return m_BeatmapIds.contains(i);
         })) {
@@ -44,5 +45,16 @@ public:
     }
 
     void openBeatmapPage(Beatmap &bm);
+
+    void addBeatmap(const Beatmap &bm) {
+        std::unique_lock _g(m_rwlock);
+        if (bm.sid > 0)
+            m_BeatmapSetIds.insert(bm.sid);
+
+        for (auto i : bm.bid) {
+            if (i > 0)
+                m_BeatmapIds.insert(i);
+        }
+    }
 };
 }
