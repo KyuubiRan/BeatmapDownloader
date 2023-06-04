@@ -3,6 +3,8 @@
 
 #include <shellapi.h>
 #include "BeatmapManager.h"
+
+#include "features/HandleLinkHook.h"
 #include "utils/Utils.h"
 
 osu::BeatmapManager::BeatmapManager() {
@@ -32,7 +34,8 @@ unsigned int UnpackULEB128(std::ifstream &fs) {
 
 std::string UnpackOsuStr(std::ifstream &fs) {
     const uint32_t size = UnpackULEB128(fs);
-    if (!size) return "";
+    if (!size)
+        return "";
 
     char *tmpStr = new char[size + 1];
     fs.read(tmpStr, size);
@@ -45,7 +48,8 @@ std::string UnpackOsuStr(std::ifstream &fs) {
 
 void PassOsuStr(std::ifstream &fs) {
     const uint32_t size = UnpackULEB128(fs);
-    if (!size) return;
+    if (!size)
+        return;
     fp(size);
 }
 
@@ -108,10 +112,30 @@ void osu::BeatmapManager::openBeatmapPage(Beatmap &bm) {
         LOGW("Cannot open website: Invalid beatmap id %d!", bm.sid);
         return;
     }
-    std::string s = std::format("https://osu.ppy.sh/s/");
-    s.append(std::to_string(bm.sid));
-    LOGI("Opening website: %s", s.c_str());
-    ShellExecuteA(nullptr, "open", s.c_str(), nullptr, nullptr, SW_HIDE);
+    std::wstring s = L"https://osu.ppy.sh/s/";
+    s.append(std::to_wstring(bm.sid));
+    WLOGI(L"Opening website: %s", s.c_str());
+    
+    SHELLEXECUTEINFOW sei = {
+        sizeof(sei),
+        0,
+        nullptr,
+        L"open",
+        s.c_str(),
+        nullptr,
+        nullptr,
+        SW_HIDE,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        0,
+        nullptr,
+        nullptr
+    };
+
+    // prevent trigger search
+    HookManager::CallOriginal(features::HandleLinkHook::ShellExecuteExW_Hook, &sei);
 }
 
 #undef fr
