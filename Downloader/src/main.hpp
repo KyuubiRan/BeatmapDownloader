@@ -10,6 +10,7 @@
 #include "config/Field.h"
 #include "misc/ResourcesLoader.hpp"
 #include "osu/BeatmapManager.h"
+#include "osu/OsuConfigManager.h"
 #include "ui/MainUi.h"
 #include "ui/Settings.h"
 
@@ -50,8 +51,6 @@ void Run(HMODULE *phModule) {
 
     LOGD("Check graphics api...");
 
-    renderer::GraphicsApiType graphicsApiType = renderer::GraphicsApiType::OpenGL3;
-
     wchar_t processPath[MAX_PATH];
     GetModuleFileNameW(nullptr, processPath, MAX_PATH);
     auto path = std::filesystem::path(processPath);
@@ -62,18 +61,11 @@ void Run(HMODULE *phModule) {
     std::wstring cfgName = L"osu!.";
     cfgName.append(username).append(L".cfg");
     path = path.parent_path() / cfgName;
-    LOGD("Osu! config path: %s", path.string().c_str());
+    osu::OsuConfigManager::Init(path);
 
-    std::ifstream ifs(path);
-    std::string line;
-    while (std::getline(ifs, line)) {
-        if (line.starts_with("CompatibilityContext")) {
-            LOGD("%s", line.c_str());
-            graphicsApiType = line.find('0') != std::string::npos ? renderer::GraphicsApiType::OpenGL3 : renderer::GraphicsApiType::D3D11;
-            break;
-        }
-    }
-    ifs.close();
+    const renderer::GraphicsApiType graphicsApiType = osu::OsuConfigManager::GetInt("CompatibilityContext") == 0
+        ? renderer::GraphicsApiType::OpenGL3
+        : renderer::GraphicsApiType::D3D11;
 
     LOGD("Api detected: %s", graphicsApiType == renderer::GraphicsApiType::OpenGL3 ? "OpenGL" : "DirectX");
 
