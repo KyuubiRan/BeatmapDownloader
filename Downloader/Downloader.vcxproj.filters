@@ -150,16 +150,10 @@
     <ClInclude Include="src\osu\Beatmap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\osu\Crypto.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\BlockingInput.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\SearchResultUi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\Base64.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libraries\cpp-httplib\httplib.h">
@@ -208,6 +202,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\features\DownloadQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\Bancho.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\Hotkey.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\OsuConfigManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\BeatmapIdSearchUi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\MD5.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -287,19 +296,22 @@
     <ClCompile Include="src\osu\Beatmap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\osu\Crypto.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\ui\SearchResultUi.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\Base64.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\network\HttpRequest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\features\DownloadQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\Bancho.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\OsuConfigManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\BeatmapIdSearchUi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
