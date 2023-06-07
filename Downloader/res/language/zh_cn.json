@@ -39,5 +39,7 @@
   "SearchBeatmapId": "谱面ID搜索器",
   "Search": "搜索",
   "SearchBeatmapIdDesc": "根据ID来搜索谱面。支持的格式如下：\n根据BeatmapSetsId: beatmapsets123456 | s123456。\n根据BeatmapId: beatmaps123456 | b123456。\n如果只有数字id：按照左边的选择框来搜索。",
-  "Clear": "清除"
+  "Clear": "清除",
+  "Username": "用户名",
+  "Password": "密码"
 }

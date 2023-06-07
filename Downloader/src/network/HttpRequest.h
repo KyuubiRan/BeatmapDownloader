@@ -7,6 +7,8 @@
 
 #include "features/DownloadQueue.h"
 
+#pragma comment(lib, "crypt32.lib")
+
 namespace net {
 CURLcode curl_get(const char *url, std::string &response, std::vector<std::string> &extraHeader, int32_t *resCode = nullptr);
 

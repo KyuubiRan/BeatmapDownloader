@@ -1,12 +1,12 @@
 ﻿#include "pch.h"
 #include "Downloader.h"
 
-#include <fstream>
 #include <set>
 #include <shellapi.h>
 
 #include "DownloadQueue.h"
 #include "HandleLinkHook.h"
+#include "api/Bancho.h"
 #include "api/Sayobot.h"
 #include "config/I18nManager.h"
 #include "misc/Color.h"
@@ -19,6 +19,7 @@ static std::set<int> s_Canceled{};
 features::Downloader::Downloader() :
     Feature(),
     f_GrantOsuAccount("GrantOsuAccount", false),
+    f_OsuAccount("OsuAccount", osu::Account{}),
     f_Mirror("DownloadMirror", downloader::DownloadMirror::Sayobot),
     f_DownloadType("DownloadType", downloader::DownloadType::Full),
     f_ProxySeverType("ProxyServerType", downloader::ProxyServerType::Disabled),
@@ -57,16 +58,18 @@ features::Downloader::Downloader() :
         LOGI("Start download: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
         while (!success && ++retry < 3) {
             switch (inst.f_Mirror.getValue()) {
-            case downloader::DownloadMirror::OsuOfficial:
+            case downloader::DownloadMirror::OsuOfficial: {
                 if (!inst.f_GrantOsuAccount.getValue()) {
                     LOGW("Permission denied on download beatmap by osu!(Official) mirror.");
                     goto beg;
                 }
-
-                break;
-            case downloader::DownloadMirror::Sayobot:
+                success = api::bancho::DownloadBeatmap(bm);
+            }
+            break;
+            case downloader::DownloadMirror::Sayobot: {
                 success = api::sayobot::DownloadBeatmap(bm);
-                break;
+            }
+            break;
             }
         }
 
@@ -76,7 +79,7 @@ features::Downloader::Downloader() :
             LOGW("Download failed (out of retry times): %d", bm.sid);
             continue;
         }
-        
+
         std::string fn = std::to_string(bm.sid) + ".osz";
         auto path = utils::GetCurrentDirPath() / L"downloads";
         if (!exists(path))
@@ -104,9 +107,17 @@ features::Downloader::Downloader() :
         auto info = inst.m_SearchQueue.pop_front();
         LOGD("Poped search: %d", info.id);
         switch (inst.f_Mirror.getValue()) {
-        case downloader::DownloadMirror::OsuOfficial:
-            break;
-        case downloader::DownloadMirror::Sayobot:
+        case downloader::DownloadMirror::OsuOfficial: {
+            if (auto ret = api::bancho::SearchBeatmap(info); ret.has_value()) {
+                auto &bm = *ret;
+                info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
+            } else {
+                LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
+                     info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
+            }
+        }
+        break;
+        case downloader::DownloadMirror::Sayobot: {
             auto ret = api::sayobot::SearchBeatmapV2(info);
             if (ret.has_value()) {
                 if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
@@ -117,7 +128,8 @@ features::Downloader::Downloader() :
                          info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
                 }
             }
-            break;
+        }
+        break;
         }
     }
 }
@@ -126,6 +138,19 @@ void features::Downloader::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
     ImGui::Checkbox(lang.GetTextCStr("GrantOsuAccount"), f_GrantOsuAccount.getPtr());
     GuiHelper::ShowTooltip(lang.GetTextCStr("GrantOsuAccountDesc"));
+
+    if (f_GrantOsuAccount.getValue()) {
+        static std::string un = f_OsuAccount->username();
+        static std::string pw = f_OsuAccount->password().md5();
+        ImGui::Indent();
+        if (ImGui::InputText(lang.GetTextCStr("Username"), &un)) {
+            f_OsuAccount->setUsername(un);
+        }
+        if (ImGui::PasswordInputText(lang.GetTextCStr("Password"), &pw)) {
+            f_OsuAccount->setPassword(pw);
+        }
+        ImGui::Unindent();
+    }
 
 #pragma region Mirror
     static const char *mirrorNames[] = {

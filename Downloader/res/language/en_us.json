@@ -39,5 +39,7 @@
   "SearchBeatmapId": "Beatmap Id Searcher",
   "Search": "Search",
   "SearchBeatmapIdDesc": "Search beatmap by id.By BeatmapSetsId: beatmapsets123456 | s123456。\nBy BeatmapId: beatmaps123456 | b123456\nOnly number id: by left combo box selected.",
-  "Clear": "Clear"
+  "Clear": "Clear",
+  "Username": "Username",
+  "Password": "Password"
 }

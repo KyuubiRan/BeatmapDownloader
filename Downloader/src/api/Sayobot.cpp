@@ -46,7 +46,7 @@ osu::Beatmap api::sayobot::SayoBeatmapDataV2::to_beatmap() const {
     for (auto &bd : bidData) {
         bids.push_back(bd.bid);
     }
-    return {title, artist, creator, bids, sid};
+    return {title, artist, creator, bids, sid, video != 0};
 }
 
 std::optional<api::sayobot::SayoResult<api::sayobot::SayoBeatmapDataV2>> api::sayobot::SearchBeatmapV2(

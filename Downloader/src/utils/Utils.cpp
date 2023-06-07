@@ -76,4 +76,35 @@ std::string &trim_begin(std::string &str) {
 std::string &trim(std::string &str) {
     return trim_begin(trim_end(str));
 }
+
+std::vector<std::string> split(const std::string &res, const char split) {
+    std::vector<std::string> result;
+    std::string tmp;
+    for (auto &i : res) {
+        if (i == split) {
+            result.push_back(tmp);
+            tmp.clear();
+        } else {
+            tmp.push_back(i);
+        }
+    }
+    result.push_back(tmp);
+    return result;
+
+}
+
+std::vector<std::string> split(const std::string &res, const std::string &split) {
+    std::vector<std::string> result;
+    std::string tmp;
+    for (auto &i : res) {
+        if (split.find(i) != std::string::npos) {
+            result.push_back(tmp);
+            tmp.clear();
+        } else {
+            tmp.push_back(i);
+        }
+    }
+    result.push_back(tmp);
+    return result;
+}
 }

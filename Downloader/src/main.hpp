@@ -13,6 +13,7 @@
 #include "osu/OsuConfigManager.h"
 #include "ui/MainUi.h"
 #include "ui/Settings.h"
+#include "utils/gui_utils.h"
 
 void InitFeatures();
 
@@ -23,9 +24,9 @@ void Run(HMODULE *phModule) {
     config::Init();
 
     AllocConsole();
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-    freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
-    freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
+    freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
+    freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
+    freopen_s((FILE **)stderr, "CONOUT$", "w", stderr);
     DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
 
     LOGI("Waiting for osu! initialization...");
@@ -44,9 +45,14 @@ void Run(HMODULE *phModule) {
 
     InitFeatures();
 
+    static constexpr ImWchar pwRanges[] = {
+        0x002A, 0x002B, // Basic Latin + Latin Supplement
+        0
+    };
     LPBYTE bytes = nullptr;
     if (const DWORD size = res::LoadEx(IDR_FONT, RT_FONT, &bytes)) {
         renderer::SetCurrentFont(bytes, size, 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesChineseFull());
+        ImGui::SetPasswordFont(bytes, size, 18.0f, nullptr, pwRanges);
     }
 
     LOGD("Check graphics api...");

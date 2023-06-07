@@ -11,6 +11,7 @@ struct Beatmap {
     std::string author;
     std::vector<int32_t> bid;
     int32_t sid;
+    bool hasVideo;
 };
 
 }

@@ -22,4 +22,6 @@ std::string &trim_end(std::string &str);
 std::string &trim_begin(std::string &str);
 std::string &trim(std::string &str);
 
+std::vector<std::string> split(const std::string &res, char split);
+std::vector<std::string> split(const std::string &res, const std::string &split);
 }
