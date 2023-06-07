@@ -97,9 +97,9 @@ bool api::bancho::DownloadBeatmap(osu::Beatmap &bm) {
     }
 
     auto path = utils::GetCurrentDirPath() / L"downloads" / (std::to_string(bm.sid) + ".osz");
-    features::DownloadTask tsk = {bm};
+    auto *tsk = features::DownloadQueue::GetInstance().addTask(bm);
     int ret = -1;
-    if (const CURLcode code = net::curl_download(url.c_str(), path, &tsk, &ret); code == CURLE_OK && ret == 200) {
+    if (const CURLcode code = net::curl_download(url.c_str(), path, tsk, &ret); code == CURLE_OK && ret == 200) {
         LOGI("Success download beatmapsets: %d", bm.sid);
         return true;
     } else {
