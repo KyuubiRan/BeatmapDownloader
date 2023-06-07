@@ -34,7 +34,7 @@
   "DownloadQueue": "下载队列",
   "CancelDownload": "取消下载",
   "Hotkey": "快捷键",
-  "HotkeyDesc": "[Home] 切换主菜单显示。\n[End] 切换谱面ID搜索显示。\n长按 [Ctrl] + 点击链接跳过代理搜图。\n 长按[Shift] + 点击链接直接开始下载(已经存在的谱面除外)",
+  "HotkeyDesc": "[Home] 切换主菜单显示。\n[End] 切换谱面ID搜索显示。\n长按 [Ctrl] + 点击链接跳过代理搜图。\n长按[Shift] + 点击链接直接开始下载(已经存在的谱面除外)",
   "Empty": "空空如也~",
   "SearchBeatmapId": "谱面ID搜索器",
   "Search": "搜索",
