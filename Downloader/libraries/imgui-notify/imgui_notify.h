@@ -22,7 +22,7 @@
 #define NOTIFY_USE_SEPARATOR
 
 #define NOTIFY_INLINE					inline
-#define NOTIFY_NULL_OR_EMPTY(str)		(!str ||! strlen(str))
+#define NOTIFY_NULL_OR_EMPTY(str)		(str == nullptr ||! strlen(str))
 #define NOTIFY_FORMAT(fn, format, ...)	if (format) { va_list args; va_start(args, format); fn(format, args, __VA_ARGS__); va_end(args); }
 
 typedef int ImGuiToastType;
@@ -128,6 +128,7 @@ public:
 		case ImGuiToastType_Info:
 			return { 0, 157, 255, 255 }; // Blue
 		}
+        return { 255, 255, 255, 255 };
 	}
 
 	NOTIFY_INLINE auto get_icon() -> const char*
@@ -135,7 +136,7 @@ public:
 		switch (this->type)
 		{
 		case ImGuiToastType_None:
-			return NULL;
+			return nullptr;
 		case ImGuiToastType_Success:
 			return ICON_FA_CHECK_CIRCLE;
 		case ImGuiToastType_Warning:
@@ -145,6 +146,8 @@ public:
 		case ImGuiToastType_Info:
 			return ICON_FA_INFO_CIRCLE;
 		}
+	    
+        return nullptr;
 	}
 
 	NOTIFY_INLINE auto get_content() -> char* { return this->content; };
