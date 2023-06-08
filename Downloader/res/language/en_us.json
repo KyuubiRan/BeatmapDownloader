@@ -57,5 +57,9 @@
   "DownloadSuccess": "Finished download beatmapsets: %d!",
   "StartDownload": "Start download beatmapsets: %d",
   "SearchFailed": "Search beatmap(%s=%d) failed!",
-  "CurlError": "Curl request error: %d"
+  "CurlError": "Curl request error: %d",
+  "OsuPath": "Custom Osu! Path",
+  "OsuPathDesc": "Use custom osu! path, or empty to auto detect the path.\nIf you don't know what it is, please keep it empty.",
+  "MoveToOsuFolder": "Move Downloaded Beatmap",
+  "MoveToOsuFolderDesc": "Move downloaded beatmap to osu! Songs folder instead open the .osz file."
 }

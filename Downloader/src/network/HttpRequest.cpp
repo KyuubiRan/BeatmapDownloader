@@ -92,7 +92,7 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
 
     FILE *f;
     if (!exists(path.parent_path()))
-        create_directory(path.parent_path());
+        create_directories(path.parent_path());
 
     fopen_s(&f, path.string().c_str(), "wb");
     if (!f) {

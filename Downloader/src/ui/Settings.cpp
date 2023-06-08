@@ -6,7 +6,8 @@ ui::misc::Settings::Settings() :
     Feature(),
     f_EnableToast("EnableToast", true),
     f_ToastDuration("ToastDuration", 3000),
-    f_EnableConsole("EnableConsole", true) {
+    f_EnableConsole("EnableConsole", true),
+    f_OsuPath("OsuPath", "") {
 }
 
 void ui::misc::Settings::drawMain() {
@@ -20,6 +21,9 @@ void ui::misc::Settings::drawMain() {
     if (ImGui::Combo(lang.getTextCStr("Language"), &langIdx, langs, IM_ARRAYSIZE(langs))) {
         lang.lang.setValue(static_cast<i18n::Language>(langIdx));
     }
+
+    ImGui::InputText(lang.getTextCStr("OsuPath"), f_OsuPath.getPtr());
+    GuiHelper::ShowTooltip(lang.getTextCStr("OsuPathDesc"));
 
     ImGui::EndGroupPanel();
 

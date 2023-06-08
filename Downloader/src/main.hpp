@@ -23,7 +23,9 @@ void Run(HMODULE *phModule) {
 
     config::Init();
 
-    if (ui::misc::Settings::GetInstance().f_EnableConsole.getValue()) {
+    auto &settings = ui::misc::Settings::GetInstance();
+
+    if (settings.f_EnableConsole.getValue()) {
         AllocConsole();
         freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
         freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
@@ -64,6 +66,17 @@ void Run(HMODULE *phModule) {
     GetModuleFileNameW(nullptr, processPath, MAX_PATH);
     auto path = std::filesystem::path(processPath);
     utils::SetOsuDirPath(path.parent_path());
+
+    // set custom osu path
+    if (!settings.f_OsuPath.getValue().empty()) {
+        if (const auto op = std::filesystem::path(settings.f_OsuPath.getValue()) / "osu!.exe"; exists(op)) {
+            utils::SetOsuDirPath(op.parent_path());
+            LOGI("Using custom osu path: %s", op.string().c_str());
+        } else {
+            LOGW("Osu! path not correct, use deteceted path.");
+        }
+    }
+
     wchar_t username[256 + 1];
     DWORD usernameLen = 256 + 1;
     GetUserNameW(username, &usernameLen);

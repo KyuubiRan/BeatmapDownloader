@@ -32,6 +32,11 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
     int ret = -1;
     if (const CURLcode code = net::curl_get(url.c_str(), res, &ret); code == CURLE_OK && ret == 200) {
         LOGD("Official search result: %s", res.c_str());
+        if (res.empty()) {
+            LOGW("Official search failed! response is empty!");
+            return {};
+        }
+
         const auto l = utils::split(res, '|');
         if (l.empty()) {
             LOGW("Official search failed! Cannot parse result!");
@@ -41,35 +46,40 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
 #pragma warning(push)
 #pragma warning(disable : 4834)
 
-        auto bm = osu::Beatmap{};
-        size_t i = 0;
-        l[i++]; // serverFilename 
-        bm.artist = l[i++];
-        bm.title = l[i++];
-        bm.author = l[i++];
-        l[i++]; // status 
-        /*
-        "1" => SubmissionStatus.Ranked,
-        "2" => SubmissionStatus.Approved,
-        "3" => SubmissionStatus.Qualified,
-        "4" => SubmissionStatus.Loved,
-        _ => SubmissionStatus.Pending
-        */
+        try {
+            auto bm = osu::Beatmap{};
+            size_t i = 0;
+            l[i++]; // serverFilename 
+            bm.artist = l[i++];
+            bm.title = l[i++];
+            bm.author = l[i++];
+            l[i++]; // status 
+            /*
+            "1" => SubmissionStatus.Ranked,
+            "2" => SubmissionStatus.Approved,
+            "3" => SubmissionStatus.Qualified,
+            "4" => SubmissionStatus.Loved,
+            _ => SubmissionStatus.Pending
+            */
 
-        l[i++]; // rating
-        l[i++]; // lastupdate
+            l[i++]; // rating
+            l[i++]; // lastupdate
 
-        bm.sid = std::stoi(l[i++]);
-        l[i++]; // threadid
+            bm.sid = std::stoi(l[i++]);
+            l[i++]; // threadid
 
-        bm.hasVideo = l[i++] == "1";
-        l[i++]; // hasStoryboard
-        l[i++]; // filesize
+            bm.hasVideo = l[i++] == "1";
+            l[i++]; // hasStoryboard
+            l[i++]; // filesize
+
+            LOGD("Parsed official search result: %d %s - %s", bm.sid, bm.artist.c_str(), bm.title.c_str());
+            return bm;
+        } catch (...) {
+            LOGW("Cannot parse bancho search result, maybe beatmap not exists!");
+        }
 
 #pragma warning(pop)
-        LOGD("Parsed official search result: %d %s - %s", bm.sid, bm.artist.c_str(), bm.title.c_str());
 
-        return bm;
     } else {
         LOGW("Osu official search failed: CURL_CODE=%d, RESPONSE_CODE=%d", code, ret);
     }

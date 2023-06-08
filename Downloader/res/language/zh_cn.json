@@ -57,5 +57,9 @@
   "DownloadSuccess": "谱面集合(%d)下载完成！",
   "StartDownload": "开始下载谱面集合: %d",
   "SearchFailed": "谱面(%s=%d)搜索失败！",
-  "CurlError": "Curl 请求出错: %d"
+  "CurlError": "Curl 请求出错: %d",
+  "OsuPath": "自定义osu!路径",
+  "OsuPathDesc": "使用自定义路径，如果它为空，则自动检测路径。\n如果你不知道它是什么，请将它留空。",
+  "MoveToOsuFolder": "移动下载的谱面",
+  "MoveToOsuFolderDesc": "移动下载完的谱面到osu!的Songs目录下，而不是打开它。"
 }

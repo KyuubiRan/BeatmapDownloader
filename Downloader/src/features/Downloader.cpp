@@ -22,6 +22,7 @@ features::Downloader::Downloader() :
     f_OsuAccount("OsuAccount", osu::Account{}),
     f_Mirror("DownloadMirror", downloader::DownloadMirror::Sayobot),
     f_DownloadType("DownloadType", downloader::DownloadType::Full),
+    f_MoveToOsuFolder("MoveToOsuFolder", false),
     f_ProxySeverType("ProxyServerType", downloader::ProxyServerType::Disabled),
     f_ProxySever("ProxyServer", "localhost:7890"),
     f_ProxySeverPassword("ProxyServerPassword", ""),
@@ -86,7 +87,7 @@ features::Downloader::Downloader() :
         std::string fn = std::to_string(bm.sid) + ".osz";
         auto path = utils::GetCurrentDirPath() / L"downloads";
         if (!exists(path))
-            create_directory(path);
+            create_directories(path);
 
         path /= fn;
 
@@ -95,7 +96,19 @@ features::Downloader::Downloader() :
             continue;
         }
 
-        ShellExecuteW(nullptr, L"open", path.c_str(), nullptr, nullptr, SW_HIDE);
+        if (inst.f_MoveToOsuFolder.getValue()) {
+            auto song = utils::GetOsuDirPath() / "Songs";
+            if (!exists(song))
+                create_directories(song);
+            song /= fn;
+            
+            if (exists(song))
+                remove(song);
+            
+            MoveFileW(path.wstring().c_str(), song.wstring().c_str());
+        } else {
+            ShellExecuteW(nullptr, L"open", path.c_str(), nullptr, nullptr, SW_HIDE);
+        }
 
         osu::BeatmapManager::GetInstance().addBeatmap(bm);
 
@@ -126,7 +139,7 @@ features::Downloader::Downloader() :
                 LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
                      info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
                 GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid",
-                                            info.id);
+                                         info.id);
             }
         }
         break;
@@ -170,6 +183,9 @@ void features::Downloader::drawMain() {
         }
         ImGui::Unindent();
     }
+
+    ImGui::Checkbox(lang.GetTextCStr("MoveToOsuFolder"), f_MoveToOsuFolder.getPtr());
+    GuiHelper::ShowTooltip(lang.GetTextCStr("MoveToOsuFolderDesc"));
 
 #pragma region Mirror
     static const char *mirrorNames[] = {

@@ -12,6 +12,7 @@ public:
     config::Field<bool> f_EnableToast;
     config::Field<int> f_ToastDuration;
     config::Field<bool> f_EnableConsole;
+    config::Field<std::string> f_OsuPath;
 
     static Settings &GetInstance() {
         static Settings instance;

@@ -90,7 +90,6 @@ std::vector<std::string> split(const std::string &res, const char split) {
     }
     result.push_back(tmp);
     return result;
-
 }
 
 std::vector<std::string> split(const std::string &res, const std::string &split) {

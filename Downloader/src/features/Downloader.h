@@ -67,6 +67,7 @@ public:
     config::Field<osu::Account> f_OsuAccount;
     config::Field<downloader::DownloadMirror> f_Mirror;
     config::Field<downloader::DownloadType> f_DownloadType;
+    config::Field<bool> f_MoveToOsuFolder;
 
     config::Field<downloader::ProxyServerType> f_ProxySeverType;
     config::Field<std::string> f_ProxySever;
@@ -74,6 +75,7 @@ public:
 
     config::Field<bool> f_EnableCustomUserAgent;
     config::Field<std::string> f_CustomUserAgent;
+
 
     static Downloader &GetInstance() {
         static Downloader instance;
