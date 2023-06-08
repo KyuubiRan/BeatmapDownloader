@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <shared_mutex>
+#include <unordered_map>
 
 #include "osu/Beatmap.h"
 #include "ui/Feature.h"
@@ -18,7 +19,7 @@ struct DownloadTask {
 class DownloadQueue : public ui::main::Feature {
     DownloadQueue();
 
-    std::map<int, DownloadTask> m_InQueueMap;
+    std::unordered_map<int, DownloadTask> m_InQueueMap;
     
     inline static std::shared_mutex m_Mutex{};
 
