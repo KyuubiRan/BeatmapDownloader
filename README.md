@@ -1,5 +1,5 @@
 # BeatmapDownloader
-A beatmap downloader for osu!stable
+A in-game beatmap downloader for osu!stable
 
 ## Usage
 1. Download the latest release from [here](https://github.com/KyuubiRan/BeatmapDownloader/releases)
