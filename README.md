@@ -12,8 +12,11 @@ A in-game beatmap downloader for osu!stable
 - [x] Handle link
 - [x] Sayobot Search & Download
 - [x] Bancho Search & Download
-- [ ] (Maybe) Chimu(Bloodcat) Search & Download
 - [x] Sid/Bid quick search
+- [ ] Multi beatmap download
+- [ ] Bp download
+- [ ] (Maybe) Chimu(Bloodcat) Search & Download
+
 
 ## Thanks
 Osu-Ingame-Downloader: https://github.com/veritas501/Osu-Ingame-Downloader
