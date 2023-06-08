@@ -23,11 +23,13 @@ void Run(HMODULE *phModule) {
 
     config::Init();
 
-    AllocConsole();
-    freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
-    freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
-    freopen_s((FILE **)stderr, "CONOUT$", "w", stderr);
-    DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
+    if (ui::misc::Settings::GetInstance().f_EnableConsole.getValue()) {
+        AllocConsole();
+        freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);
+        freopen_s((FILE **)stdin, "CONIN$", "r", stdin);
+        freopen_s((FILE **)stderr, "CONOUT$", "w", stderr);
+        DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
+    }
 
     LOGI("Waiting for osu! initialization...");
     Sleep(5000);
@@ -52,6 +54,7 @@ void Run(HMODULE *phModule) {
     LPBYTE bytes = nullptr;
     if (const DWORD size = res::LoadEx(IDR_FONT, RT_FONT, &bytes)) {
         renderer::SetCurrentFont(bytes, size, 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesChineseFull());
+        ImGui::MergeIconsWithLatestFont(18.f, false);
         ImGui::SetPasswordFont(bytes, size, 18.0f, nullptr, pwRanges);
     }
 
@@ -77,6 +80,8 @@ void Run(HMODULE *phModule) {
 
     renderer::Init(graphicsApiType);
     ui::main::ToggleShow();
+
+    GuiHelper::ShowSuccessToast(i18n::I18nManager::GetInstance().getTextCStr("DownloaderLoadSuccess"));
 }
 
 #include "ui/About.h"

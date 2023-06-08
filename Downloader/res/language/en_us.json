@@ -41,5 +41,21 @@
   "SearchBeatmapIdDesc": "Search beatmap by id.By BeatmapSetsId: beatmapsets123456 | s123456。\nBy BeatmapId: beatmaps123456 | b123456\nOnly number id: by left combo box selected.",
   "Clear": "Clear",
   "Username": "Username",
-  "Password": "Password"
+  "Password": "Password",
+  "Toast": "Toast",
+  "EnableToast": "Enable Toast",
+  "ToastDuration": "Toast Duration",
+  "Debug": "Debug",
+  "EnableConsole": "Enable Console",
+  "RestartToApply": "Restart to apply changes.",
+  "DownloaderLoadSuccess": "Welcome to use BeatmapDownloader!",
+  "Success": "Success",
+  "Warning": "Warning",
+  "Info": "Info",
+  "Error": "Error",
+  "DownloadFailedOORT": "Download beatmapsets(%d) failed! (out of retry times)",
+  "DownloadSuccess": "Finished download beatmapsets: %d!",
+  "StartDownload": "Start download beatmapsets: %d",
+  "SearchFailed": "Search beatmap(%s=%d) failed!",
+  "CurlError": "Curl request error: %d"
 }

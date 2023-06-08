@@ -4,6 +4,7 @@
 #include "features/Downloader.h"
 #include "network/HttpRequest.h"
 #include "utils/Utils.h"
+#include "utils/gui_utils.h"
 
 std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::BeatmapInfo &info) {
     auto &dl = features::Downloader::GetInstance();
@@ -36,6 +37,10 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
             LOGW("Official search failed! Cannot parse result!");
             return {};
         }
+
+#pragma warning(push)
+#pragma warning(disable : 4834)
+
         auto bm = osu::Beatmap{};
         size_t i = 0;
         l[i++]; // serverFilename 
@@ -61,11 +66,12 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
         l[i++]; // hasStoryboard
         l[i++]; // filesize
 
+#pragma warning(pop)
         LOGD("Parsed official search result: %d %s - %s", bm.sid, bm.artist.c_str(), bm.title.c_str());
 
         return bm;
     } else {
-        LOGW("Osu official download failed: CURL_CODE=%d, RESPONSE_CODE=%d", code, ret);
+        LOGW("Osu official search failed: CURL_CODE=%d, RESPONSE_CODE=%d", code, ret);
     }
 
     return {};

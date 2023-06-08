@@ -2,6 +2,7 @@
 #include "HttpRequest.h"
 
 #include "features/Downloader.h"
+#include "utils/gui_utils.h"
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "Wldap32.lib")
@@ -57,6 +58,9 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
         if (resCode)
             *resCode = code;
+    } else {
+        LOGW("Curl req(get) error: %d", res);
+        GuiHelper::ShowErrorToast(i18n::I18nManager::GetTextCStr("CurlError"), res);
     }
 
     curl_slist_free_all(headers);
@@ -89,7 +93,7 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
     FILE *f;
     if (!exists(path.parent_path()))
         create_directory(path.parent_path());
-    
+
     fopen_s(&f, path.string().c_str(), "wb");
     if (!f) {
         LOGW("Cannot open file %s", path.string().c_str());
@@ -137,7 +141,11 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
         if (resCode)
             *resCode = code;
+    } else {
+        LOGW("Curl req(dl) error: %d", res);
+        GuiHelper::ShowErrorToast(i18n::I18nManager::GetTextCStr("CurlError"), res);
     }
+    
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
     return res;

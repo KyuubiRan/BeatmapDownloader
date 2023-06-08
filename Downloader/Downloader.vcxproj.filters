@@ -219,6 +219,15 @@
     <ClInclude Include="src\utils\MD5.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\imgui-notify\fa_solid_900.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\imgui-notify\font_awesome_5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\imgui-notify\imgui_notify.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">

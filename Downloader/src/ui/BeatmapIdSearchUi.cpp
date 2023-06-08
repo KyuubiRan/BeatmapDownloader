@@ -88,7 +88,7 @@ void ui::search::beatmapid::Update() {
         inited = true;
     }
 
-    ImGui::Begin(lang.GetTextCStr("SearchBeatmapId"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin(lang.getTextCStr("SearchBeatmapId"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static std::string input;
     static const char *items[] = {"Sid", "Bid"};
 
@@ -104,16 +104,16 @@ void ui::search::beatmapid::Update() {
     ImGui::InputText("##search", &input);
 
     ImGui::SameLine();
-    if (ImGui::Button(lang.GetTextCStr("Clear"))) {
+    if (ImGui::Button(lang.getTextCStr("Clear"))) {
         input = "";
     }
 
     ImGui::SameLine();
-    if (ImGui::Button(lang.GetTextCStr("Search"))) {
+    if (ImGui::Button(lang.getTextCStr("Search"))) {
         parseAndPostSearch(&input);
     }
 
-    GuiHelper::ShowTooltip(lang.GetTextCStr("SearchBeatmapIdDesc"));
+    GuiHelper::ShowTooltip(lang.getTextCStr("SearchBeatmapIdDesc"));
 
     ImGui::End();
 }

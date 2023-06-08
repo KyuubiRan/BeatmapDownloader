@@ -15,6 +15,7 @@
 #include "misc/Hotkey.hpp"
 #include "ui/BeatmapIdSearchUi.h"
 #include "ui/SearchResultUi.h"
+#include "utils/gui_utils.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -27,6 +28,7 @@ void Update() {
     ui::main::Update();
     ui::search::result::Update();
     ui::search::beatmapid::Update();
+    GuiHelper::RenderToast();
 }
 
 ImFont *_currentFont = nullptr;

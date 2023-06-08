@@ -16,7 +16,7 @@ class I18nManager {
     // i18nMap["en_us"]["Downloader"] -> "Downloader"
     inline static std::map<std::string, std::map<std::string, std::string>> i18nMap;
 
-    static const char* GetLanguageName(Language lang) {
+    static const char *GetLanguageName(Language lang) {
         switch (lang) {
         case Language::EN_US:
             return "EN_US";
@@ -30,12 +30,12 @@ class I18nManager {
 public:
     config::Field<Language> lang;
 
-    static I18nManager& GetInstance() {
+    static I18nManager &GetInstance() {
         static I18nManager instance;
         return instance;
     }
 
-    std::string_view GetText(std::string_view key) {
+    std::string_view getText(std::string_view key) {
         if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key.data())) {
             return map[key.data()];
         }
@@ -45,7 +45,11 @@ public:
         return key;
     }
 
-    std::string_view GetText(const char *key) {
+    static std::string_view GetText(std::string_view key) {
+        return GetInstance().getText(key);
+    }
+
+    std::string_view getText(const char *key) {
         if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key)) {
             return map[key];
         }
@@ -55,7 +59,11 @@ public:
         return key;
     }
 
-    const char* GetTextCStr(std::string_view key) {
+    static std::string_view GetText(const char *key) {
+        return GetInstance().getText(key);
+    }
+
+    const char *getTextCStr(std::string_view key) {
         if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key.data())) {
             return map[key.data()].c_str();
         }
@@ -65,7 +73,11 @@ public:
         return key.data();
     }
 
-    const char* GetTextCStr(const char *key) {
+    static const char *GetTextCStr(std::string_view key) {
+        return GetInstance().getTextCStr(key);
+    }
+
+    const char *getTextCStr(const char *key) {
         if (auto &map = i18nMap[GetLanguageName(lang)]; map.contains(key)) {
             return map[key].c_str();
         }
@@ -75,8 +87,13 @@ public:
         return key;
     }
 
+    static const char *GetTextCStr(const char *key) {
+        return GetInstance().getTextCStr(key);
+    }
+
 private:
-    I18nManager() : lang(config::Field("Language", Language::EN_US)) {
+    I18nManager() :
+        lang(config::Field("Language", Language::EN_US)) {
         BYTE *data = nullptr;
 
 #define LOAD_LANG_FILE(lang) try { \
@@ -91,7 +108,7 @@ private:
         } catch (...) { \
             LOGE("Cannot initialize language file: %s", #lang); \
         }
-        
+
         LOAD_LANG_FILE(EN_US)
         LOAD_LANG_FILE(ZH_CN)
 

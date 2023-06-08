@@ -35,30 +35,30 @@ void Update() {
     ImGui::SetNextWindowSize(ImVec2(300, 225), ImGuiCond_FirstUseEver);
     auto &lang = i18n::I18nManager::GetInstance();
 
-    ImGui::Begin(lang.GetTextCStr("BeatmapInfo"), nullptr, ImGuiWindowFlags_NoCollapse);
+    ImGui::Begin(lang.getTextCStr("BeatmapInfo"), nullptr, ImGuiWindowFlags_NoCollapse);
     
-    ImGui::Text(lang.GetTextCStr("Title"), bm.title.c_str());
-    ImGui::Text(lang.GetTextCStr("Artist"), bm.artist.c_str());
-    ImGui::Text(lang.GetTextCStr("Mapper"), bm.author.c_str());
+    ImGui::Text(lang.getTextCStr("Title"), bm.title.c_str());
+    ImGui::Text(lang.getTextCStr("Artist"), bm.artist.c_str());
+    ImGui::Text(lang.getTextCStr("Mapper"), bm.author.c_str());
 
     ImGui::NewLine();
 
     const bool hasMap = osu::BeatmapManager::GetInstance().hasBeatmap(bm);
 
-    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr(hasMap ? "ReDownload" : "Download")).x) * 0.5f);
-    if (ImGui::Button(lang.GetTextCStr(hasMap ? "ReDownload" : "Download"))) {
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr(hasMap ? "ReDownload" : "Download")).x) * 0.5f);
+    if (ImGui::Button(lang.getTextCStr(hasMap ? "ReDownload" : "Download"))) {
         features::Downloader::GetInstance().postDownload(bm);
         isShow = false;
         InputBlock::Pop();
     }
 
-    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("ViewWebsite")).x) * 0.5f);
-    if (ImGui::Button(lang.GetTextCStr("ViewWebsite"))) {
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr("ViewWebsite")).x) * 0.5f);
+    if (ImGui::Button(lang.getTextCStr("ViewWebsite"))) {
         osu::BeatmapManager::GetInstance().openBeatmapPage(bm);
     }
 
-    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("Cancel")).x) * 0.5f);
-    if (ImGui::Button(lang.GetTextCStr("Cancel"))) {
+    ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr("Cancel")).x) * 0.5f);
+    if (ImGui::Button(lang.getTextCStr("Cancel"))) {
         curShowBm = {};
         isShow = false;
         InputBlock::Pop();

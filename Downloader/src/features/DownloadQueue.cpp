@@ -59,7 +59,7 @@ void features::DownloadQueue::drawTaskItem(const DownloadTask &item) {
         ImGui::Text(t.c_str());
         ImGui::ProgressBar(progress, ImVec2(-1, 1));
     } else {
-        const std::string s = std::format("{}##cancel-{}", lang.GetTextCStr("CancelDownload"), item.bm.sid);
+        const std::string s = std::format("{}##cancel-{}", lang.getTextCStr("CancelDownload"), item.bm.sid);
         if (ImGui::Button(s.c_str())) {
             cancel(item.bm.sid);
         }
@@ -76,9 +76,9 @@ void features::DownloadQueue::drawMain() {
     std::shared_lock _g(m_Mutex);
 
     if (m_InQueueMap.empty()) {
-        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).x) * 0.5f);
-        ImGui::SetCursorPosY((ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.GetTextCStr("Empty")).y) * 0.5f);
-        ImGui::Text(lang.GetTextCStr("Empty"));
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr("Empty")).x) * 0.5f);
+        ImGui::SetCursorPosY((ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.getTextCStr("Empty")).y) * 0.5f);
+        ImGui::Text(lang.getTextCStr("Empty"));
         return;
     }
 

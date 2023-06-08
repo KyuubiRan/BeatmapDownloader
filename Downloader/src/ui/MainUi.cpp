@@ -11,7 +11,7 @@
 
 namespace ui::main {
 static bool show = false;
-static std::unordered_map<std::string_view, std::unordered_set<Feature*>> s_Features;
+static std::unordered_map<std::string_view, std::unordered_set<Feature *>> s_Features;
 static const std::string_view *s_CurrentSelectedCategory = nullptr;
 
 bool IsShowed() {
@@ -24,7 +24,8 @@ void ToggleShow() {
 }
 
 void Update() {
-    if (!show) return;
+    if (!show)
+        return;
 
     ImGui::SetNextWindowSize(ImVec2(600, 300), ImGuiCond_FirstUseEver);
 
@@ -36,6 +37,10 @@ void Update() {
     // Draw category
     if (ImGui::BeginListBox("##feature category list", ImVec2(100, -FLT_MIN))) {
         for (const auto &category : s_Features | std::views::keys) {
+            if (s_CurrentSelectedCategory == nullptr) {
+                s_CurrentSelectedCategory = &category;
+            }
+
             const bool isSelected = s_CurrentSelectedCategory == &category;
 
             if (ImGui::Selectable(lang.GetTextCStr(category), isSelected)) {
@@ -65,7 +70,7 @@ void Update() {
         for (auto &needDrawFeatures = s_Features[*s_CurrentSelectedCategory]; const auto feature :
              std::ranges::reverse_view(needDrawFeatures)) {
             const auto &info = feature->getInfo();
-            auto group = lang.GetText(info.groupName);
+            auto group = lang.getText(info.groupName);
 
             if (group.empty()) {
                 feature->drawMain();

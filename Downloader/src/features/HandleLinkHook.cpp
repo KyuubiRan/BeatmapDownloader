@@ -14,11 +14,11 @@ namespace features {
 void HandleLinkHook::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
 
-    ImGui::Checkbox(lang.GetTextCStr("Enabled"), f_Enabled.getPtr());
-    GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDesc"));
+    ImGui::Checkbox(lang.getTextCStr("Enabled"), f_Enabled.getPtr());
+    GuiHelper::ShowTooltip(lang.getTextCStr("HandleLinkDesc"));
 
-    ImGui::InputText(lang.GetTextCStr("Domain"), f_Domain.getPtr());
-    GuiHelper::ShowTooltip(lang.GetTextCStr("HandleLinkDomainDesc"));
+    ImGui::InputText(lang.getTextCStr("Domain"), f_Domain.getPtr());
+    GuiHelper::ShowTooltip(lang.getTextCStr("HandleLinkDomainDesc"));
 }
 
 FeatureInfo &HandleLinkHook::getInfo() {

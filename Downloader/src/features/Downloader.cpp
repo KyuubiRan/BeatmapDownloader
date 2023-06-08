@@ -38,6 +38,7 @@ features::Downloader::Downloader() :
 
 [[noreturn]] void features::Downloader::DownloadThread() {
     auto &inst = GetInstance();
+    auto &lang = i18n::I18nManager::GetInstance();
 
     while (true) {
     beg:
@@ -56,7 +57,8 @@ features::Downloader::Downloader() :
         uint8_t retry = 0;
         bool success = false;
         LOGI("Start download: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
-        while (!success && ++retry < 3) {
+        GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownload"), bm.sid);
+        while (!success && retry++ < 3) {
             switch (inst.f_Mirror.getValue()) {
             case downloader::DownloadMirror::OsuOfficial: {
                 if (!inst.f_GrantOsuAccount.getValue()) {
@@ -77,6 +79,7 @@ features::Downloader::Downloader() :
 
         if (!success) {
             LOGW("Download failed (out of retry times): %d", bm.sid);
+            GuiHelper::ShowWarnToast(lang.getTextCStr("DownloadFailedOORT"), bm.sid);
             continue;
         }
 
@@ -97,35 +100,51 @@ features::Downloader::Downloader() :
         osu::BeatmapManager::GetInstance().addBeatmap(bm);
 
         LOGD("Finished download beatmapsets: %d", bm.sid);
+        GuiHelper::ShowSuccessToast(lang.getTextCStr("DownloadSuccess"), bm.sid);
     }
 }
 
 [[noreturn]] void features::Downloader::SearchThread() {
     auto &inst = GetInstance();
+    auto &lang = i18n::I18nManager::GetInstance();
 
     while (true) {
         auto info = inst.m_SearchQueue.pop_front();
         LOGD("Poped search: %d", info.id);
+
         switch (inst.f_Mirror.getValue()) {
         case downloader::DownloadMirror::OsuOfficial: {
             if (auto ret = api::bancho::SearchBeatmap(info); ret.has_value()) {
                 auto &bm = *ret;
+                if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
+                    LOGI("Already has map: %d, skipped direct download.", bm.sid);
+                    break;
+                }
+
                 info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
             } else {
                 LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
                      info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
+                GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid",
+                                            info.id);
             }
         }
         break;
         case downloader::DownloadMirror::Sayobot: {
-            auto ret = api::sayobot::SearchBeatmapV2(info);
-            if (ret.has_value()) {
+            if (auto ret = api::sayobot::SearchBeatmapV2(info); ret.has_value()) {
                 if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
                     auto bm = sayo.data->to_beatmap();
+                    if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
+                        LOGI("Already has map: %d, skipped direct download.", bm.sid);
+                        break;
+                    }
+
                     info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
                 } else {
                     LOGW("No such map found on Sayobot. ID=%d, Type=%s", info.id,
                          info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
+                    GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid",
+                                             info.id);
                 }
             }
         }
@@ -136,17 +155,17 @@ features::Downloader::Downloader() :
 
 void features::Downloader::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
-    ImGui::Checkbox(lang.GetTextCStr("GrantOsuAccount"), f_GrantOsuAccount.getPtr());
-    GuiHelper::ShowTooltip(lang.GetTextCStr("GrantOsuAccountDesc"));
+    ImGui::Checkbox(lang.getTextCStr("GrantOsuAccount"), f_GrantOsuAccount.getPtr());
+    GuiHelper::ShowTooltip(lang.getTextCStr("GrantOsuAccountDesc"));
 
     if (f_GrantOsuAccount.getValue()) {
         static std::string un = f_OsuAccount->username();
         static std::string pw = f_OsuAccount->password().md5();
         ImGui::Indent();
-        if (ImGui::InputText(lang.GetTextCStr("Username"), &un)) {
+        if (ImGui::InputText(lang.getTextCStr("Username"), &un)) {
             f_OsuAccount->setUsername(un);
         }
-        if (ImGui::PasswordInputText(lang.GetTextCStr("Password"), &pw)) {
+        if (ImGui::PasswordInputText(lang.getTextCStr("Password"), &pw)) {
             f_OsuAccount->setPassword(pw);
         }
         ImGui::Unindent();
@@ -159,7 +178,7 @@ void features::Downloader::drawMain() {
         // "Chimu",
     };
     static int mirrorIdx = (int)f_Mirror.getValue();
-    if (ImGui::Combo(lang.GetTextCStr("Mirror"), &mirrorIdx, mirrorNames, IM_ARRAYSIZE(mirrorNames))) {
+    if (ImGui::Combo(lang.getTextCStr("Mirror"), &mirrorIdx, mirrorNames, IM_ARRAYSIZE(mirrorNames))) {
         f_Mirror.setValue(static_cast<downloader::DownloadMirror>(mirrorIdx));
     }
 #pragma endregion
@@ -170,13 +189,13 @@ void features::Downloader::drawMain() {
         "NoVideo",
     };
     static int downloadTypeIdx = (int)f_DownloadType.getValue();
-    if (ImGui::Combo(lang.GetTextCStr("DownloadType"), &downloadTypeIdx, downloadTypeNames, IM_ARRAYSIZE(downloadTypeNames))) {
+    if (ImGui::Combo(lang.getTextCStr("DownloadType"), &downloadTypeIdx, downloadTypeNames, IM_ARRAYSIZE(downloadTypeNames))) {
         f_DownloadType.setValue(static_cast<downloader::DownloadType>(downloadTypeIdx));
     }
 #pragma endregion
 
     if (f_Mirror.getValue() == downloader::DownloadMirror::OsuOfficial && !f_GrantOsuAccount.getValue()) {
-        ImGui::TextColored(color::Orange, "%s", lang.GetTextCStr("NotGrantOsuAccountButUseOfficialWarn"));
+        ImGui::TextColored(color::Orange, "%s", lang.getTextCStr("NotGrantOsuAccountButUseOfficialWarn"));
     }
 
     static const char *proxyTypeNames[] = {
@@ -185,22 +204,22 @@ void features::Downloader::drawMain() {
         "Socks5"
     };
     static int proxyTypeIdx = (int)f_ProxySeverType.getValue();
-    if (ImGui::Combo(lang.GetTextCStr("ProxyServerType"), &proxyTypeIdx, proxyTypeNames, IM_ARRAYSIZE(proxyTypeNames))) {
+    if (ImGui::Combo(lang.getTextCStr("ProxyServerType"), &proxyTypeIdx, proxyTypeNames, IM_ARRAYSIZE(proxyTypeNames))) {
         f_ProxySeverType.setValue(static_cast<downloader::ProxyServerType>(proxyTypeIdx));
     };
-    GuiHelper::ShowTooltip(lang.GetTextCStr("ProxyServerDesc"));
+    GuiHelper::ShowTooltip(lang.getTextCStr("ProxyServerDesc"));
 
     if (f_ProxySeverType.getValue() != downloader::ProxyServerType::Disabled) {
         ImGui::Indent();
-        ImGui::InputText(lang.GetTextCStr("ProxyServer"), f_ProxySever.getPtr());
+        ImGui::InputText(lang.getTextCStr("ProxyServer"), f_ProxySever.getPtr());
         GuiHelper::ShowTooltip("e.g.: localhost:7890");
-        ImGui::InputText(lang.GetTextCStr("ProxyServerPassword"), f_ProxySeverPassword.getPtr());
+        ImGui::InputText(lang.getTextCStr("ProxyServerPassword"), f_ProxySeverPassword.getPtr());
         GuiHelper::ShowTooltip("e.g.: username:password");
         ImGui::Unindent();
     }
 
-    ImGui::Checkbox(lang.GetTextCStr("EnableCustomUserAgent"), f_EnableCustomUserAgent.getPtr());
-    GuiHelper::ShowTooltip(lang.GetTextCStr("CustomUserAgentDesc"));
+    ImGui::Checkbox(lang.getTextCStr("EnableCustomUserAgent"), f_EnableCustomUserAgent.getPtr());
+    GuiHelper::ShowTooltip(lang.getTextCStr("CustomUserAgentDesc"));
     if (f_EnableCustomUserAgent.getValue()) {
         ImGui::Indent();
         ImGui::InputText("User-Agent", f_CustomUserAgent.getPtr());
