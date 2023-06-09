@@ -101,11 +101,13 @@ void Run(HMODULE *phModule) {
 #include "features/HandleLinkHook.h"
 #include "features/Downloader.h"
 #include "features/DownloadQueue.h"
+#include "features/MultiDownload.h"
 
 inline void InitFeatures() {
     AddFeature(&ui::misc::About::GetInstance());
     AddFeature(&ui::misc::Settings::GetInstance());
     AddFeature(&features::Downloader::GetInstance());
     AddFeature(&features::HandleLinkHook::GetInstance());
+    AddFeature(&features::MultiDownload::GetInstance());
     AddFeature(&features::DownloadQueue::GetInstance());
 }

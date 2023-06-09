@@ -101,10 +101,10 @@ features::Downloader::Downloader() :
             if (!exists(song))
                 create_directories(song);
             song /= fn;
-            
+
             if (exists(song))
                 remove(song);
-            
+
             MoveFileW(path.wstring().c_str(), song.wstring().c_str());
         } else {
             ShellExecuteW(nullptr, L"open", path.c_str(), nullptr, nullptr, SW_HIDE);
@@ -129,11 +129,6 @@ features::Downloader::Downloader() :
         case downloader::DownloadMirror::OsuOfficial: {
             if (auto ret = api::bancho::SearchBeatmap(info); ret.has_value()) {
                 auto &bm = *ret;
-                if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
-                    LOGI("Already has map: %d, skipped direct download.", bm.sid);
-                    break;
-                }
-
                 info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
             } else {
                 LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
@@ -258,10 +253,16 @@ void features::Downloader::removeCancelDownload(int sid) {
     }
 }
 
-void features::Downloader::postSearch(const downloader::BeatmapInfo info) {
+void features::Downloader::postSearch(const downloader::BeatmapInfo &info) {
     m_SearchQueue.push_back(info);
 }
 
 void features::Downloader::postDownload(const osu::Beatmap &bm) {
+    if (bm.sid <= 0) {
+        LOGW("Invalid beatmapsets id: %d, skipped download.", bm.sid);
+        return;
+    }
+
+    DownloadQueue::GetInstance().addTask(bm);
     m_DownloadQueue.push_back(bm);
 }

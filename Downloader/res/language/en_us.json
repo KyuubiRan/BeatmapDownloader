@@ -61,5 +61,16 @@
   "OsuPath": "Custom Osu! Path",
   "OsuPathDesc": "Use custom osu! path, or empty to auto detect the path.\nIf you don't know what it is, please keep it empty.",
   "MoveToOsuFolder": "Move Downloaded Beatmap",
-  "MoveToOsuFolderDesc": "Move downloaded beatmap to osu! Songs folder instead open the .osz file."
+  "MoveToOsuFolderDesc": "Move downloaded beatmap to osu! Songs folder instead open the .osz file.",
+  "MultiDL": "Multi DL",
+  "MultiDownloader": "Multi Downloader",
+  "MultiDownloaderDesc": "Download multiple beatmaps line by line.\ne.g.:\ns123456\n123456\nhttps://osu.ppy.sh/beatmapsets/123456",
+  "Type": "Type",
+  "IDSearchDefaultType": "Only Number ID Search Type",
+  "Mode": "Mode",
+  "BPDownloader": "BP Downloader",
+  "BPDownloadFailedUserNotFound": "BP Download failed: User(%d) not found!",
+  "BPDownloadFailedResponseCodeNotOk": "BP Download failed: Response code: %d",
+  "BPDownloadFailedParseFailed": "BP Download failed: Parse response body failed!",
+  "StartDownloadBP":"Start download BP(uid=%d)"
 }

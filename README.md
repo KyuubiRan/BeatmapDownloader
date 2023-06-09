@@ -1,5 +1,5 @@
 # BeatmapDownloader
-A in-game beatmap downloader for osu!stable
+An in-game beatmap downloader for osu!stable
 
 ## Usage
 1. Download the latest release from [here](https://github.com/KyuubiRan/BeatmapDownloader/releases)
@@ -13,8 +13,9 @@ A in-game beatmap downloader for osu!stable
 - [x] Sayobot Search & Download
 - [x] Bancho Search & Download
 - [x] Sid/Bid quick search
-- [ ] Multi beatmap download
-- [ ] Bp download
+- [x] Multi beatmap download
+- [x] BP download
+- [ ] (Maybe) Compatibility mode support
 - [ ] (Maybe) Chimu(Bloodcat) Search & Download
 
 

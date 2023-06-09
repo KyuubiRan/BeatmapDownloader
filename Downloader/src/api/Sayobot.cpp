@@ -79,7 +79,7 @@ bool api::sayobot::DownloadBeatmap(osu::Beatmap &bm) {
                                dl.f_DownloadType.getValue() == features::downloader::DownloadType::NoVideo ? "novideo" : "full", bm.sid);
 
     auto path = utils::GetCurrentDirPath() / L"downloads" / (std::to_string(bm.sid) + ".osz");
-    auto *tsk = features::DownloadQueue::GetInstance().addTask(bm);
+    auto *tsk = features::DownloadQueue::GetInstance().getTask(bm);
 
     int resCode = -1;
     if (const auto code = net::curl_download(s.c_str(), path, tsk, &resCode); code == CURLE_OK && resCode == 200) {

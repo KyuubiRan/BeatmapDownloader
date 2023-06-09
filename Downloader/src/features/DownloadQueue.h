@@ -44,6 +44,8 @@ public:
     }
 
     DownloadTask *addTask(const osu::Beatmap &bm);
+    DownloadTask *getTask(const osu::Beatmap &bm);
+    DownloadTask *getTask(int sid);
 
     void notifyFinished(int sid);
 

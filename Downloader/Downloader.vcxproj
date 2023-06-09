@@ -212,6 +212,7 @@
     <ClInclude Include="src\features\Downloader.h" />
     <ClInclude Include="src\features\DownloadQueue.h" />
     <ClInclude Include="src\features\HandleLinkHook.h" />
+    <ClInclude Include="src\features\MultiDownload.h" />
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\HookManager.hpp" />
     <ClInclude Include="src\misc\Color.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="src\osu\Account.h" />
     <ClInclude Include="src\osu\BeatmapManager.h" />
     <ClInclude Include="src\osu\Beatmap.h" />
+    <ClInclude Include="src\osu\LinkParser.hpp" />
     <ClInclude Include="src\osu\OsuConfigManager.h" />
     <ClInclude Include="src\renderer\backend\DirectX.h" />
     <ClInclude Include="src\renderer\backend\OpenGL.h" />
@@ -296,6 +298,7 @@
     <ClCompile Include="src\features\Downloader.cpp" />
     <ClCompile Include="src\features\DownloadQueue.cpp" />
     <ClCompile Include="src\features\HandleLinkHook.cpp" />
+    <ClCompile Include="src\features\MultiDownload.cpp" />
     <ClCompile Include="src\network\HttpRequest.cpp" />
     <ClCompile Include="src\osu\Account.cpp" />
     <ClCompile Include="src\osu\BeatmapManager.cpp" />

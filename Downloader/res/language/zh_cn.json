@@ -61,5 +61,16 @@
   "OsuPath": "自定义osu!路径",
   "OsuPathDesc": "使用自定义路径，如果它为空，则自动检测路径。\n如果你不知道它是什么，请将它留空。",
   "MoveToOsuFolder": "移动下载的谱面",
-  "MoveToOsuFolderDesc": "移动下载完的谱面到osu!的Songs目录下，而不是打开它。"
+  "MoveToOsuFolderDesc": "移动下载完的谱面到osu!的Songs目录下，而不是打开它。",
+  "MultiDL": "批量下载",
+  "MultiDownloader": "批量下载器",
+  "MultiDownloaderDesc": "按着行来搜索谱面并进行下载。\n举例：\ns123456\n123456\nhttps://osu.ppy.sh/beatmapsets/123456",
+  "Type": "类型",
+  "IDSearchDefaultType": "仅数字ID识别类型",
+  "Mode": "模式",
+  "BPDownloader": "BP下载器",
+  "BPDownloadFailedUserNotFound": "BP下载失败：找不到用户(%d)！",
+  "BPDownloadFailedResponseCodeNotOk": "BP下载失败：响应码：%d",
+  "BPDownloadFailedParseFailed": "BP下载失败：解析响应体失败！",
+  "StartDownloadBP":"开始下载BP(uid=%d)"
 }

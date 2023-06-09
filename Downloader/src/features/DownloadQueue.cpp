@@ -32,6 +32,24 @@ features::DownloadTask *features::DownloadQueue::addTask(const osu::Beatmap &bm)
     return &m_InQueueMap[bm.sid];
 }
 
+features::DownloadTask *features::DownloadQueue::getTask(const osu::Beatmap &bm) {
+    std::shared_lock _g(m_Mutex);
+    if (m_InQueueMap.contains(bm.sid)) {
+        return &m_InQueueMap[bm.sid];
+    }
+
+    return nullptr;
+}
+
+features::DownloadTask * features::DownloadQueue::getTask(int sid) {
+    std::shared_lock _g(m_Mutex);
+    if (m_InQueueMap.contains(sid)) {
+        return &m_InQueueMap[sid];
+    }
+
+    return nullptr;
+}
+
 void features::DownloadQueue::notifyFinished(int sid) {
     std::unique_lock _g(m_Mutex);
 

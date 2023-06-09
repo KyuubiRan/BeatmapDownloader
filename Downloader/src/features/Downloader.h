@@ -88,7 +88,7 @@ public:
     static void cancelDownload(int sid);
     static void removeCancelDownload(int sid);
 
-    void postSearch(downloader::BeatmapInfo info);
+    void postSearch(const downloader::BeatmapInfo &info);
     void postDownload(const osu::Beatmap &bm);
 };
 }

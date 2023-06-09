@@ -119,8 +119,10 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, f);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, file_writer);
-    curl_easy_setopt(curl, CURLOPT_XFERINFODATA, task);
-    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, xferinfo_fn);
+    if (task != nullptr) {
+        curl_easy_setopt(curl, CURLOPT_XFERINFODATA, task);
+        curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, xferinfo_fn);
+    }
     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, 30000);
