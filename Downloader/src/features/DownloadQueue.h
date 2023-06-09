@@ -43,7 +43,7 @@ public:
         return m_InQueueMap.contains(bm.sid);
     }
 
-    DownloadTask *addTask(const osu::Beatmap &bm);
+    bool addTask(const osu::Beatmap &bm);
     DownloadTask *getTask(const osu::Beatmap &bm);
     DownloadTask *getTask(int sid);
 

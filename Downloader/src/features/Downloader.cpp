@@ -129,6 +129,12 @@ features::Downloader::Downloader() :
         case downloader::DownloadMirror::OsuOfficial: {
             if (auto ret = api::bancho::SearchBeatmap(info); ret.has_value()) {
                 auto &bm = *ret;
+                if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
+                    LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
+                    GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsBeatmapSkipAutoDownload"), bm.sid);
+                    break;
+                }
+
                 info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
             } else {
                 LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
@@ -143,7 +149,8 @@ features::Downloader::Downloader() :
                 if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
                     auto bm = sayo.data->to_beatmap();
                     if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
-                        LOGI("Already has map: %d, skipped direct download.", bm.sid);
+                        LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
+                        GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsMapSkipAutoDownload"), bm.sid);
                         break;
                     }
 
@@ -239,7 +246,7 @@ void features::Downloader::drawMain() {
 }
 
 ui::main::FeatureInfo &features::Downloader::getInfo() {
-    static ui::main::FeatureInfo info = {"Downloader", "Download"};
+    static FeatureInfo info = {"Downloader", "Download"};
     return info;
 }
 
@@ -263,6 +270,8 @@ void features::Downloader::postDownload(const osu::Beatmap &bm) {
         return;
     }
 
-    DownloadQueue::GetInstance().addTask(bm);
+    if (!DownloadQueue::GetInstance().addTask(bm))
+        return;
+    
     m_DownloadQueue.push_back(bm);
 }

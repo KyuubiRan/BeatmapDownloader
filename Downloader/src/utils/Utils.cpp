@@ -77,33 +77,35 @@ std::string &trim(std::string &str) {
     return trim_begin(trim_end(str));
 }
 
-std::vector<std::string> split(const std::string &res, const char split) {
+std::vector<std::string> split(std::string res, const char split) {
     std::vector<std::string> result;
-    std::string tmp;
-    for (auto &i : res) {
-        if (i == split) {
-            result.push_back(tmp);
-            tmp.clear();
-        } else {
-            tmp.push_back(i);
-        }
+    if (res.empty())
+        return result;
+
+    std::string::size_type pos;
+    while ((pos = res.find(split)) != std::string::npos) {
+        auto r = res.substr(0, pos);
+        result.push_back(r);
+        res.erase(0, pos + 1);
     }
-    result.push_back(tmp);
+
+    result.push_back(res);
     return result;
 }
 
-std::vector<std::string> split(const std::string &res, const std::string &split) {
+std::vector<std::string> split(std::string res, const std::string &split) {
     std::vector<std::string> result;
-    std::string tmp;
-    for (auto &i : res) {
-        if (split.find(i) != std::string::npos) {
-            result.push_back(tmp);
-            tmp.clear();
-        } else {
-            tmp.push_back(i);
-        }
+    if (res.empty())
+        return result;
+
+    std::string::size_type pos;
+    while ((pos = res.find(split)) != std::string::npos) {
+        auto r = res.substr(0, pos);
+        result.push_back(r);
+        res.erase(0, pos + split.length());
     }
-    result.push_back(tmp);
+
+    result.push_back(res);
     return result;
 }
 }

@@ -72,5 +72,6 @@
   "BPDownloadFailedUserNotFound": "BP下载失败：找不到用户(%d)！",
   "BPDownloadFailedResponseCodeNotOk": "BP下载失败：响应码：%d",
   "BPDownloadFailedParseFailed": "BP下载失败：解析响应体失败！",
-  "StartDownloadBP":"开始下载BP(uid=%d)"
+  "StartDownloadBP":"开始下载BP(uid=%d)",
+  "ExistsBeatmapSkipAutoDownload": "已存在的谱面集(%d)，跳过自动下载。"
 }

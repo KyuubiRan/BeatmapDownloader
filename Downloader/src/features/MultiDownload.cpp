@@ -31,14 +31,12 @@ const char *bpDownloadSelectItems[] = {
 };
 
 void DoMultiLineDownload(const std::string &s) {
-    const auto vec = utils::split(s, '\n');
+    const auto vec = utils::split(s, "\n");
     LOGD("DoMultiLineDownload split size = %zu", vec.size());
-    for (auto &i : vec) {
-        if (i.empty())
-            continue;
 
-        auto bi = osu::LinkParser::ParseLink(s, (downloader::BeatmapType)multiDLSelected);
-        if (!bi)
+    for (auto &link : vec) {
+        auto bi = osu::LinkParser::ParseLink(link, (downloader::BeatmapType)multiDLSelected);
+        if (!bi.has_value())
             continue;
 
         auto &b = *bi;
@@ -63,7 +61,7 @@ void DoBPDownload(int id) {
         try {
             if (nlohmann::json j = nlohmann::json::parse(response); j.is_array() && !j.empty()) {
                 GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id);
-                
+
                 downloader::BeatmapInfo bi{downloader::BeatmapType::Bid, -1, true};
                 for (auto &i : j) {
                     bi.id = i["beatmap_id"];

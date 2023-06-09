@@ -16,12 +16,12 @@ void features::DownloadQueue::cancel(const int sid) {
     Downloader::cancelDownload(sid);
 }
 
-features::DownloadTask *features::DownloadQueue::addTask(const osu::Beatmap &bm) {
+bool features::DownloadQueue::addTask(const osu::Beatmap &bm) {
     std::unique_lock _g(m_Mutex);
 
     if (m_InQueueMap.contains(bm.sid)) {
         LOGW("Already has download task: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
-        return &m_InQueueMap[bm.sid];
+        return false;
     }
     m_InQueueMap.insert({
         bm.sid, DownloadTask{
@@ -29,7 +29,7 @@ features::DownloadTask *features::DownloadQueue::addTask(const osu::Beatmap &bm)
         }
     });
 
-    return &m_InQueueMap[bm.sid];
+    return true;
 }
 
 features::DownloadTask *features::DownloadQueue::getTask(const osu::Beatmap &bm) {

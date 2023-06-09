@@ -72,5 +72,6 @@
   "BPDownloadFailedUserNotFound": "BP Download failed: User(%d) not found!",
   "BPDownloadFailedResponseCodeNotOk": "BP Download failed: Response code: %d",
   "BPDownloadFailedParseFailed": "BP Download failed: Parse response body failed!",
-  "StartDownloadBP":"Start download BP(uid=%d)"
+  "StartDownloadBP":"Start download BP(uid=%d)",
+  "ExistsBeatmapSkipAutoDownload": "Already has beatmapsets(%d), skip auto download."
 }
