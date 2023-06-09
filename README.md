@@ -8,7 +8,7 @@ An in-game beatmap downloader for osu!stable
 4. Run `Injector.exe`
 5. Enjoy!
 
-## TODO
+## TODO / Features
 - [x] Handle link
 - [x] Sayobot Search & Download
 - [x] Bancho Search & Download
