@@ -4,10 +4,11 @@
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
-ui::misc::About::About() : Feature() {
+ui::misc::About::About() :
+    Feature() {
 }
 
-ui::main::FeatureInfo& ui::misc::About::getInfo() {
+ui::main::FeatureInfo &ui::misc::About::getInfo() {
     static auto info = main::FeatureInfo{
         .category = "About",
         .groupName = ""
@@ -21,6 +22,8 @@ void ui::misc::About::drawMain() {
     ImGui::BeginGroupPanel(lang.getTextCStr("About"));
     ImGui::Text("%s", lang.getTextCStr("ProjectAuthor"));
     ImGui::Text("%s", lang.getTextCStr("ProjectLink"));
+    ImGui::SameLine();
+    ImGui::TextUrl("https://github.com/KyuubiRan/BeatmapDownloader");
     ImGui::EndGroupPanel();
 
     ImGui::BeginGroupPanel(lang.getTextCStr("Hotkey"));

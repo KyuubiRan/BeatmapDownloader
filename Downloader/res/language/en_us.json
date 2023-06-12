@@ -6,7 +6,7 @@
   "Mirror": "Download Mirror",
   "About": "About",
   "ProjectAuthor": "Author: KyuubiRan",
-  "ProjectLink": "Project link: https://github.com/KyuubiRan/BeatmapDownloader",
+  "ProjectLink": "Project link:",
   "Language": "Language",
   "Enabled": "Enabled",
   "Disabled": "Disabled",
@@ -78,5 +78,6 @@
   "InvalidOsuPath": "Invalid custom osu! path, will not be applied!",
   "BPDLRangeDesc": "BP download range, 0~100",
   "InvalidBPDLRange": "Invalid BP download range! Begin=%d, End=%d",
-  "StartDownloadBP": "Start download bp(uid=%d): From %d to %d"
+  "StartDownloadBP": "Start download bp(uid=%d): From %d to %d",
+  "InvalidInput": "Invalid input: %s"
 }

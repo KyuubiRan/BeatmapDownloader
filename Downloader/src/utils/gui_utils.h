@@ -88,4 +88,6 @@ bool PasswordInputText(const char *label, std::string *s, ImGuiInputTextFlags fl
 
 void SetPasswordFont(void *ttf_data, int ttf_size, float size_pixels, const ImFontConfig *font_cfg_template, const ImWchar *glyph_ranges);
 
+void TextUrl(const char *url);
+
 }

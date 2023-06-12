@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "gui_utils.h"
 #include <imgui_internal.h>
+#include <shellapi.h>
 
+#include "misc/Color.h"
 #include "misc/ResourcesLoader.hpp"
 
 namespace GuiHelper {
@@ -253,6 +255,15 @@ bool PasswordInputText(const char *label, std::string *s, ImGuiInputTextFlags fl
 void SetPasswordFont(void *ttf_data, int ttf_size, float size_pixels, const ImFontConfig *font_cfg_template, const ImWchar *glyph_ranges) {
     pwFont = GetIO().Fonts->AddFontFromMemoryTTF(ttf_data, ttf_size, size_pixels, font_cfg_template, glyph_ranges);
     pwFont->FallbackChar = '*';
+}
+
+void TextUrl(const char *url) {
+    TextColored(color::DodgerBlue, url);
+    if (IsItemHovered()) {
+        if (IsMouseClicked(ImGuiMouseButton_Left)) {
+            ShellExecuteW(nullptr, L"open", utils::s2ws(url).c_str(), nullptr, nullptr, SW_HIDE);
+        }
+    }
 }
 
 }
