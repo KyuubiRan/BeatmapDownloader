@@ -2,17 +2,20 @@
 #include "DownloadQueue.h"
 
 #include <ranges>
+#include <set>
 
 #include "Downloader.h"
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
-void features::DownloadQueue::cancel(const int sid) {
+std::set<int> removed{};
+
+void features::DownloadQueue::cancel(const int sid) const {
     if (!m_InQueueMap.contains(sid)) {
         LOGW("No download task: %d", sid);
         return;
     }
-    m_InQueueMap.erase(sid);
+    removed.insert(sid);
     Downloader::cancelDownload(sid);
 }
 
@@ -35,16 +38,20 @@ bool features::DownloadQueue::addTask(const osu::Beatmap &bm) {
 features::DownloadTask *features::DownloadQueue::getTask(const osu::Beatmap &bm) {
     std::shared_lock _g(m_Mutex);
     if (m_InQueueMap.contains(bm.sid)) {
-        return &m_InQueueMap[bm.sid];
+        auto &ret = m_InQueueMap[bm.sid];
+        ret.started = true;
+        return &ret;
     }
 
     return nullptr;
 }
 
-features::DownloadTask * features::DownloadQueue::getTask(int sid) {
+features::DownloadTask *features::DownloadQueue::getTask(int sid) {
     std::shared_lock _g(m_Mutex);
     if (m_InQueueMap.contains(sid)) {
-        return &m_InQueueMap[sid];
+        auto &ret = m_InQueueMap[sid];
+        ret.started = true;
+        return &ret;
     }
 
     return nullptr;
@@ -52,7 +59,6 @@ features::DownloadTask * features::DownloadQueue::getTask(int sid) {
 
 void features::DownloadQueue::notifyFinished(int sid) {
     std::unique_lock _g(m_Mutex);
-
     if (m_InQueueMap.contains(sid)) {
         m_InQueueMap.erase(sid);
     }
@@ -63,17 +69,19 @@ features::DownloadQueue::DownloadQueue() {
     LOGI("Initied Download Queue");
 }
 
-void features::DownloadQueue::drawTaskItem(const DownloadTask &item) {
+void features::DownloadQueue::drawTaskItem(const DownloadTask &item) const {
     auto &lang = i18n::I18nManager::GetInstance();
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
     ImGui::BeginGroupPanel(std::to_string(item.bm.sid).c_str());
 
     ImGui::Text("%s - %s [%s]", item.bm.artist.c_str(), item.bm.title.c_str(), item.bm.author.c_str());
 
-    if (item.currentDownloaded != 0.0 && item.totalSize != 0.0) {
+    if (item.started) {
         const auto progress = static_cast<float>(item.getProgress());
-        const std::string t = std::format("{:.2f}MB / {:.2f}MB ({:.2f}%%)", item.currentDownloaded / 1024 / 1024,
-                                          item.totalSize / 1024 / 1024, progress * 100);
+        const std::string t = !item.prepared()
+            ? lang.getTextCStr("Connecting")
+            : std::format("{:.2f}MB / {:.2f}MB ({:.2f}%%)", item.dlSize / 1024 / 1024,
+                          item.totalSize / 1024 / 1024, progress * 100);
         ImGui::Text(t.c_str());
         ImGui::ProgressBar(progress, ImVec2(-1, 1));
     } else {
@@ -102,6 +110,10 @@ void features::DownloadQueue::drawMain() {
 
     for (auto &item : m_InQueueMap | std::views::values) {
         drawTaskItem(item);
+    }
+
+    for (auto &sid : removed) {
+        m_InQueueMap.erase(sid);
     }
 
     /*

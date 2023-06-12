@@ -8,11 +8,16 @@
 namespace features {
 struct DownloadTask {
     osu::Beatmap bm;
-    double currentDownloaded{};
+    double dlSize{};
     double totalSize{};
+    bool started = false;
 
     [[nodiscard]] double getProgress() const {
-        return totalSize == 0 ? 0 : currentDownloaded / totalSize;
+        return totalSize == 0 ? 0 : dlSize / totalSize;
+    }
+
+    [[nodiscard]] bool prepared() const {
+        return dlSize != 0 && totalSize != 0;
     }
 };
 
@@ -20,12 +25,12 @@ class DownloadQueue : public ui::main::Feature {
     DownloadQueue();
 
     std::unordered_map<int, DownloadTask> m_InQueueMap;
-    
+
     inline static std::shared_mutex m_Mutex{};
 
-    void drawTaskItem(const DownloadTask &item);
+    void drawTaskItem(const DownloadTask &item) const;
 
-    void cancel(int sid);
+    void cancel(int sid) const;
 
 public:
     static DownloadQueue &GetInstance() {

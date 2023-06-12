@@ -46,21 +46,34 @@ void DoMultiLineDownload(const std::string &s) {
     }
 }
 
-void DoBPDownload(int id) {
-    const std::string link = std::format("https://osu.ppy.sh/users/{}/scores/best?mode={}&limit=100", id,
-                                         bpDownloadSelectItems[bpDownloadSelect]);
+void DoBPDownload(int id, int beg, int end) {
+    if (end > 100)
+        end = 100;
+    if (beg < 0)
+        beg = 0;
+    auto &lang = i18n::I18nManager::GetInstance();
+
+    if (beg > end) {
+        LOGW("Invalid bp download range: beg=%d, end=%d", beg, end);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidBPDLRange"), beg, end);
+        return;
+    }
+
+    int offset = beg;
+    int limit = end - beg;
+
+    const auto link = std::format("https://osu.ppy.sh/users/{}/scores/best?mode={}&limit={}&offset={}", id,
+                                  bpDownloadSelectItems[bpDownloadSelect], limit, offset);
     std::string response;
     int code;
     if (net::curl_get(link.c_str(), response, &code) != CURLE_OK)
         return;
 
-    auto &lang = i18n::I18nManager::GetInstance();
-
     switch (code) {
     case 200: {
         try {
             if (nlohmann::json j = nlohmann::json::parse(response); j.is_array() && !j.empty()) {
-                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id);
+                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id, beg, end);
 
                 downloader::BeatmapInfo bi{downloader::BeatmapType::Bid, -1, true};
                 for (auto &i : j) {
@@ -93,9 +106,9 @@ void MultiDownload::drawMain() {
 #pragma region Multi DL
     ImGui::BeginGroupPanel(lang.getTextCStr("MultiDownloader"));
 
-    static const char *items[] = {"Sid", "Bid"};
+    static const char *multi_Items[] = {"Sid", "Bid"};
     ImGui::SetNextItemWidth(ImGui::GetFontSize() * 3);
-    ImGui::Combo(lang.getTextCStr("IDSearchDefaultType"), &multiDLSelected, items, IM_ARRAYSIZE(items));
+    ImGui::Combo(lang.getTextCStr("IDSearchDefaultType"), &multiDLSelected, multi_Items, IM_ARRAYSIZE(multi_Items));
     static std::string multiDLText;
 
     ImGui::InputTextMultiline("##linklist", &multiDLText, ImVec2(0, 150));
@@ -114,12 +127,17 @@ void MultiDownload::drawMain() {
 #pragma region BP DL
     ImGui::BeginGroupPanel(lang.getTextCStr("BPDownloader"));
 
-    static int id = 0;
+    static int bp_id = 0;
     ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, bpDownloadSelectItems, IM_ARRAYSIZE(bpDownloadSelectItems));
-    ImGui::InputInt("UID", &id);
+    ImGui::InputInt("UID", &bp_id);
+
+    static int bp_begin_end[] = {0, 100};
+
+    ImGui::DragInt2(lang.getTextCStr("Range"), bp_begin_end, 1, 0, 100, "%d", ImGuiSliderFlags_AlwaysClamp);
+    GuiHelper::ShowTooltip(lang.getTextCStr("BPDLRangeDesc"));
 
     if (ImGui::Button(lang.getTextCStr("Download"))) {
-        DoBPDownload(id);
+        DoBPDownload(bp_id, bp_begin_end[0], bp_begin_end[1]);
     }
 
     ImGui::EndGroupPanel();

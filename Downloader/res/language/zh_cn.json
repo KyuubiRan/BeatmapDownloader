@@ -72,6 +72,11 @@
   "BPDownloadFailedUserNotFound": "BP下载失败：找不到用户(%d)！",
   "BPDownloadFailedResponseCodeNotOk": "BP下载失败：响应码：%d",
   "BPDownloadFailedParseFailed": "BP下载失败：解析响应体失败！",
-  "StartDownloadBP":"开始下载BP(uid=%d)",
-  "ExistsBeatmapSkipAutoDownload": "已存在的谱面集(%d)，跳过自动下载。"
+  "ExistsBeatmapSkipAutoDownload": "已存在的谱面集(%d)，跳过自动下载。",
+  "Connecting": "连接中",
+  "Range": "范围",
+  "InvalidOsuPath": "无效的osu!路径，将不会应用变更！",
+  "BPDLRangeDesc": "BP抓取范围，0~100",
+  "InvalidBPDLRange": "无效的范围！起始=%d，结束=%d",
+  "StartDownloadBP": "开始下载BP(uid=%d)：从 %d 到 %d"
 }

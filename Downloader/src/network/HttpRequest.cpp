@@ -77,7 +77,7 @@ size_t file_writer(char *data, size_t size, size_t nmemb, FILE *pFile) {
 
 int xferinfo_fn(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
     const auto pTask = (features::DownloadTask *)clientp;
-    pTask->currentDownloaded = static_cast<double>(dlnow);
+    pTask->dlSize = static_cast<double>(dlnow);
     pTask->totalSize = static_cast<double>(dltotal);
     return 0;
 }

@@ -22,7 +22,15 @@ void ui::misc::Settings::drawMain() {
         lang.lang.setValue(static_cast<i18n::Language>(langIdx));
     }
 
-    ImGui::InputText(lang.getTextCStr("OsuPath"), f_OsuPath.getPtr());
+    if (ImGui::InputText(lang.getTextCStr("OsuPath"), f_OsuPath.getPtr())) {
+        if (!f_OsuPath->empty()) {
+            if (const auto op = std::filesystem::path(f_OsuPath.getValue()) / "osu!.exe"; exists(op)) {
+                utils::SetOsuDirPath(op.parent_path());
+            } else {
+                GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidOsuPath"));
+            }
+        }
+    }
     GuiHelper::ShowTooltip(lang.getTextCStr("OsuPathDesc"));
 
     ImGui::EndGroupPanel();

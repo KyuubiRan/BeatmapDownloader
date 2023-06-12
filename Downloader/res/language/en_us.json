@@ -72,6 +72,11 @@
   "BPDownloadFailedUserNotFound": "BP Download failed: User(%d) not found!",
   "BPDownloadFailedResponseCodeNotOk": "BP Download failed: Response code: %d",
   "BPDownloadFailedParseFailed": "BP Download failed: Parse response body failed!",
-  "StartDownloadBP":"Start download BP(uid=%d)",
-  "ExistsBeatmapSkipAutoDownload": "Already has beatmapsets(%d), skip auto download."
+  "ExistsBeatmapSkipAutoDownload": "Already has beatmapsets(%d), skip auto download.",
+  "Connecting": "Connecting",
+  "Range": "Range",
+  "InvalidOsuPath": "Invalid custom osu! path, will not be applied!",
+  "BPDLRangeDesc": "BP download range, 0~100",
+  "InvalidBPDLRange": "Invalid BP download range! Begin=%d, End=%d",
+  "StartDownloadBP": "Start download bp(uid=%d): From %d to %d"
 }
