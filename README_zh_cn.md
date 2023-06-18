@@ -6,8 +6,8 @@
 
 1. 从[此处](https://github.com/KyuubiRan/BeatmapDownloader/releases)下载最新版本
 2. 解压zip文件
-3. 运行 `osu!.exe`
-4. 运行 `Injector.exe`
+3. 运行 `Injector.exe`
+4. 选择 `osu!.exe`
 5. 完工！
 
 ## 待做事项 / 功能
@@ -18,6 +18,8 @@
 - [x] Sid/Bid 搜索
 - [x] 批量下图
 - [x] 一键扒BP
+- [x] 收藏谱面下载
+- [x] 指定谱师谱面下载
 - [ ] (也许) 适配兼容模式
 - [ ] (也许) Chimu(Bloodcat) 搜索/下载
 

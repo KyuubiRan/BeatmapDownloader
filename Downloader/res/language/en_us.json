@@ -77,7 +77,19 @@
   "Range": "Range",
   "InvalidOsuPath": "Invalid custom osu! path, will not be applied!",
   "BPDLRangeDesc": "BP download range, 0~100",
-  "InvalidBPDLRange": "Invalid BP download range! Begin=%d, End=%d",
+  "InvalidDLRange": "Invalid download range! Begin=%d, End=%d",
   "StartDownloadBP": "Start download bp(uid=%d): From %d to %d",
-  "InvalidInput": "Invalid input: %s"
+  "InvalidInput": "Invalid input: %s",
+  "FavoriteDownloader": "Favorite Beatmap Downloader",
+  "MapperDownloader": "Mapper Beatmap Downloader",
+  "FavDownloadFailedUserNotFound": "Favorite Download failed: User(%d) not found!",
+  "FavDownloadFailedResponseCodeNotOk": "Favorite Download failed: Response code: %d",
+  "FavDownloadFailedParseFailed": "Favorite Download failed: Parse response body failed!",
+  "StartDownloadFav": "Start download favorite(uid=%d): From %d to %d",
+  "MapperDownloadFailedUserNotFound": "Mapper Download failed: User(%d) not found!",
+  "MapperDownloadFailedResponseCodeNotOk": "Mapper Download failed: Response code: %d",
+  "MapperDownloadFailedParseFailed": "Mapper Download failed: Parse response body failed!",
+  "StartDownloadMapper": "Start download mapper(uid=%d): From %d to %d, Beatmap Status: %s",
+  "BeatmapStatus": "Beatmap Status",
+  "BeatmapStatusDesc": "Ranked: Ranked Beatmaps\nLoved: Loved Beatmaps\nGuest: Guest Participation Beatmaps\nPending: Pending Beatmaps\nGraveyard: Graveyarded Beatmaps\nNominated: Nominated Ranked Beatmaps"
 }

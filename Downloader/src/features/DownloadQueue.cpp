@@ -71,7 +71,6 @@ features::DownloadQueue::DownloadQueue() {
 
 void features::DownloadQueue::drawTaskItem(const DownloadTask &item) const {
     auto &lang = i18n::I18nManager::GetInstance();
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
     ImGui::BeginGroupPanel(std::to_string(item.bm.sid).c_str());
 
     ImGui::Text("%s - %s [%s]", item.bm.artist.c_str(), item.bm.title.c_str(), item.bm.author.c_str());
@@ -85,14 +84,12 @@ void features::DownloadQueue::drawTaskItem(const DownloadTask &item) const {
         ImGui::Text(t.c_str());
         ImGui::ProgressBar(progress, ImVec2(-1, 1));
     } else {
-        const std::string s = std::format("{}##cancel-{}", lang.getTextCStr("CancelDownload"), item.bm.sid);
-        if (ImGui::Button(s.c_str())) {
+        if (ImGui::Button(lang.getTextCStr("CancelDownload"))) {
             cancel(item.bm.sid);
         }
     }
 
     ImGui::EndGroupPanel();
-    ImGui::PopStyleVar();
 }
 
 

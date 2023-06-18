@@ -17,6 +17,13 @@ ui::main::FeatureInfo &MultiDownload::getInfo() {
     return info;
 }
 
+void clamp(int *i, int min, int max) {
+    if (*i < min)
+        *i = min;
+    if (*i > max)
+        *i = max;
+}
+
 // Sid = 0, Bid = 1
 int multiDLSelected = 0;
 
@@ -47,15 +54,12 @@ void DoMultiLineDownload(const std::string &s) {
 }
 
 void DoBPDownload(int id, int beg, int end) {
-    if (end > 100)
-        end = 100;
-    if (beg < 0)
-        beg = 0;
+    // https://osu.ppy.sh/users/{}/scores/best?mode={}&limit={}&offset={}
     auto &lang = i18n::I18nManager::GetInstance();
 
     if (beg > end) {
-        LOGW("Invalid bp download range: beg=%d, end=%d", beg, end);
-        GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidBPDLRange"), beg, end);
+        LOGW("Invalid download range: beg=%d, end=%d", beg, end);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidDLRange"), beg, end);
         return;
     }
 
@@ -73,7 +77,7 @@ void DoBPDownload(int id, int beg, int end) {
     case 200: {
         try {
             if (nlohmann::json j = nlohmann::json::parse(response); j.is_array() && !j.empty()) {
-                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id, beg, end);
+                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id, beg + 1, end);
 
                 downloader::BeatmapInfo bi{downloader::BeatmapType::Bid, -1, true};
                 for (auto &i : j) {
@@ -101,45 +105,213 @@ void DoBPDownload(int id, int beg, int end) {
     }
 }
 
+void DoFavDownload(int id, int beg, int end) {
+    // https://osu.ppy.sh/users/{}/beatmapsets/favourite?limit={}&offset={}
+    auto &lang = i18n::I18nManager::GetInstance();
+
+    if (beg > end) {
+        LOGW("Invalid download range: beg=%d, end=%d", beg, end);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidDLRange"), beg + 1, end);
+        return;
+    }
+
+    const auto link = std::format("https://osu.ppy.sh/users/{}/beatmapsets/favourite?limit={}&offset={}", id, end - beg, beg);
+    std::string response;
+    int code;
+    if (net::curl_get(link.c_str(), response, &code) != CURLE_OK)
+        return;
+
+    switch (code) {
+    case 200: {
+        try {
+            if (nlohmann::json j = nlohmann::json::parse(response); j.is_array() && !j.empty()) {
+                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadFav"), id, beg + 1, end);
+
+                downloader::BeatmapInfo bi{downloader::BeatmapType::Sid, -1, true};
+                for (auto &i : j) {
+                    bi.id = i["id"];
+                    LOGD("Post bp download: bid=%d", bi.id);
+                    Downloader::GetInstance().postSearch(bi);
+                }
+            }
+        } catch (...) {
+            LOGW("Cannot parse Fav download response!");
+            GuiHelper::ShowWarnToast(lang.getTextCStr("FavDownloadFailedParseFailed"));
+        }
+        break;
+    }
+    case 404: {
+        LOGW("Fav Download failed: user(%d) not found!", id);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("FavDownloadFailedUserNotFound"), id);
+        break;
+    }
+    default: {
+        LOGW("Fav Download failed with http code: %d", code);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("FavDownloadFailedResponseCodeNotOk"), code);
+        break;
+    }
+    }
+}
+
+enum class BeatmapStatus : int {
+    Ranked = 0,
+    Loved,
+    Guest,
+    Pending,
+    Graveyard,
+    Nominated,
+};
+
+static const char *s_StatusStr[] = {"ranked",
+                                    "loved",
+                                    "guest",
+                                    "pending",
+                                    "graveyard",
+                                    "nominated"};
+
+void DoMapperDownload(int id, int beg, int end, const BeatmapStatus &stat) {
+    // https://osu.ppy.sh/users/{}/beatmapsets/{}?limit={}&offset={}
+
+    auto &lang = i18n::I18nManager::GetInstance();
+
+    if (beg > end) {
+        LOGW("Invalid bp download range: beg=%d, end=%d", beg + 1, end);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidDLRange"), beg + 1, end);
+        return;
+    }
+
+    const auto link = std::format("https://osu.ppy.sh/users/{}/beatmapsets/{}?limit={}&offset={}", id,
+                                  s_StatusStr[(int)stat], end - beg + 1, beg);
+
+    std::string response;
+    int code;
+    if (net::curl_get(link.c_str(), response, &code) != CURLE_OK)
+        return;
+
+    switch (code) {
+    case 200: {
+        try {
+            if (nlohmann::json j = nlohmann::json::parse(response); j.is_array() && !j.empty()) {
+                GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadMapper"), id, beg + 1, end, s_StatusStr[(int)stat]);
+
+                downloader::BeatmapInfo bi{downloader::BeatmapType::Sid, -1, true};
+                for (auto &i : j) {
+                    bi.id = i["id"];
+                    LOGD("Post Mapper download: bid=%d", bi.id);
+                    Downloader::GetInstance().postSearch(bi);
+                }
+            }
+        } catch (...) {
+            LOGW("Cannot parse Mapper download response!");
+            GuiHelper::ShowWarnToast(lang.getTextCStr("MapperDownloadFailedParseFailed"));
+        }
+        break;
+    }
+    case 404: {
+        LOGW("Mapper Download failed: user(%d) not found!", id);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("MapperDownloadFailedUserNotFound"), id);
+        break;
+    }
+    default: {
+        LOGW("Mapper Download failed with http code: %d", code);
+        GuiHelper::ShowWarnToast(lang.getTextCStr("MapperDownloadFailedResponseCodeNotOk"), code);
+        break;
+    }
+    }
+}
+
 void MultiDownload::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
 #pragma region Multi DL
-    ImGui::BeginGroupPanel(lang.getTextCStr("MultiDownloader"));
+    {
+        ImGui::BeginGroupPanel(lang.getTextCStr("MultiDownloader"));
 
-    static const char *multi_Items[] = {"Sid", "Bid"};
-    ImGui::SetNextItemWidth(ImGui::GetFontSize() * 3);
-    ImGui::Combo(lang.getTextCStr("IDSearchDefaultType"), &multiDLSelected, multi_Items, IM_ARRAYSIZE(multi_Items));
-    static std::string multiDLText;
+        static const char *idtypes[] = {"Sid", "Bid"};
+        ImGui::SetNextItemWidth(ImGui::GetFontSize() * 3);
+        ImGui::Combo(lang.getTextCStr("IDSearchDefaultType"), &multiDLSelected, idtypes, IM_ARRAYSIZE(idtypes));
+        static std::string multiDLText;
 
-    ImGui::InputTextMultiline("##linklist", &multiDLText, ImVec2(0, 150));
-    if (ImGui::Button(lang.getTextCStr("Download"))) {
-        DoMultiLineDownload(multiDLText);
+        ImGui::InputTextMultiline("##linklist", &multiDLText, ImVec2(0, 150));
+        if (ImGui::Button(lang.getTextCStr("Download"))) {
+            DoMultiLineDownload(multiDLText);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button(lang.getTextCStr("Clear"))) {
+            multiDLText = "";
+        }
+        ImGui::Text(lang.getTextCStr("MultiDownloaderDesc"));
+
+        ImGui::EndGroupPanel();
     }
-    ImGui::SameLine();
-    if (ImGui::Button(lang.getTextCStr("Clear"))) {
-        multiDLText = "";
-    }
-    ImGui::Text(lang.getTextCStr("MultiDownloaderDesc"));
-
-    ImGui::EndGroupPanel();
 #pragma endregion
 
 #pragma region BP DL
-    ImGui::BeginGroupPanel(lang.getTextCStr("BPDownloader"));
+    {
+        ImGui::BeginGroupPanel(lang.getTextCStr("BPDownloader"));
 
-    static int bp_id = 0;
-    ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, bpDownloadSelectItems, IM_ARRAYSIZE(bpDownloadSelectItems));
-    ImGui::InputInt("UID", &bp_id);
+        static int id = 0;
+        ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, bpDownloadSelectItems, IM_ARRAYSIZE(bpDownloadSelectItems));
+        ImGui::InputInt("UID", &id);
 
-    static int bp_begin_end[] = {0, 100};
+        static int begend[] = {0, 100};
+        ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, 100, "%d");
+        // GuiHelper::ShowTooltip(lang.getTextCStr("BPDLRangeDesc"));
+        clamp(begend, 1, begend[1]);
+        clamp(begend + 1, begend[0], 100);
 
-    ImGui::DragInt2(lang.getTextCStr("Range"), bp_begin_end, 1, 0, 100, "%d", ImGuiSliderFlags_AlwaysClamp);
-    GuiHelper::ShowTooltip(lang.getTextCStr("BPDLRangeDesc"));
+        if (ImGui::Button(lang.getTextCStr("Download"))) {
+            DoBPDownload(id, begend[0] - 1, begend[1]);
+        }
 
-    if (ImGui::Button(lang.getTextCStr("Download"))) {
-        DoBPDownload(bp_id, bp_begin_end[0], bp_begin_end[1]);
+        ImGui::EndGroupPanel();
     }
-
-    ImGui::EndGroupPanel();
 #pragma endregion
+
+#pragma region Fav DL
+#define MAX_FAV_DL_COUNT 300
+    {
+        ImGui::BeginGroupPanel(lang.getTextCStr("FavoriteDownloader"));
+
+        static int id = 0;
+        ImGui::InputInt("UID", &id);
+
+        static int begend[] = {1, MAX_FAV_DL_COUNT};
+        ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, MAX_FAV_DL_COUNT, "%d");
+        clamp(begend, 1, begend[1]);
+        clamp(begend + 1, begend[0], MAX_FAV_DL_COUNT);
+
+        if (ImGui::Button(lang.getTextCStr("Download"))) {
+            DoFavDownload(id, begend[0] - 1, begend[1]);
+        }
+        ImGui::EndGroupPanel();
+    }
+#undef MAX_FAV_DL_COUNT
+#pragma endregion
+
+#pragma region Mapper DL
+#define MAX_MAPPER_DL_COUNT 99999
+    {
+        ImGui::BeginGroupPanel(lang.getTextCStr("MapperDownloader"));
+
+        static BeatmapStatus stat = BeatmapStatus::Ranked;
+        ImGui::Combo(lang.getTextCStr("BeatmapStatus"), (int *)&stat, s_StatusStr, IM_ARRAYSIZE(s_StatusStr));
+        GuiHelper::ShowTooltip(lang.getTextCStr("BeatmapStatusDesc"));
+
+        static int id = 0;
+        ImGui::InputInt("UID", &id);
+
+        static int begend[] = {1, MAX_MAPPER_DL_COUNT};
+        ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, MAX_MAPPER_DL_COUNT, "%d");
+        clamp(begend, 1, begend[1]);
+        clamp(begend + 1, begend[0], MAX_MAPPER_DL_COUNT);
+
+        if (ImGui::Button(lang.getTextCStr("Download"))) {
+            DoMapperDownload(id, begend[0] - 1, begend[1], stat);
+        }
+
+        ImGui::EndGroupPanel();
+    }
+#undef MAX_MAPPER_DL_COUNT
+#pragma endregion
+
 }

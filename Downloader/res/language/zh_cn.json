@@ -77,7 +77,19 @@
   "Range": "范围",
   "InvalidOsuPath": "无效的osu!路径，将不会应用变更！",
   "BPDLRangeDesc": "BP抓取范围，0~100",
-  "InvalidBPDLRange": "无效的范围！起始=%d，结束=%d",
+  "InvalidDLRange": "无效的范围！起始=%d，结束=%d",
   "StartDownloadBP": "开始下载BP(uid=%d)：从 %d 到 %d",
-  "InvalidInput": "无效的输入：%s"
+  "InvalidInput": "无效的输入：%s",
+  "FavoriteDownloader": "收藏谱面下载器",
+  "MapperDownloader": "谱师谱面下载器",
+  "FavDownloadFailedUserNotFound": "收藏谱面下载失败：找不到用户(%d)！",
+  "FavDownloadFailedResponseCodeNotOk": "收藏谱面下载失败：响应码：%d",
+  "FavDownloadFailedParseFailed": "收藏谱面下载失败：解析响应体失败！",
+  "StartDownloadFav": "开始下载收藏谱面(uid=%d)：从 %d 到 %d",
+  "MapperDownloadFailedUserNotFound": "谱师谱面下载失败：找不到用户(%d)！",
+  "MapperDownloadFailedResponseCodeNotOk": "谱师谱面下载失败：响应码：%d",
+  "MapperDownloadFailedParseFailed": "谱师谱面下载失败：找不到用户(%d)！",
+  "StartDownloadMapper": "开始下载谱师谱面(uid=%d)：从 %d 到 %d，谱面状态：%s",
+  "BeatmapStatus": "谱面状态",
+  "BeatmapStatusDesc": "Ranked:上架 (Ranked) 谱面\nLoved:社区喜爱 (Loved) 谱面\nGuest:客串制作的谱面\nPending:待定 (Pending) 谱面\nGraveyard:已停更的谱面\nNominated:提名并上架 (Ranked) 的谱面"
 }
