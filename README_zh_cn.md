@@ -1,6 +1,7 @@
 # BeatmapDownloader
 
-一个游戏内谱面下载器
+一个游戏内谱面下载器  
+[介绍视频](https://www.bilibili.com/video/BV1kP411i7An) by JunMoyan
 
 ## 如何使用
 
