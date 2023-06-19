@@ -91,5 +91,10 @@
   "MapperDownloadFailedParseFailed": "Mapper Download failed: Parse response body failed!",
   "StartDownloadMapper": "Start download mapper(uid=%d): From %d to %d, Beatmap Status: %s",
   "BeatmapStatus": "Beatmap Status",
-  "BeatmapStatusDesc": "Ranked: Ranked Beatmaps\nLoved: Loved Beatmaps\nGuest: Guest Participation Beatmaps\nPending: Pending Beatmaps\nGraveyard: Graveyarded Beatmaps\nNominated: Nominated Ranked Beatmaps"
+  "BeatmapStatusDesc": "Ranked: Ranked Beatmaps\nLoved: Loved Beatmaps\nGuest: Guest Participation Beatmaps\nPending: Pending Beatmaps\nGraveyard: Graveyarded Beatmaps\nNominated: Nominated Ranked Beatmaps",
+  "StartDownloadMostPlayed": "Start download most played(uid=%d): From %d to %d",
+  "MostPlayedDownloader": "Most Played Beatmaps Downloader",
+  "MostPlayedDownloadFailedUserNotFound": "Most Played Download failed: User(%d) not found!",
+  "MostPlayedDownloadFailedResponseCodeNotOk": "Most Played Download failed: Response code: %d",
+  "MostPlayedDownloadFailedParseFailed": "Most Played Download failed: Parse response body failed!"
 }
