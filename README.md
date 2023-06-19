@@ -21,6 +21,7 @@ An in-game beatmap downloader for osu!stable
 - [x] BP download
 - [x] Favorite beatmaps download
 - [x] Mapper beatmaps download
+- [x] Most played beatmaps download
 - [ ] (Maybe) Compatibility mode support
 - [ ] (Maybe) Chimu(Bloodcat) Search & Download
 
