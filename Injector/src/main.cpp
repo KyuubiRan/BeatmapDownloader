@@ -98,15 +98,16 @@ int main(int argc, char *argv[]) {
 
     const auto dllPath = std::filesystem::current_path() / "Downloader.dll";
 
-    if (noAutoStart) {
-        LOGI("Waiting for osu! to start...");
-        DWORD pid = 0;
-        while ((pid = GetPidByName(L"osu!.exe")) == 0) {
-            Sleep(1000);
+    if (DWORD pid = 0; noAutoStart || (pid = GetPidByName(L"osu!.exe")) != 0) {
+        if (pid == 0) {
+            LOGI("Waiting for osu! to start...");
+            while ((pid = GetPidByName(L"osu!.exe")) == 0) {
+                Sleep(1000);
+            }
         }
         LOGI("osu! found, pid: %d", pid);
         HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-        if (hProc == NULL) {
+        if (hProc == nullptr) {
             LOGE("Failed to open process, error code: %d", GetLastError());
             Sleep(5000);
             return 1;
