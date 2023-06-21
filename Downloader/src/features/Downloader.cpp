@@ -250,11 +250,11 @@ ui::main::FeatureInfo &features::Downloader::getInfo() {
     return info;
 }
 
-void features::Downloader::cancelDownload(int sid) {
+void features::Downloader::CancelDownload(int sid) {
     s_Canceled.insert(sid);
 }
 
-void features::Downloader::removeCancelDownload(int sid) {
+void features::Downloader::RemoveCancelDownload(int sid) {
     if (s_Canceled.contains(sid)) {
         s_Canceled.erase(sid);
     }

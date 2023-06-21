@@ -6,15 +6,17 @@
 #include <tchar.h>
 #include <filesystem>
 #include <fstream>
+
+#include "../../Downloader/libraries/detours/detours.h"
 using namespace std;
 
 #define LOGD(msg, ...)  printf_s("[DEBUG] " msg "\n", ##__VA_ARGS__)
 #define LOGI(msg, ...)  printf_s("[INFO] " msg "\n", ##__VA_ARGS__)
 #define LOGW(msg, ...)  printf_s("[WARNING] " msg "\n", ##__VA_ARGS__)
 #define LOGE(msg, ...)  printf_s("[ERROR] " msg "\n", ##__VA_ARGS__)
+#define OSU_NAME L"osu!.exe"
 
 bool InjectDll(HANDLE hProc, const char *path) {
-
     LPVOID lpBaseAddress = NULL;
     HMODULE hKernel32 = GetModuleHandleA("Kernel32.dll");
     if (hKernel32 == NULL) {
@@ -77,42 +79,13 @@ DWORD GetPidByName(LPCWSTR name) {
 }
 
 std::string ws2s(const std::wstring &s) {
-    int len;
-    int slength = (int)s.length() + 1;
-    len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0);
+    const int strlen = (int)s.length() + 1;
+    const int len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), strlen, nullptr, 0, nullptr, nullptr);
     char *buf = new char[len];
-    WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, buf, len, 0, 0);
+    WideCharToMultiByte(CP_ACP, 0, s.c_str(), strlen, buf, len, nullptr, nullptr);
     std::string r(buf);
     delete[] buf;
     return r;
-}
-bool TryFindAndInject(const std::wstring& processname, const std::filesystem::path &dllPath,bool wait = true) {
-    DWORD pid = GetPidByName(processname.c_str());
-    if (pid == 0) {
-        if (!wait)
-            return false;
-        LOGI("Waiting for osu! to start...");
-        while ((pid = GetPidByName(processname.c_str())) == 0) {
-            Sleep(1000);
-        }
-    }
-    LOGI("osu! found, pid: %d", pid);
-    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (hProc == nullptr) {
-        LOGE("Failed to open process, error code: %d", GetLastError());
-        Sleep(5000);
-        std::exit(1);
-        return false;
-    }
-
-    LOGI("Injecting dll...");
-    const auto sPath = dllPath.string();
-    LOGI("DLL path: %s", sPath.c_str());
-
-    if (InjectDll(hProc, sPath.c_str())) {
-        LOGI("Dll injected successfully");
-    }
-    return true;
 }
 
 int main(int argc, char *argv[]) {
@@ -126,7 +99,27 @@ int main(int argc, char *argv[]) {
 
     const auto dllPath = std::filesystem::current_path() / "Downloader.dll";
 
-    if (!TryFindAndInject(L"osu!.exe", dllPath,false)) {
+    if (DWORD pid = 0; noAutoStart || (pid = GetPidByName(OSU_NAME)) != 0) {
+        if (pid == 0) {
+            LOGI("Waiting for osu! to start...");
+            while ((pid = GetPidByName(OSU_NAME)) == 0) {
+                Sleep(1000);
+            }
+        }
+        LOGI("osu! found, pid: %d", pid);
+        HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+        if (hProc == nullptr) {
+            LOGE("Failed to open process, error code: %d", GetLastError());
+        }
+
+        LOGI("Injecting dll...");
+        const auto sPath = dllPath.string();
+        LOGI("DLL path: %s", sPath.c_str());
+
+        if (InjectDll(hProc, sPath.c_str())) {
+            LOGI("Dll injected successfully");
+        }
+    } else {
         auto path = std::filesystem::current_path() / "osupath.txt";
         std::string line;
 
@@ -176,10 +169,12 @@ int main(int argc, char *argv[]) {
 
         // Start osu! as user
         // OpenTabletDriver wont work using 
-        STARTUPINFOA si{};
+        STARTUPINFOW si{};
         PROCESS_INFORMATION pi{};
         si.cb = sizeof si;
-        if (!CreateProcessA(NULL, (LPSTR)("explorer.exe " + osupath.string()).c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+
+#ifndef _DEBUG
+        if (!CreateProcessW(nullptr, (L"explorer.exe " + osupath.wstring()).data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
             LOGE("Failed to start osu!, error code: %d", GetLastError());
             Sleep(3000);
             exit(1);
@@ -187,12 +182,29 @@ int main(int argc, char *argv[]) {
 
         LOGI("Waiting for explorer...");
         // Waitting for explorer
-        WaitForSingleObject(pi.hProcess,-1); // explorer dies after process started.
+        WaitForSingleObject(pi.hProcess, -1); // explorer dies after process started.
 
-        CloseHandle(pi.hProcess); // https://learn.microsoft.com/zh-cn/cpp/code-quality/c6335
-        CloseHandle(pi.hThread);
-
-        TryFindAndInject(L"osu!.exe", dllPath);
+        while ((pid = GetPidByName(OSU_NAME)) == 0) {
+            Sleep(1000);
+        }
+        HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+        if (hProc == nullptr) {
+            LOGE("Failed to open process, error code: %d", GetLastError());
+        }
+        if (InjectDll(hProc, dllPath.string().c_str())) {
+            LOGI("Dll injected successfully");
+        }
+#else
+        // TODO: Replace to `DetourCreateProcessWithDllW`
+        if (!CreateProcessW(nullptr, osupath.wstring().data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+            LOGE("Failed to start osu!, error code: %d", GetLastError());
+            Sleep(3000);
+            exit(1);
+        }
+        if (InjectDll(pi.hProcess, dllPath.string().c_str())) {
+            LOGI("Dll injected successfully");
+        }
+#endif
     }
 
     Sleep(3000);

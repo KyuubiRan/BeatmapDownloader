@@ -85,8 +85,8 @@ public:
     void drawMain() override;
     ui::main::FeatureInfo &getInfo() override;
 
-    static void cancelDownload(int sid);
-    static void removeCancelDownload(int sid);
+    static void CancelDownload(int sid);
+    static void RemoveCancelDownload(int sid);
 
     void postSearch(const downloader::BeatmapInfo &info);
     void postDownload(const osu::Beatmap &bm);

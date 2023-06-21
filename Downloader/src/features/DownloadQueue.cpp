@@ -16,7 +16,7 @@ void features::DownloadQueue::cancel(const int sid) const {
         return;
     }
     removed.insert(sid);
-    Downloader::cancelDownload(sid);
+    Downloader::CancelDownload(sid);
 }
 
 bool features::DownloadQueue::addTask(const osu::Beatmap &bm) {
@@ -62,7 +62,7 @@ void features::DownloadQueue::notifyFinished(int sid) {
     if (m_InQueueMap.contains(sid)) {
         m_InQueueMap.erase(sid);
     }
-    Downloader::removeCancelDownload(sid);
+    Downloader::RemoveCancelDownload(sid);
 }
 
 features::DownloadQueue::DownloadQueue() {
