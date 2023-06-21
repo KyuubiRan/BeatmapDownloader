@@ -86,6 +86,34 @@ std::string ws2s(const std::wstring &s) {
     delete[] buf;
     return r;
 }
+bool TryFindAndInject(const std::wstring& processname, const std::filesystem::path &dllPath,bool wait = true) {
+    DWORD pid = GetPidByName(processname.c_str());
+    if (pid == 0) {
+        if (!wait)
+            return false;
+        LOGI("Waiting for osu! to start...");
+        while ((pid = GetPidByName(processname.c_str())) == 0) {
+            Sleep(1000);
+        }
+    }
+    LOGI("osu! found, pid: %d", pid);
+    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if (hProc == nullptr) {
+        LOGE("Failed to open process, error code: %d", GetLastError());
+        Sleep(5000);
+        std::exit(1);
+        return false;
+    }
+
+    LOGI("Injecting dll...");
+    const auto sPath = dllPath.string();
+    LOGI("DLL path: %s", sPath.c_str());
+
+    if (InjectDll(hProc, sPath.c_str())) {
+        LOGI("Dll injected successfully");
+    }
+    return true;
+}
 
 int main(int argc, char *argv[]) {
     bool noAutoStart = false;
@@ -98,29 +126,7 @@ int main(int argc, char *argv[]) {
 
     const auto dllPath = std::filesystem::current_path() / "Downloader.dll";
 
-    if (DWORD pid = 0; noAutoStart || (pid = GetPidByName(L"osu!.exe")) != 0) {
-        if (pid == 0) {
-            LOGI("Waiting for osu! to start...");
-            while ((pid = GetPidByName(L"osu!.exe")) == 0) {
-                Sleep(1000);
-            }
-        }
-        LOGI("osu! found, pid: %d", pid);
-        HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-        if (hProc == nullptr) {
-            LOGE("Failed to open process, error code: %d", GetLastError());
-            Sleep(5000);
-            return 1;
-        }
-
-        LOGI("Injecting dll...");
-        const auto sPath = dllPath.string();
-        LOGI("DLL path: %s", sPath.c_str());
-
-        if (InjectDll(hProc, sPath.c_str())) {
-            LOGI("Dll injected successfully");
-        }
-    } else {
+    if (!TryFindAndInject(L"osu!.exe", dllPath,false)) {
         auto path = std::filesystem::current_path() / "osupath.txt";
         std::string line;
 
@@ -168,20 +174,25 @@ int main(int argc, char *argv[]) {
         std::filesystem::path osupath = line;
         LOGI("osu! path: %s", osupath.string().c_str());
 
-        // Start osu!
-        STARTUPINFO si{};
+        // Start osu! as user
+        // OpenTabletDriver wont work using 
+        STARTUPINFOA si{};
         PROCESS_INFORMATION pi{};
         si.cb = sizeof si;
-        if (!CreateProcessW(osupath.c_str(), NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+        if (!CreateProcessA(NULL, (LPSTR)("explorer.exe " + osupath.string()).c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
             LOGE("Failed to start osu!, error code: %d", GetLastError());
             Sleep(3000);
             exit(1);
         }
 
-        LOGI("osu! started, pid: %d", pi.dwProcessId);
-        if (InjectDll(pi.hProcess, dllPath.string().c_str())) {
-            LOGI("Dll injected successfully");
-        }
+        LOGI("Waiting for explorer...");
+        // Waitting for explorer
+        WaitForSingleObject(pi.hProcess,-1); // explorer dies after process started.
+
+        CloseHandle(pi.hProcess); // https://learn.microsoft.com/zh-cn/cpp/code-quality/c6335
+        CloseHandle(pi.hThread);
+
+        TryFindAndInject(L"osu!.exe", dllPath);
     }
 
     Sleep(3000);
