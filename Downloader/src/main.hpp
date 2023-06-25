@@ -12,7 +12,7 @@
 #include "osu/BeatmapManager.h"
 #include "osu/OsuConfigManager.h"
 #include "ui/MainUi.h"
-#include "ui/Settings.h"
+#include "features/Settings.h"
 #include "utils/gui_utils.h"
 
 void InitFeatures();
@@ -23,7 +23,7 @@ void Run(HMODULE *phModule) {
 
     config::Init();
 
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
 
     if (settings.f_EnableConsole.getValue()) {
         AllocConsole();
@@ -97,17 +97,21 @@ void Run(HMODULE *phModule) {
     GuiHelper::ShowSuccessToast(i18n::I18nManager::GetInstance().getTextCStr("DownloaderLoadSuccess"));
 }
 
-#include "ui/About.h"
+#include "features/About.h"
 #include "features/HandleLinkHook.h"
 #include "features/Downloader.h"
 #include "features/DownloadQueue.h"
 #include "features/MultiDownload.h"
+#include "features/CustomHotkey.h"
+
+#define INIT_FEAT(NAME) ui::main::AddFeature(&features::NAME::GetInstance())
 
 inline void InitFeatures() {
-    AddFeature(&ui::misc::About::GetInstance());
-    AddFeature(&ui::misc::Settings::GetInstance());
-    AddFeature(&features::Downloader::GetInstance());
-    AddFeature(&features::HandleLinkHook::GetInstance());
-    AddFeature(&features::MultiDownload::GetInstance());
-    AddFeature(&features::DownloadQueue::GetInstance());
+    INIT_FEAT(About);
+    INIT_FEAT(CustomHotkey);
+    INIT_FEAT(Settings);
+    INIT_FEAT(Downloader);
+    INIT_FEAT(HandleLinkHook);
+    INIT_FEAT(MultiDownload);
+    INIT_FEAT(DownloadQueue);
 }

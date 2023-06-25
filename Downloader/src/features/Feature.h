@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 
-namespace ui::main {
+namespace features {
 
 struct FeatureInfo {
     std::string_view category;

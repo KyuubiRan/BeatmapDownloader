@@ -2,12 +2,12 @@
 
 #include <imgui.h>
 
-#include "Feature.h"
+#include "features/Feature.h"
 
 namespace ui::main {
 bool IsShowed();
 void ToggleShow();
 void Update();
 
-void AddFeature(Feature *feature);
+void AddFeature(features::Feature *feature);
 }

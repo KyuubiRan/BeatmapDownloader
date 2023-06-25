@@ -3,14 +3,14 @@
 #include <imgui.h>
 #include <imgui_notify.h>
 
-#include "ui/Settings.h"
+#include "features/Settings.h"
 
 namespace GuiHelper {
 void ShowTooltip(const char *s, bool marked = true);
 
 template <typename... Fmt>
 void ShowToast(const char *s, Fmt... fmt) {
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
     if (!settings.f_EnableToast.getValue())
         return;
 
@@ -19,7 +19,7 @@ void ShowToast(const char *s, Fmt... fmt) {
 
 template <typename... Fmt>
 void ShowWarnToast(const char *s, Fmt... fmt) {
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
     if (!settings.f_EnableToast.getValue())
         return;
 
@@ -31,7 +31,7 @@ void ShowWarnToast(const char *s, Fmt... fmt) {
 
 template <typename... Fmt>
 void ShowSuccessToast(const char *s, Fmt... fmt) {
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
     if (!settings.f_EnableToast.getValue())
         return;
 
@@ -43,7 +43,7 @@ void ShowSuccessToast(const char *s, Fmt... fmt) {
 
 template <typename... Fmt>
 void ShowErrorToast(const char *s, Fmt... fmt) {
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
     if (!settings.f_EnableToast.getValue())
         return;
 
@@ -55,7 +55,7 @@ void ShowErrorToast(const char *s, Fmt... fmt) {
 
 template <typename... Fmt>
 void ShowInfoToast(const char *s, Fmt... fmt) {
-    auto &settings = ui::misc::Settings::GetInstance();
+    auto &settings = features::Settings::GetInstance();
     if (!settings.f_EnableToast.getValue())
         return;
 

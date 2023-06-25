@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "MainUi.h"
-#include "Feature.h"
 #include "config/I18nManager.h"
 
 #include <ranges>
@@ -11,7 +10,7 @@
 
 namespace ui::main {
 static bool show = false;
-static std::unordered_map<std::string_view, std::unordered_set<Feature *>> s_Features;
+static std::unordered_map<std::string_view, std::unordered_set<features::Feature *>> s_Features;
 static const std::string_view *s_CurrentSelectedCategory = nullptr;
 
 bool IsShowed() {
@@ -94,7 +93,7 @@ void Update() {
     ImGui::End();
 }
 
-void AddFeature(Feature *feature) {
+void AddFeature(features::Feature *feature) {
     auto &info = feature->getInfo();
     if (!s_Features.contains(info.category))
         s_Features[info.category] = {};

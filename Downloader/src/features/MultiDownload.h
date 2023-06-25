@@ -4,12 +4,12 @@
 #include <thread>
 
 #include "BlockingContainer.hpp"
-#include "ui/Feature.h"
+#include "Feature.h"
 
 
 namespace features {
 
-class MultiDownload : public ui::main::Feature {
+class MultiDownload : public Feature {
     MultiDownload();
     std::thread t_SearchThread;
 
@@ -37,7 +37,7 @@ public:
 
     void doRequest(const Task &task);
 
-    ui::main::FeatureInfo &getInfo() override;
+    FeatureInfo &getInfo() override;
     void drawMain() override;
 
 };

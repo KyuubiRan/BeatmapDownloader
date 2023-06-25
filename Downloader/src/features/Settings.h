@@ -2,10 +2,11 @@
 #include "Feature.h"
 #include "config/Field.h"
 #include "config/I18nManager.h"
+#include "misc/Hotkey.hpp"
 
-namespace ui::misc {
+namespace features {
 
-class Settings : public main::Feature {
+class Settings : public Feature {
     Settings();
 
 public:
@@ -14,14 +15,14 @@ public:
     config::Field<bool> f_EnableConsole;
     config::Field<std::string> f_OsuPath;
 
+
     static Settings &GetInstance() {
         static Settings instance;
         return instance;
     }
 
     void drawMain() override;
-    virtual main::FeatureInfo &getInfo() override;
-
+    virtual FeatureInfo &getInfo() override;
 };
 
 }

@@ -8,9 +8,11 @@
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
+namespace features {
+
 std::set<int> removed{};
 
-void features::DownloadQueue::cancel(const int sid) const {
+void DownloadQueue::cancel(const int sid) const {
     if (!m_InQueueMap.contains(sid)) {
         LOGW("No download task: %d", sid);
         return;
@@ -19,7 +21,7 @@ void features::DownloadQueue::cancel(const int sid) const {
     Downloader::CancelDownload(sid);
 }
 
-bool features::DownloadQueue::addTask(const osu::Beatmap &bm) {
+bool DownloadQueue::addTask(const osu::Beatmap &bm) {
     std::unique_lock _g(m_Mutex);
 
     if (m_InQueueMap.contains(bm.sid)) {
@@ -35,7 +37,7 @@ bool features::DownloadQueue::addTask(const osu::Beatmap &bm) {
     return true;
 }
 
-features::DownloadTask *features::DownloadQueue::getTask(const osu::Beatmap &bm) {
+DownloadTask *DownloadQueue::getTask(const osu::Beatmap &bm) {
     std::shared_lock _g(m_Mutex);
     if (m_InQueueMap.contains(bm.sid)) {
         auto &ret = m_InQueueMap[bm.sid];
@@ -46,7 +48,7 @@ features::DownloadTask *features::DownloadQueue::getTask(const osu::Beatmap &bm)
     return nullptr;
 }
 
-features::DownloadTask *features::DownloadQueue::getTask(int sid) {
+DownloadTask *DownloadQueue::getTask(int sid) {
     std::shared_lock _g(m_Mutex);
     if (m_InQueueMap.contains(sid)) {
         auto &ret = m_InQueueMap[sid];
@@ -57,7 +59,7 @@ features::DownloadTask *features::DownloadQueue::getTask(int sid) {
     return nullptr;
 }
 
-void features::DownloadQueue::notifyFinished(int sid) {
+void DownloadQueue::notifyFinished(int sid) {
     std::unique_lock _g(m_Mutex);
     if (m_InQueueMap.contains(sid)) {
         m_InQueueMap.erase(sid);
@@ -65,11 +67,11 @@ void features::DownloadQueue::notifyFinished(int sid) {
     Downloader::RemoveCancelDownload(sid);
 }
 
-features::DownloadQueue::DownloadQueue() {
-    LOGI("Initied Download Queue");
+DownloadQueue::DownloadQueue() {
+    LOGI("Inited Download Queue");
 }
 
-void features::DownloadQueue::drawTaskItem(const DownloadTask &item) const {
+void DownloadQueue::drawTaskItem(const DownloadTask &item) const {
     auto &lang = i18n::I18nManager::GetInstance();
     ImGui::BeginGroupPanel(std::to_string(item.bm.sid).c_str());
 
@@ -93,7 +95,7 @@ void features::DownloadQueue::drawTaskItem(const DownloadTask &item) const {
 }
 
 
-void features::DownloadQueue::drawMain() {
+void DownloadQueue::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
 
     std::shared_lock _g(m_Mutex);
@@ -140,10 +142,12 @@ void features::DownloadQueue::drawMain() {
     */
 }
 
-ui::main::FeatureInfo &features::DownloadQueue::getInfo() {
-    static auto info = ui::main::FeatureInfo{
+FeatureInfo &DownloadQueue::getInfo() {
+    static auto info = FeatureInfo{
         "DownloadQueue",
         ""
     };
     return info;
+}
+
 }

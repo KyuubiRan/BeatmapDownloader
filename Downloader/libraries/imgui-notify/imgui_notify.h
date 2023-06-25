@@ -10,6 +10,10 @@
 #include "font_awesome_5.h"
 #include "fa_solid_900.h"
 
+#pragma warning(disable: 4172)
+#pragma warning(disable: 4267)
+#pragma warning(disable: 4477)
+
 #define NOTIFY_MAX_MSG_LENGTH			4096		// Max message content length
 #define NOTIFY_PADDING_X				20.f		// Bottom-left X padding
 #define NOTIFY_PADDING_Y				20.f		// Bottom-left Y padding

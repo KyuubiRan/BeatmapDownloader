@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include "osu/Beatmap.h"
-#include "ui/Feature.h"
+#include "Feature.h"
 
 namespace features {
 struct DownloadTask {
@@ -21,7 +21,7 @@ struct DownloadTask {
     }
 };
 
-class DownloadQueue : public ui::main::Feature {
+class DownloadQueue : public Feature {
     DownloadQueue();
 
     std::unordered_map<int, DownloadTask> m_InQueueMap;
@@ -55,6 +55,6 @@ public:
     void notifyFinished(int sid);
 
     void drawMain() override;
-    ui::main::FeatureInfo &getInfo() override;
+    FeatureInfo &getInfo() override;
 };
 }

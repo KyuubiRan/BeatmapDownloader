@@ -4,12 +4,15 @@
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
-ui::misc::About::About() :
+namespace features {
+
+
+About::About() :
     Feature() {
 }
 
-ui::main::FeatureInfo &ui::misc::About::getInfo() {
-    static auto info = main::FeatureInfo{
+FeatureInfo &About::getInfo() {
+    static auto info = FeatureInfo{
         .category = "About",
         .groupName = ""
     };
@@ -17,7 +20,7 @@ ui::main::FeatureInfo &ui::misc::About::getInfo() {
     return info;
 }
 
-void ui::misc::About::drawMain() {
+void About::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
     ImGui::BeginGroupPanel(lang.getTextCStr("About"));
     ImGui::Text("%s", lang.getTextCStr("ProjectAuthor"));
@@ -29,4 +32,5 @@ void ui::misc::About::drawMain() {
     ImGui::BeginGroupPanel(lang.getTextCStr("Hotkey"));
     ImGui::Text("%s", lang.getTextCStr("HotkeyDesc"));
     ImGui::EndGroupPanel();
+}
 }

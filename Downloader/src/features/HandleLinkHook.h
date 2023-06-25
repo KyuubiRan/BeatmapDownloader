@@ -2,11 +2,9 @@
 
 #include <shellapi.h>
 #include "config/Field.h"
-#include "ui/Feature.h"
+#include "Feature.h"
 
 namespace features {
-
-using namespace ui::main;
 
 class HandleLinkHook : public Feature {
 public:

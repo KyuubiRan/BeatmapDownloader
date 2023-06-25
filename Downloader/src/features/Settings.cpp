@@ -1,16 +1,27 @@
 ﻿#include "pch.h"
 #include "Settings.h"
+
 #include "utils/gui_utils.h"
 
-ui::misc::Settings::Settings() :
+namespace features {
+
+Settings::Settings() :
     Feature(),
     f_EnableToast("EnableToast", true),
     f_ToastDuration("ToastDuration", 3000),
     f_EnableConsole("EnableConsole", true),
     f_OsuPath("OsuPath", "") {
+    // f_MainMenuHotkey->m_OnKeyDown += [] {
+    //     LOGD("Toggle main menu show keydown");
+    //     main::ToggleShow();
+    // };
+    // f_SearchHotkey->m_OnKeyDown += [] {
+    //     LOGD("Toggle Search ui show keydown");
+    //     search::beatmapid::ToggleShow();
+    // };
 }
 
-void ui::misc::Settings::drawMain() {
+void Settings::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
 
     ImGui::BeginGroupPanel(lang.getTextCStr("Settings"));
@@ -50,10 +61,12 @@ void ui::misc::Settings::drawMain() {
     ImGui::EndGroupPanel();
 }
 
-ui::main::FeatureInfo &ui::misc::Settings::getInfo() {
-    static auto info = main::FeatureInfo{
+FeatureInfo &Settings::getInfo() {
+    static auto info = FeatureInfo{
         .category = "Settings",
         .groupName = ""
     };
     return info;
+}
+
 }

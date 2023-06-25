@@ -34,7 +34,7 @@ features::Downloader::Downloader() :
 
     t_DownloadThread.detach();
     t_SearchThread.detach();
-    LOGI("Initied Downloader");
+    LOGI("Inited Downloader");
 }
 
 [[noreturn]] void features::Downloader::DownloadThread() {
@@ -245,7 +245,7 @@ void features::Downloader::drawMain() {
     }
 }
 
-ui::main::FeatureInfo &features::Downloader::getInfo() {
+features::FeatureInfo &features::Downloader::getInfo() {
     static FeatureInfo info = {"Downloader", "Download"};
     return info;
 }

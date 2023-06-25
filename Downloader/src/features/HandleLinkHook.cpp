@@ -99,6 +99,6 @@ HandleLinkHook::HandleLinkHook() :
         return;
     }
     HookManager::InstallHook(pFunc, ShellExecuteExW_Hook);
-    LOGI("Initialized HandleLink hook");
+    LOGI("Inited HandleLink hook");
 }
 }

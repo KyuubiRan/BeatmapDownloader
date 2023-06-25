@@ -17,8 +17,8 @@ void MultiDownload::doRequest(const Task &task) {
     m_Queue.push_back(task);
 }
 
-ui::main::FeatureInfo &MultiDownload::getInfo() {
-    static auto info = ui::main::FeatureInfo{"MultiDL",
+FeatureInfo &MultiDownload::getInfo() {
+    static auto info = FeatureInfo{"MultiDL",
                                              ""};
     return info;
 }

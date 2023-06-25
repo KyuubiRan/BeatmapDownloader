@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "config/Field.h"
-#include "ui/Feature.h"
+#include "Feature.h"
 #include <BlockingContainer.hpp>
 #include <deque>
 #include <thread>
@@ -47,7 +47,7 @@ enum class ProxyServerType : uint8_t {
 }
 
 
-class Downloader : public ui::main::Feature {
+class Downloader : public Feature {
     Downloader();
 
     container::Blocking<std::deque<osu::Beatmap>> m_DownloadQueue;
@@ -83,7 +83,7 @@ public:
     }
 
     void drawMain() override;
-    ui::main::FeatureInfo &getInfo() override;
+    FeatureInfo &getInfo() override;
 
     static void CancelDownload(int sid);
     static void RemoveCancelDownload(int sid);

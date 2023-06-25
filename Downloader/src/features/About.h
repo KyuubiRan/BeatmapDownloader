@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Feature.h"
 
-namespace ui::misc {
+namespace features {
 
-class About : public main::Feature {
+class About : public Feature {
     About();
     
 public:
@@ -11,8 +11,8 @@ public:
         static About instance;
         return instance;
     }
-    
-    main::FeatureInfo &getInfo() override;
+
+    FeatureInfo &getInfo() override;
 
     void drawMain() override;
     

@@ -44,14 +44,14 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
         switch (msg->message) {
         case WM_KEYDOWN: {
             misc::Hotkey::AddKeyDown(msg->wParam);
-            switch (msg->wParam) {
-            case VK_HOME:
-                ui::main::ToggleShow();
-                break;
-            case VK_END:
-                ui::search::beatmapid::ToggleShow();
-                break;
-            }
+            // switch (msg->wParam) {
+            // case VK_HOME:
+            //     ui::main::ToggleShow();
+            //     break;
+            // case VK_END:
+            //     ui::search::beatmapid::ToggleShow();
+            //     break;
+            // }
             break;
         }
         case WM_KEYUP: {
@@ -99,7 +99,7 @@ LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_ACTIVATE:
         if (wParam == WA_INACTIVE)
-            misc::Hotkey::Clear();
+            misc::Hotkey::ClearPressedKey();
         break;
     }
 
