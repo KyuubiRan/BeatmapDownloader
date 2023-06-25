@@ -34,7 +34,7 @@
   "DownloadQueue": "Queue",
   "CancelDownload": "Cancel Download",
   "Hotkey": "Hotkey",
-  "HotkeyDesc": "[Home] Toggle MainUi Show.\n[End] Toggle BeatmapIdSearchUi Show.\nHold [Ctrl] + Click the link to skip handle the link.\nHold [SHIFT] + Click the link to direct download the beatmap(except exists beatmap).",
+  "HotkeyDesc": "[%s] Toggle MainUi Show.\n[%s] Toggle BeatmapIdSearchUi Show.\nHold [Ctrl] + Click the link to skip handle the link.\nHold [SHIFT] + Click the link to direct download the beatmap(except exists beatmap).",
   "Empty": "Nothing here~",
   "SearchBeatmapId": "Beatmap Id Searcher",
   "Search": "Search",
@@ -96,5 +96,9 @@
   "MostPlayedDownloader": "Most Played Beatmaps Downloader",
   "MostPlayedDownloadFailedUserNotFound": "Most Played Download failed: User(%d) not found!",
   "MostPlayedDownloadFailedResponseCodeNotOk": "Most Played Download failed: Response code: %d",
-  "MostPlayedDownloadFailedParseFailed": "Most Played Download failed: Parse response body failed!"
+  "MostPlayedDownloadFailedParseFailed": "Most Played Download failed: Parse response body failed!",
+  "MainMenuHotkey": "Toggle Main Menu UI Show",
+  "IdSearchHotkey": "Toggle Sid/Bid Search UI Show",
+  "Main": "Main",
+  "Theme": "Theme"
 }

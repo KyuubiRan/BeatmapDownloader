@@ -235,26 +235,9 @@ void EndGroupPanel() {
 
 #include "misc/cpp/imgui_stdlib.h"
 
-static ImFont *pwFont = nullptr;
-
 bool PasswordInputText(const char *label, std::string *s, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void *user_data) {
-    if (pwFont == nullptr) {
-        LOGE("Cannot initlize password font!");
-        return false;
-    }
-
-    PushFont(pwFont);
-    const bool ret = InputText(std::format("##{}", label).c_str(), s, flags, callback, user_data);
-    PopFont();
-    SameLine();
-    Text(label);
-
-    return ret;
-}
-
-void SetPasswordFont(void *ttf_data, int ttf_size, float size_pixels, const ImFontConfig *font_cfg_template, const ImWchar *glyph_ranges) {
-    pwFont = GetIO().Fonts->AddFontFromMemoryTTF(ttf_data, ttf_size, size_pixels, font_cfg_template, glyph_ranges);
-    pwFont->FallbackChar = '*';
+    flags |= ImGuiInputTextFlags_Password;
+    return InputText(label, s, flags, callback, user_data);
 }
 
 void TextUrl(const char *url) {
@@ -266,4 +249,249 @@ void TextUrl(const char *url) {
     }
 }
 
+// Modified version of: https://github.com/spirthack/CSGOSimple/blob/master/CSGOSimple/UI.cpp#L287
+bool HotkeyWidget(const char *label, misc::Hotkey &hotkey, const ImVec2 &size) {
+    // Init ImGui
+    ImGuiWindow *window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImGuiContext &g = *GImGui;
+    ImGuiIO &io = g.IO;
+    const ImGuiStyle &style = g.Style;
+    const ImGuiID id = window->GetID(label);
+
+    const ImVec2 label_size = CalcTextSize(label, nullptr, true);
+    const ImVec2 item_size = CalcItemSize(size, CalcItemWidth(), label_size.y + style.FramePadding.y * 2.0f);
+
+    const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + item_size);
+    const ImRect total_bb(window->DC.CursorPos,
+                          frame_bb.Max +
+                          ImVec2(label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f, 0.0f));
+
+    ItemSize(total_bb, style.FramePadding.y);
+    if (!ItemAdd(total_bb, id))
+        return false;
+
+
+    const bool focus_requested =
+        (GetItemStatusFlags() & ImGuiItemStatusFlags_FocusedByTabbing) != 0 || g.NavActivateId == id;
+    const bool hovered = ItemHoverable(frame_bb, id);
+    if (hovered) {
+        SetHoveredID(id);
+        g.MouseCursor = ImGuiMouseCursor_TextInput;
+    }
+
+    static misc::Hotkey _initHotkey;
+    static misc::Hotkey _currHotkey;
+    static misc::Hotkey _prevHotkey;
+
+    const bool user_clicked = hovered && io.MouseClicked[0];
+    if (focus_requested || user_clicked) {
+        if (g.ActiveId != id) {
+            memset(io.MouseDown, 0, sizeof(io.MouseDown));
+            memset(io.KeysDown, 0, sizeof(io.KeysDown));
+
+            _initHotkey = hotkey;
+            _currHotkey = misc::Hotkey();
+            _prevHotkey = misc::Hotkey();
+        }
+
+        SetActiveID(id, window);
+        FocusWindow(window);
+    } else if (io.MouseClicked[0] && g.ActiveId == id) {
+        ClearActiveID();
+    }
+
+    bool valueChanged = false;
+
+    if (g.ActiveId == id) {
+        if (IsKeyPressed(ImGuiKey_Escape)) {
+            ClearActiveID();
+            if (hotkey != _initHotkey) {
+                hotkey = _initHotkey;
+                valueChanged = true;
+            }
+        } else {
+            NavMoveRequestCancel();
+
+            const auto newHotkey = misc::Hotkey::GetPressedHotkey();
+
+            if (newHotkey.isEmpty() && !_currHotkey.isEmpty()) {
+                ClearActiveID();
+                valueChanged = false;
+            } else if (newHotkey - _prevHotkey) {
+                _currHotkey = newHotkey;
+                hotkey = newHotkey;
+                valueChanged = true;
+            }
+
+            _prevHotkey = newHotkey;
+        }
+    }
+
+    // Render
+    // Select which buffer we are going to display. When ImGuiInputTextFlags_NoLiveEdit is Set 'buf' might still be the
+    // old value. We Set buf to NULL to prevent accidental usage from now on.
+
+    char buf_display[128] = "Empty";
+
+    const ImU32 frame_col = GetColorU32(g.ActiveId == id
+        ? ImGuiCol_FrameBgActive
+        : hovered
+        ? ImGuiCol_FrameBgHovered
+        : ImGuiCol_FrameBg);
+    RenderFrame(frame_bb.Min, frame_bb.Max, frame_col, true, style.FrameRounding);
+
+    if ((g.ActiveId == id && !_currHotkey.isEmpty()) || g.ActiveId != id)
+        strcpy_s(buf_display, hotkey.toString().c_str());
+    else if (g.ActiveId == id)
+        strcpy_s(buf_display, "<Press a key>");
+
+    const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + item_size.x,
+                           frame_bb.Min.y + item_size.y); // Not using frame_bb.Max because we have adjusted size
+    ImVec2 render_pos = frame_bb.Min + style.FramePadding;
+    RenderTextClipped(frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, buf_display, nullptr,
+                      nullptr, style.ButtonTextAlign, &clip_rect);
+    // RenderTextClipped(frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, buf_display, NULL, NULL,
+    // GetColorU32(ImGuiCol_Text), style.ButtonTextAlign, &clip_rect); draw_window->DrawList->AddText(g.Font,
+    // g.FontSize, render_pos, GetColorU32(ImGuiCol_Text), buf_display, NULL, 0.0f, &clip_rect);
+    if (label_size.x > 0)
+        RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label);
+
+    return valueChanged;
+}
+
+constexpr ImVec4 operator""_rgba(const char *str, std::size_t len) {
+    uint32_t hex = 0;
+    for (std::size_t i = 0; i < len; i++) {
+        hex *= 16;
+        if (str[i] >= '0' && str[i] <= '9')
+            hex += str[i] - '0';
+        else if (str[i] >= 'a' && str[i] <= 'f')
+            hex += str[i] - 'a' + 10;
+        else if (str[i] >= 'A' && str[i] <= 'F')
+            hex += str[i] - 'A' + 10;
+        else
+            throw std::invalid_argument("Invalid hexadecimal digit");
+    }
+    return {static_cast<float>((hex >> 24) & 0xFF) / 255.0f, static_cast<float>((hex >> 16) & 0xFF) / 255.0f,
+            static_cast<float>((hex >> 8) & 0xFF) / 255.0f, static_cast<float>((hex) & 0xFF) / 255.0f};
+}
+
+void StyleSakura(ImGuiStyle *dst = nullptr) {
+    ImGuiStyle *style = dst ? dst : &ImGui::GetStyle();
+    ImVec4 *colors = style->Colors;
+
+    style->Alpha = 1.0f;
+    style->DisabledAlpha = 0.60f;
+    style->WindowPadding = ImVec2(8, 8);
+    style->WindowRounding = 8.0f;
+    style->WindowBorderSize = 0.0f;
+    style->WindowMinSize = ImVec2(32, 32);
+    style->WindowTitleAlign = ImVec2(0.0f, 0.5f);
+    style->WindowMenuButtonPosition = ImGuiDir_Left;
+    style->ChildRounding = 0.0f;
+    style->ChildBorderSize = 0.0f;
+    style->PopupRounding = 6.0f;
+    style->PopupBorderSize = 1.0f;
+    style->FramePadding = ImVec2(4.0, 3.0);
+    style->FrameRounding = 6.0f;
+    style->FrameBorderSize = 0.0f;
+    style->ItemSpacing = ImVec2(8, 4);
+    style->ItemInnerSpacing = ImVec2(4, 4);
+    style->CellPadding = ImVec2(4, 2);
+    style->TouchExtraPadding = ImVec2(0, 0);
+    style->IndentSpacing = 21.0f;
+    style->ColumnsMinSpacing = 6.0f;
+    style->ScrollbarSize = 14.0f;
+    style->ScrollbarRounding = 9.0f;
+    style->GrabMinSize = 12.0f;
+    style->GrabRounding = 6.0f;
+    style->LogSliderDeadzone = 4.0f;
+    style->TabRounding = 6.0f;
+    style->TabBorderSize = 0.0f;
+    style->TabMinWidthForCloseButton = 0.0f;
+    style->ColorButtonPosition = ImGuiDir_Right;
+    style->ButtonTextAlign = ImVec2(0, 0.5);
+    style->SelectableTextAlign = ImVec2(0.0f, 0.0f);
+    style->SeparatorTextBorderSize = 3.0f;
+    style->SeparatorTextAlign = ImVec2(0.0f, 0.5f);
+    style->SeparatorTextPadding = ImVec2(20.0f, 3.f);
+    style->DisplayWindowPadding = ImVec2(19, 19);
+    style->DisplaySafeAreaPadding = ImVec2(3, 3);
+    style->MouseCursorScale = 1.0f;
+    style->AntiAliasedLines = true;
+    style->AntiAliasedLinesUseTex = true;
+    style->AntiAliasedFill = true;
+    style->CurveTessellationTol = 1.25f;
+    style->CircleTessellationMaxError = 0.30f;
+
+    colors[ImGuiCol_Border] = "301E2DFF"_rgba;
+    colors[ImGuiCol_BorderShadow] = "301E2D30"_rgba;
+    colors[ImGuiCol_Button] = "D56A87FF"_rgba;
+    colors[ImGuiCol_ButtonActive] = "FF9DBEFF"_rgba;
+    colors[ImGuiCol_ButtonHovered] = "F96E9EFF"_rgba;
+    colors[ImGuiCol_CheckMark] = "301E2DFF"_rgba;
+    colors[ImGuiCol_ChildBg] = "453743FF"_rgba;
+    // colors[ImGuiCol_DockingEmptyBg] = "301E2DFF"_rgba;
+    // colors[ImGuiCol_DockingPreview] = "FF9DBEB3"_rgba;
+    colors[ImGuiCol_DragDropTarget] = "FFCDCCE6"_rgba;
+    colors[ImGuiCol_FrameBg] = "31293660"_rgba;
+    colors[ImGuiCol_FrameBgActive] = "6B284D90"_rgba;
+    colors[ImGuiCol_FrameBgHovered] = "882650FF"_rgba;
+    colors[ImGuiCol_Header] = "D56A84FF"_rgba;
+    colors[ImGuiCol_HeaderActive] = "FF9DBEDD"_rgba;
+    colors[ImGuiCol_HeaderHovered] = "F96E9EFF"_rgba;
+    colors[ImGuiCol_MenuBarBg] = "312936FF"_rgba;
+    colors[ImGuiCol_ModalWindowDimBg] = "3333335A"_rgba;
+    colors[ImGuiCol_NavHighlight] = "FFFFFF0A"_rgba;
+    colors[ImGuiCol_NavWindowingDimBg] = "CCCCCC33"_rgba;
+    colors[ImGuiCol_NavWindowingHighlight] = "FFFFFFB3"_rgba;
+    colors[ImGuiCol_PlotHistogram] = "FFCDCCFF"_rgba;
+    colors[ImGuiCol_PlotHistogramHovered] = "D56A87FF"_rgba;
+    colors[ImGuiCol_PlotLines] = "FFCDCCFF"_rgba;
+    colors[ImGuiCol_PlotLinesHovered] = "D56A87FF"_rgba;
+    colors[ImGuiCol_PopupBg] = "453743FF"_rgba;
+    colors[ImGuiCol_ResizeGrip] = "FFCDCCFF"_rgba;
+    colors[ImGuiCol_ResizeGripActive] = "D56A87FF"_rgba;
+    colors[ImGuiCol_ResizeGripHovered] = "FF9DBEFF"_rgba;
+    colors[ImGuiCol_ScrollbarBg] = "301E2D00"_rgba;
+    colors[ImGuiCol_ScrollbarGrab] = "6B284DFF"_rgba;
+    colors[ImGuiCol_ScrollbarGrabActive] = "FF9DBEFF"_rgba;
+    colors[ImGuiCol_ScrollbarGrabHovered] = "D56A87FF"_rgba;
+    colors[ImGuiCol_Separator] = "FFCDCCFF"_rgba;
+    colors[ImGuiCol_SeparatorActive] = "D56A87FF"_rgba;
+    colors[ImGuiCol_SeparatorHovered] = "FF9DBEFF"_rgba;
+    colors[ImGuiCol_SliderGrab] = "D56A87FF"_rgba;
+    colors[ImGuiCol_SliderGrabActive] = "FFCDCCFF"_rgba;
+    colors[ImGuiCol_Tab] = "D56A87FF"_rgba;
+    colors[ImGuiCol_TabActive] = "FF9DBECC"_rgba;
+    colors[ImGuiCol_TabHovered] = "F96E9EFF"_rgba;
+    colors[ImGuiCol_TabUnfocused] = "D56A87F8"_rgba;
+    colors[ImGuiCol_TabUnfocusedActive] = "D56A87FF"_rgba;
+    colors[ImGuiCol_TableBorderLight] = "3517276E"_rgba;
+    colors[ImGuiCol_TableBorderStrong] = "301E2D30"_rgba;
+    colors[ImGuiCol_TableHeaderBg] = "D56A87FF"_rgba;
+    colors[ImGuiCol_TableRowBg] = "453743F8"_rgba;
+    colors[ImGuiCol_TableRowBgAlt] = "453743EC"_rgba;
+    colors[ImGuiCol_Text] = "FFFFFFFF"_rgba;
+    colors[ImGuiCol_TextDisabled] = "909090FF"_rgba;
+    colors[ImGuiCol_TextSelectedBg] = "FF9DBE33"_rgba;
+    colors[ImGuiCol_TitleBg] = "453743FF"_rgba;
+    colors[ImGuiCol_TitleBgActive] = "D56A87FF"_rgba;
+    colors[ImGuiCol_TitleBgCollapsed] = "D56A87FF"_rgba;
+    colors[ImGuiCol_WindowBg] = "301E2DFF"_rgba;
+}
+
+void SetTheme(const std::string_view theme) {
+    if (theme == "ImGuiDark")
+        StyleColorsDark();
+    else if (theme == "ImGuiLight")
+        StyleColorsLight();
+    else if (theme == "ImGuiClassic")
+        StyleColorsClassic();
+    else
+        StyleSakura();
+}
 }

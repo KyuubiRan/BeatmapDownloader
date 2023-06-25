@@ -87,9 +87,6 @@
     <ClInclude Include="libraries\imgui\backends\imgui_impl_dx11.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\Feature.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\config\Field.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -112,15 +109,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\osu\BeatmapManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ui\About.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ui\Settings.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\utility\Event.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libraries\utility\Random.hpp">
@@ -228,6 +216,24 @@
     <ClInclude Include="libraries\imgui-notify\imgui_notify.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\features\About.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\CustomHotkey.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\Feature.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\MultiDownload.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\Settings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\LinkParser.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -287,12 +293,6 @@
     <ClCompile Include="src\osu\BeatmapManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\About.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ui\Settings.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\api\Sayobot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -321,6 +321,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\BeatmapIdSearchUi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\About.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\CustomHotkey.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\MultiDownload.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\Settings.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

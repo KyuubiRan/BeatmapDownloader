@@ -14,13 +14,15 @@ public:
     config::Field<int> f_ToastDuration;
     config::Field<bool> f_EnableConsole;
     config::Field<std::string> f_OsuPath;
-
+    config::Field<int> f_Theme;
 
     static Settings &GetInstance() {
         static Settings instance;
         return instance;
     }
 
+    void applyTheme();
+    
     void drawMain() override;
     virtual FeatureInfo &getInfo() override;
 };

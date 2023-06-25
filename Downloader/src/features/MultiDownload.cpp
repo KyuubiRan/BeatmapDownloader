@@ -321,6 +321,7 @@ void DoMostPlayedDownload(int id, int beg, int end) {
 
 void MultiDownload::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
+    
 #pragma region Multi DL
     {
         ImGui::BeginGroupPanel(lang.getTextCStr("MultiDownloader"));
@@ -350,7 +351,7 @@ void MultiDownload::drawMain() {
 
         static int id = 0;
         ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, bpDownloadSelectItems, IM_ARRAYSIZE(bpDownloadSelectItems));
-        ImGui::InputInt("UID", &id);
+        ImGui::InputInt("UID", &id,1,100);
 
         static int begend[] = {0, 100};
         ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, 100, "%d");
@@ -425,11 +426,12 @@ void MultiDownload::drawMain() {
         ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, MAX_MOST_PLAY_DL_COUNT, "%d");
         clamp(begend, 1, begend[1]);
         clamp(begend + 1, begend[0], MAX_MOST_PLAY_DL_COUNT);
-        ImGui::EndGroupPanel();
-
+        
         if (ImGui::Button(lang.getTextCStr("Download"))) {
             DoMostPlayedDownload(id, begend[0] - 1, begend[1]);
         }
+
+        ImGui::EndGroupPanel();
     }
 #undef MAX_MOST_PLAY_DL_COUNT
 #pragma endregion

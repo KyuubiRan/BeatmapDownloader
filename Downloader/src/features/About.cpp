@@ -1,6 +1,6 @@
-﻿#include "pch.h"
-#include "About.h"
+﻿#include "About.h"
 
+#include "CustomHotkey.h"
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
@@ -30,7 +30,8 @@ void About::drawMain() {
     ImGui::EndGroupPanel();
 
     ImGui::BeginGroupPanel(lang.getTextCStr("Hotkey"));
-    ImGui::Text("%s", lang.getTextCStr("HotkeyDesc"));
+    auto &htk = features::CustomHotkey::GetInstance();
+    ImGui::Text(lang.getTextCStr("HotkeyDesc"), htk.f_MainMenuHotkey->toString().c_str(), htk.f_SearchHotkey->toString().c_str());
     ImGui::EndGroupPanel();
 }
 }

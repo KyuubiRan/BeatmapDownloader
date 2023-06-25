@@ -34,3 +34,5 @@
 ## 感谢
 
 Osu-Ingame-Downloader: https://github.com/veritas501/Osu-Ingame-Downloader
+
+Sakura 主题 by [Small-Ku](https://github.com/Small-Ku)

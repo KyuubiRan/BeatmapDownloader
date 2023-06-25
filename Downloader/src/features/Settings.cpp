@@ -1,24 +1,27 @@
-﻿#include "pch.h"
-#include "Settings.h"
+﻿#include "Settings.h"
 
 #include "utils/gui_utils.h"
+#include "Logger.h"
 
 namespace features {
+
+static const char *s_Themes[] = {"Sakura", "ImGuiDark", "ImGuiLight", "ImGuiClassic"};
 
 Settings::Settings() :
     Feature(),
     f_EnableToast("EnableToast", true),
     f_ToastDuration("ToastDuration", 3000),
     f_EnableConsole("EnableConsole", true),
-    f_OsuPath("OsuPath", "") {
-    // f_MainMenuHotkey->m_OnKeyDown += [] {
-    //     LOGD("Toggle main menu show keydown");
-    //     main::ToggleShow();
-    // };
-    // f_SearchHotkey->m_OnKeyDown += [] {
-    //     LOGD("Toggle Search ui show keydown");
-    //     search::beatmapid::ToggleShow();
-    // };
+    f_OsuPath("OsuPath", ""),
+    f_Theme("Theme", 0) {
+}
+
+void Settings::applyTheme() {
+    if (ImGui::GetCurrentContext() == nullptr) {
+        LOGW("Apply theme failed: ImGui Context == nullptr");
+        return;
+    }
+    ImGui::SetTheme(s_Themes[f_Theme.getValue()]);
 }
 
 void Settings::drawMain() {
@@ -31,6 +34,10 @@ void Settings::drawMain() {
     static int langIdx = (int)lang.lang.getValue();
     if (ImGui::Combo(lang.getTextCStr("Language"), &langIdx, langs, IM_ARRAYSIZE(langs))) {
         lang.lang.setValue(static_cast<i18n::Language>(langIdx));
+    }
+
+    if (ImGui::Combo(lang.getTextCStr("Theme"), f_Theme.getPtr(), s_Themes, IM_ARRAYSIZE(s_Themes))) {
+        ImGui::SetTheme(s_Themes[f_Theme.getValue()]);
     }
 
     if (ImGui::InputText(lang.getTextCStr("OsuPath"), f_OsuPath.getPtr())) {

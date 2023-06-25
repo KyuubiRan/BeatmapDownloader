@@ -4,6 +4,7 @@
 #include "Feature.h"
 #include "ui/BeatmapIdSearchUi.h"
 #include "ui/MainUi.h"
+#include "utils/gui_utils.h"
 
 namespace features {
 
@@ -21,7 +22,11 @@ CustomHotkey::CustomHotkey() :
 }
 
 void CustomHotkey::drawMain() {
-    // TODO: Custom Hotkey UI
+    GET_LANG();
+    ImGui::BeginGroupPanel(lang.getTextCStr("Main"));
+    ImGui::HotkeyWidget(lang.getTextCStr("MainMenuHotkey"), f_MainMenuHotkey);
+    ImGui::HotkeyWidget(lang.getTextCStr("IdSearchHotkey"), f_SearchHotkey);
+    ImGui::EndGroupPanel();
 }
 
 FeatureInfo &CustomHotkey::getInfo() {

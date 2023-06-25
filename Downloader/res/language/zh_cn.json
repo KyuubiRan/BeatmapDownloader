@@ -34,7 +34,7 @@
   "DownloadQueue": "下载队列",
   "CancelDownload": "取消下载",
   "Hotkey": "快捷键",
-  "HotkeyDesc": "[Home] 切换主菜单显示。\n[End] 切换谱面ID搜索显示。\n长按 [Ctrl] + 点击链接跳过代理搜图。\n长按 [Shift] + 点击链接直接开始下载(已经存在的谱面除外)",
+  "HotkeyDesc": "[%s] 切换主菜单显示。\n[%s] 切换谱面ID搜索显示。\n长按 [Ctrl] + 点击链接跳过代理搜图。\n长按 [Shift] + 点击链接直接开始下载(已经存在的谱面除外)",
   "Empty": "空空如也~",
   "SearchBeatmapId": "谱面ID搜索器",
   "Search": "搜索",
@@ -96,5 +96,9 @@
   "MostPlayedDownloader": "最多游玩谱面下载器",
   "MostPlayedDownloadFailedUserNotFound": "最多游玩谱面下载失败：找不到用户(%d)！",
   "MostPlayedDownloadFailedResponseCodeNotOk": "最多游玩谱面下载失败：响应码：%d",
-  "MostPlayedDownloadFailedParseFailed": "最多游玩谱面下载失败：解析响应体失败！"
+  "MostPlayedDownloadFailedParseFailed": "最多游玩谱面下载失败：解析响应体失败！",
+  "MainMenuHotkey": "切换主菜单显示",
+  "IdSearchHotkey": "切换Sid/Bid搜索界面显示",
+  "Main": "主要",
+  "Theme": "主题"
 }

@@ -86,8 +86,10 @@ void EndGroupPanel();
 bool PasswordInputText(const char *label, std::string *s, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr,
                        void *user_data = nullptr);
 
-void SetPasswordFont(void *ttf_data, int ttf_size, float size_pixels, const ImFontConfig *font_cfg_template, const ImWchar *glyph_ranges);
-
 void TextUrl(const char *url);
+
+bool HotkeyWidget(const char *label, misc::Hotkey &hotkey, const ImVec2 &size = ImVec2(0, 0));
+
+void SetTheme(std::string_view theme);
 
 }

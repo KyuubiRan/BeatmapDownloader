@@ -369,6 +369,14 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\src;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\json;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\detours;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\utility;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\curl;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui-notify</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\features\CustomHotkey.cpp" />
     <ClCompile Include="src\features\Downloader.cpp" />
@@ -449,6 +457,14 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\src;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\json;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\detours;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\utility;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\curl;F:\Projects\Cpp\OsuBeatmapDownloader\Downloader\libraries\imgui-notify</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\network\HttpRequest.cpp" />
     <ClCompile Include="src\osu\Account.cpp" />

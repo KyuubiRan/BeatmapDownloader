@@ -34,3 +34,5 @@ An in-game beatmap downloader for osu!stable
 ## Thanks
 
 Osu-Ingame-Downloader: https://github.com/veritas501/Osu-Ingame-Downloader
+
+Sakura Theme by [Small-Ku](https://github.com/Small-Ku)

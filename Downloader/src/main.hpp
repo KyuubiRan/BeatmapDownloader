@@ -45,19 +45,14 @@ void Run(HMODULE *phModule) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.IniFilename = s.c_str();
     io.SetPlatformImeDataFn = nullptr;
-    ImGui::StyleColorsDark();
+    settings.applyTheme();
 
     InitFeatures();
-
-    static constexpr ImWchar pwRanges[] = {
-        0x002A, 0x002B, // Basic Latin + Latin Supplement
-        0
-    };
+    
     LPBYTE bytes = nullptr;
     if (const DWORD size = res::LoadEx(IDR_FONT, RT_FONT, &bytes)) {
         renderer::SetCurrentFont(bytes, size, 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesChineseFull());
         ImGui::MergeIconsWithLatestFont(18.f, false);
-        ImGui::SetPasswordFont(bytes, size, 18.0f, nullptr, pwRanges);
     }
 
     LOGD("Check graphics api...");
