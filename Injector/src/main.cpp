@@ -7,7 +7,6 @@
 #include <filesystem>
 #include <fstream>
 
-#include "../../Downloader/libraries/detours/detours.h"
 using namespace std;
 
 #define LOGD(msg, ...)  printf_s("[DEBUG] " msg "\n", ##__VA_ARGS__)
@@ -16,29 +15,28 @@ using namespace std;
 #define LOGE(msg, ...)  printf_s("[ERROR] " msg "\n", ##__VA_ARGS__)
 #define OSU_NAME L"osu!.exe"
 
-bool InjectDll(HANDLE hProc, const char *path) {
-    LPVOID lpBaseAddress = NULL;
-    HMODULE hKernel32 = GetModuleHandleA("Kernel32.dll");
-    if (hKernel32 == NULL) {
+bool InjectDll(const HANDLE hProc, const char *path) {
+    const HMODULE hKernel32 = GetModuleHandleA("Kernel32.dll");
+    if (hKernel32 == nullptr) {
         LOGE("Failed to get kernel32.dll handle, error code: %d", GetLastError());
         return false;
     }
-    FARPROC pLoadLibrary = GetProcAddress(hKernel32, "LoadLibraryA");
-    if (pLoadLibrary == NULL) {
+    const FARPROC pLoadLibrary = GetProcAddress(hKernel32, "LoadLibraryA");
+    if (pLoadLibrary == nullptr) {
         LOGE("Failed to get LoadLibraryA address, error code: %d", GetLastError());
         return false;
     }
-    lpBaseAddress = VirtualAllocEx(hProc, NULL, strlen(path) + 1, MEM_COMMIT, PAGE_READWRITE);
-    if (lpBaseAddress == NULL) {
+    const LPVOID lpBaseAddress = VirtualAllocEx(hProc, nullptr, strlen(path) + 1, MEM_COMMIT, PAGE_READWRITE);
+    if (lpBaseAddress == nullptr) {
         LOGE("Failed to allocate memory in target process, error code: %d", GetLastError());
         return false;
     }
-    if (!WriteProcessMemory(hProc, lpBaseAddress, path, strlen(path) + 1, NULL)) {
+    if (!WriteProcessMemory(hProc, lpBaseAddress, path, strlen(path) + 1, nullptr)) {
         LOGE("Failed to write dll name to target process, error code: %d", GetLastError());
         return false;
     }
-    HANDLE hThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)pLoadLibrary, lpBaseAddress, 0, NULL);
-    if (hThread == NULL) {
+    const HANDLE hThread = CreateRemoteThread(hProc, nullptr, 0, (LPTHREAD_START_ROUTINE)pLoadLibrary, lpBaseAddress, 0, nullptr);
+    if (hThread == nullptr) {
         LOGE("Failed to create remote thread, error code: %d", GetLastError());
         return false;
     }
@@ -120,13 +118,13 @@ int main(int argc, char *argv[]) {
             LOGI("Dll injected successfully");
         }
     } else {
-        auto path = std::filesystem::current_path() / "osupath.txt";
+        auto path = std::filesystem::current_path() / "osuPath.txt";
         std::string line;
 
         if (exists(path)) {
             std::ifstream ifs(path);
             if (!ifs) {
-                LOGE("Cannot open osupath.txt!");
+                LOGE("Cannot open osuPath.txt!");
                 Sleep(3000);
                 exit(1);
             }
@@ -164,8 +162,8 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        std::filesystem::path osupath = line;
-        LOGI("osu! path: %s", osupath.string().c_str());
+        std::filesystem::path osuPath = line;
+        LOGI("osu! path: %s", osuPath.string().c_str());
 
         // Start osu! as user
         // OpenTabletDriver wont work using 
@@ -174,7 +172,7 @@ int main(int argc, char *argv[]) {
         si.cb = sizeof si;
 
 #ifndef _DEBUG
-        if (!CreateProcessW(nullptr, (L"explorer.exe " + osupath.wstring()).data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+        if (!CreateProcessW(nullptr, (L"explorer.exe " + osuPath.wstring()).data(), nullptr, nullptr, FALSE, 0, nullptr, osuPath.parent_path().c_str(), &si, &pi)) {
             LOGE("Failed to start osu!, error code: %d", GetLastError());
             Sleep(3000);
             exit(1);
@@ -194,9 +192,11 @@ int main(int argc, char *argv[]) {
         if (InjectDll(hProc, dllPath.string().c_str())) {
             LOGI("Dll injected successfully");
         }
+        CloseHandle(hProc);
 #else
-        // TODO: Replace to `DetourCreateProcessWithDllW`
-        if (!CreateProcessW(nullptr, osupath.wstring().data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+        if (!CreateProcessW(nullptr, osuPath.wstring().data(),
+                            nullptr, nullptr, FALSE,
+                            CREATE_SUSPENDED, nullptr, osuPath.parent_path().c_str(), &si, &pi)) {
             LOGE("Failed to start osu!, error code: %d", GetLastError());
             Sleep(3000);
             exit(1);
@@ -204,7 +204,11 @@ int main(int argc, char *argv[]) {
         if (InjectDll(pi.hProcess, dllPath.string().c_str())) {
             LOGI("Dll injected successfully");
         }
+        ResumeThread(pi.hThread);
 #endif
+        
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
     }
 
     Sleep(3000);
