@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <Windows.h>
-#include "Logger.h"
 #include <algorithm>
 #include <set>
 #include <unordered_set>

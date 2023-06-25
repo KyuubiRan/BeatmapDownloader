@@ -3,7 +3,6 @@
 #include <map>
 #include <json.hpp>
 #include "Field.h"
-#include "Logger.h"
 #include "misc/ResourcesLoader.hpp"
 #include "../resource.h"
 

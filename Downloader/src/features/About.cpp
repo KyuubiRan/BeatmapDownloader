@@ -1,11 +1,11 @@
-﻿#include "About.h"
+﻿#include "pch.h"
+#include "About.h"
 
 #include "CustomHotkey.h"
 #include "config/I18nManager.h"
 #include "utils/gui_utils.h"
 
 namespace features {
-
 
 About::About() :
     Feature() {

@@ -1,7 +1,7 @@
-﻿#include "Settings.h"
+﻿#include "pch.h"
+#include "Settings.h"
 
 #include "utils/gui_utils.h"
-#include "Logger.h"
 
 namespace features {
 
