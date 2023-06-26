@@ -63,7 +63,7 @@ void ui::search::beatmapid::Update() {
 
     ImGui::SameLine();
     if (ImGui::Button(lang.getTextCStr("Search"))) {
-        if (const auto bi = osu::LinkParser::ParseLink(input); !bi) {
+        if (const auto bi = osu::LinkParser::ParseLink(input, (features::downloader::BeatmapType)selected); !bi) {
             GuiHelper::ShowWarnToast(lang.getTextCStr("InvalidInput"), input.c_str());
         } else {
             features::Downloader::GetInstance().postSearch(*bi);
