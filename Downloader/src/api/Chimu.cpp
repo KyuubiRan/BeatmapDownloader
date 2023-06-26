@@ -70,7 +70,7 @@ bool api::Chimu::DownloadBeatmap(const osu::Beatmap &bm) const {
         LOGI("Success download beatmapsets: %d", bm.sid);
         return true;
     } else {
-        LOGW("Sayo download failed: CURL_CODE=%d, RESPONSE_CODE=%d", code, resCode);
+        LOGW("Chimu download failed: CURL_CODE=%d, RESPONSE_CODE=%d", code, resCode);
     }
 
     return false;
