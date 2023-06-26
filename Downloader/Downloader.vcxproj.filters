@@ -234,6 +234,18 @@
     <ClInclude Include="src\osu\LinkParser.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\api\Provider.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\Chimu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\chimu\Mapset.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\chimu\Map.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -333,6 +345,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\features\Settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\Provider.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\Chimu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

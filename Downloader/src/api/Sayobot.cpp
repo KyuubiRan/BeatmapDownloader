@@ -4,17 +4,18 @@
 #include "network/HttpRequest.h"
 #include "utils/Utils.h"
 
-void api::sayobot::BidData::to_json(nlohmann::json &j) const {
+namespace api::sayobot {
+void BidData::to_json(nlohmann::json &j) const {
     j.at("bid") = bid;
     j.at("mode") = mode;
 }
 
-void api::sayobot::BidData::from_json(const nlohmann::json &j) {
+void BidData::from_json(const nlohmann::json &j) {
     j.at("bid").get_to(bid);
     j.at("mode").get_to(mode);
 }
 
-void api::sayobot::SayoBeatmapDataV2::to_json(nlohmann::json &j) const {
+void SayoBeatmapDataV2::to_json(nlohmann::json &j) const {
     j.at("approved") = approved;
     j.at("artist") = artist;
     j.at("artistU") = artistU;
@@ -27,7 +28,7 @@ void api::sayobot::SayoBeatmapDataV2::to_json(nlohmann::json &j) const {
     j.at("bid_data") = bidData;
 }
 
-void api::sayobot::SayoBeatmapDataV2::from_json(const nlohmann::json &j) {
+void SayoBeatmapDataV2::from_json(const nlohmann::json &j) {
     j.at("approved").get_to(approved);
     j.at("artist").get_to(artist);
     j.at("artistU").get_to(artistU);
@@ -40,7 +41,7 @@ void api::sayobot::SayoBeatmapDataV2::from_json(const nlohmann::json &j) {
     j.at("bid_data").get_to(bidData);
 }
 
-osu::Beatmap api::sayobot::SayoBeatmapDataV2::to_beatmap() const {
+osu::Beatmap SayoBeatmapDataV2::to_beatmap() const {
     std::vector<int32_t> bids;
     bids.reserve(bidData.size());
     for (auto &bd : bidData) {
@@ -49,8 +50,16 @@ osu::Beatmap api::sayobot::SayoBeatmapDataV2::to_beatmap() const {
     return {title, artist, creator, bids, sid, video != 0};
 }
 
-std::optional<api::sayobot::SayoResult<api::sayobot::SayoBeatmapDataV2>> api::sayobot::SearchBeatmapV2(
-    const features::downloader::BeatmapInfo &info) {
+};
+
+void nlohmann::adl_serializer<api::sayobot::BidData>::to_json(nlohmann::json &j, const api::sayobot::BidData &data) { data.to_json(j); }
+
+void nlohmann::adl_serializer<api::sayobot::BidData>::from_json(const nlohmann::json &j, api::sayobot::BidData &data) { data.from_json(j); }
+
+api::Sayobot::Sayobot() :
+    Provider("Sayobot", "https://www.showdoc.com.cn/SoulDee?page_id=3969517351482508", features::downloader::DownloadMirror::Sayobot) {}
+
+std::optional<osu::Beatmap> api::Sayobot::SearchBeatmap(const features::downloader::BeatmapInfo &info) const {
     const auto s = std::format("https://api.sayobot.cn/v2/beatmapinfo?K={0}&T={1}", info.id, (uint8_t)info.type);
     int resCode = -1;
     std::string response;
@@ -60,11 +69,15 @@ std::optional<api::sayobot::SayoResult<api::sayobot::SayoBeatmapDataV2>> api::sa
     if (const CURLcode code = net::curl_get(s.c_str(), response, &resCode); code == CURLE_OK && resCode == 200) {
         // LOGD("Sayo search response: %s", response.c_str());
         const auto j = nlohmann::json::parse(response);
-        SayoResult<SayoBeatmapDataV2> data;
+        api::sayobot::SayoResult<api::sayobot::SayoBeatmapDataV2> data;
         data.from_json(j);
 
         if (data.status == 0) {
-            return data;
+            if (data.data.has_value()) {
+                return std::optional(data.data.value().to_beatmap());
+            } else {
+                return {};
+            }
         }
 
         LOGW("Sayo search failed: code=%d", data.status);
@@ -75,7 +88,7 @@ std::optional<api::sayobot::SayoResult<api::sayobot::SayoBeatmapDataV2>> api::sa
     return {};
 }
 
-bool api::sayobot::DownloadBeatmap(osu::Beatmap &bm) {
+bool api::Sayobot::DownloadBeatmap(const osu::Beatmap &bm) const {
     auto &dl = features::Downloader::GetInstance();
 
     const auto s = std::format("https://txy1.sayobot.cn/beatmaps/download/{0}/{1}?server=auto",
@@ -93,12 +106,4 @@ bool api::sayobot::DownloadBeatmap(osu::Beatmap &bm) {
     }
 
     return false;
-}
-
-void nlohmann::adl_serializer<api::sayobot::BidData, void>::to_json(json &j, const api::sayobot::BidData &data) {
-    data.to_json(j);
-}
-
-void nlohmann::adl_serializer<api::sayobot::BidData, void>::from_json(const json &j, api::sayobot::BidData &data) {
-    data.from_json(j);
 }

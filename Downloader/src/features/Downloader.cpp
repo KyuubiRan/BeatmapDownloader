@@ -60,20 +60,13 @@ features::Downloader::Downloader() :
         LOGI("Start download: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
         GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownload"), bm.sid);
         while (!success && retry++ < 3) {
-            switch (inst.f_Mirror.getValue()) {
-            case downloader::DownloadMirror::OsuOfficial: {
-                if (!inst.f_GrantOsuAccount.getValue()) {
-                    LOGW("Permission denied on download beatmap by osu!(Official) mirror.");
-                    goto beg;
-                }
-                success = api::bancho::DownloadBeatmap(bm);
+            if (inst.f_Mirror.getValue() == downloader::DownloadMirror::OsuOfficial && !inst.f_GrantOsuAccount.getValue()) {
+                LOGW("Permission denied on download beatmap by osu!(Official) mirror.");
+                goto beg;
             }
-            break;
-            case downloader::DownloadMirror::Sayobot: {
-                success = api::sayobot::DownloadBeatmap(bm);
-            }
-            break;
-            }
+
+            auto provider = api::Provider::GetRegisteredByEnum(inst.f_Mirror.getValue());
+            success = provider->DownloadBeatmap(bm);
         }
 
         DownloadQueue::GetInstance().notifyFinished(bm.sid);
@@ -125,45 +118,20 @@ features::Downloader::Downloader() :
         auto info = inst.m_SearchQueue.pop_front();
         LOGD("Poped search: %d", info.id);
 
-        switch (inst.f_Mirror.getValue()) {
-        case downloader::DownloadMirror::OsuOfficial: {
-            if (auto ret = api::bancho::SearchBeatmap(info); ret.has_value()) {
-                auto &bm = *ret;
-                if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
-                    LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
-                    GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsBeatmapSkipAutoDownload"), bm.sid);
-                    break;
-                }
-
-                info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
-            } else {
-                LOGW("No such map found on bancho. ID=%d, Type=%s", info.id,
-                     info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
-                GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid",
-                                         info.id);
+        auto provider = api::Provider::GetRegisteredByEnum(inst.f_Mirror.getValue());
+        if (auto ret = provider->SearchBeatmap(info); ret.has_value()) {
+            auto &bm = *ret;
+            if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
+                LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
+                GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsBeatmapSkipAutoDownload"), bm.sid);
+                break;
             }
-        }
-        break;
-        case downloader::DownloadMirror::Sayobot: {
-            if (auto ret = api::sayobot::SearchBeatmapV2(info); ret.has_value()) {
-                if (auto &sayo = ret.value(); sayo.status == 0 && sayo.data.has_value()) {
-                    auto bm = sayo.data->to_beatmap();
-                    if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
-                        LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
-                        GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsMapSkipAutoDownload"), bm.sid);
-                        break;
-                    }
 
-                    info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
-                } else {
-                    LOGW("No such map found on Sayobot. ID=%d, Type=%s", info.id,
-                         info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
-                    GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid",
-                                             info.id);
-                }
-            }
-        }
-        break;
+            info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
+        } else {
+            LOGW("No such map found on %s. ID=%d, Type=%s", provider->GetName().c_str(), info.id,
+                 info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
+            GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid", info.id);
         }
     }
 }
@@ -193,7 +161,7 @@ void features::Downloader::drawMain() {
     static const char *mirrorNames[] = {
         "Osu! (official)",
         "Sayobot",
-        // "Chimu",
+        "Chimu",
     };
     static int mirrorIdx = (int)f_Mirror.getValue();
     if (ImGui::Combo(lang.getTextCStr("Mirror"), &mirrorIdx, mirrorNames, IM_ARRAYSIZE(mirrorNames))) {

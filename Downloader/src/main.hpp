@@ -98,6 +98,10 @@ void Run(HMODULE *phModule) {
 #include "features/DownloadQueue.h"
 #include "features/MultiDownload.h"
 #include "features/CustomHotkey.h"
+#include "api/Provider.h"
+#include "api/Bancho.h"
+#include "api/Sayobot.h"
+#include "api/Chimu.h"
 
 #define INIT_FEAT(NAME) ui::main::AddFeature(&features::NAME::GetInstance())
 
@@ -109,4 +113,8 @@ inline void InitFeatures() {
     INIT_FEAT(HandleLinkHook);
     INIT_FEAT(MultiDownload);
     INIT_FEAT(DownloadQueue);
+
+    api::Provider::Register(new api::Bancho());
+    api::Provider::Register(new api::Sayobot());
+    api::Provider::Register(new api::Chimu());
 }
