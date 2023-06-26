@@ -9,7 +9,7 @@ public:
     Bancho();
 
     // Inherited via Provider
-    std::optional<osu::Beatmap> SearchBeatmap(const features::downloader::BeatmapInfo &) const override;
-    bool DownloadBeatmap(const osu::Beatmap &) const override;
+    std::optional<osu::Beatmap> searchBeatmap(const features::downloader::BeatmapInfo &) const override;
+    bool downloadBeatmap(const osu::Beatmap &) const override;
 };
 }

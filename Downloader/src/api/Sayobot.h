@@ -12,8 +12,8 @@ public:
     Sayobot();
 
     // Inherited via Provider
-    virtual std::optional<osu::Beatmap> SearchBeatmap(const features::downloader::BeatmapInfo &) const override;
-    virtual bool DownloadBeatmap(const osu::Beatmap &) const override;
+    virtual std::optional<osu::Beatmap> searchBeatmap(const features::downloader::BeatmapInfo &) const override;
+    virtual bool downloadBeatmap(const osu::Beatmap &) const override;
 };
 };
 

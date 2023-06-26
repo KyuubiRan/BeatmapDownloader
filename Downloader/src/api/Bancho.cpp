@@ -8,7 +8,7 @@
 
 api::Bancho::Bancho() : Provider("Bancho", "https://github.com/ppy/osu-api/wiki", features::downloader::DownloadMirror::OsuOfficial) {}
 
-std::optional<osu::Beatmap> api::Bancho::SearchBeatmap(const features::downloader::BeatmapInfo &info) const {
+std::optional<osu::Beatmap> api::Bancho::searchBeatmap(const features::downloader::BeatmapInfo &info) const {
     auto &dl = features::Downloader::GetInstance();
 
     auto un = dl.f_OsuAccount->username();
@@ -91,7 +91,7 @@ std::optional<osu::Beatmap> api::Bancho::SearchBeatmap(const features::downloade
     return {};
 }
 
-bool api::Bancho::DownloadBeatmap(const osu::Beatmap &bm) const {
+bool api::Bancho::downloadBeatmap(const osu::Beatmap &bm) const {
     auto &dl = features::Downloader::GetInstance();
 
     auto un = dl.f_OsuAccount->username();

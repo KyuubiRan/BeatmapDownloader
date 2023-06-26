@@ -32,7 +32,7 @@ int32_t api::Chimu::_convertToSetId(const features::downloader::BeatmapInfo &inf
 
 api::Chimu::Chimu() : Provider("Chimu", "https://chimu.moe/docs", features::downloader::DownloadMirror::Chimu) {}
 
-std::optional<osu::Beatmap> api::Chimu::SearchBeatmap(const features::downloader::BeatmapInfo &info) const {
+std::optional<osu::Beatmap> api::Chimu::searchBeatmap(const features::downloader::BeatmapInfo &info) const {
     int32_t id = _convertToSetId(info);
     if (id == -1) return {};
 
@@ -57,7 +57,7 @@ std::optional<osu::Beatmap> api::Chimu::SearchBeatmap(const features::downloader
 	return mapset.to_beatmap();
 }
 
-bool api::Chimu::DownloadBeatmap(const osu::Beatmap &bm) const {
+bool api::Chimu::downloadBeatmap(const osu::Beatmap &bm) const {
     auto &dl = features::Downloader::GetInstance();
 
     const auto s = std::format("https://api.chimu.moe/v1/download/{0}", bm.sid);

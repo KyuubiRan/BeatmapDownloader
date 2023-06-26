@@ -66,7 +66,7 @@ features::Downloader::Downloader() :
             }
 
             auto provider = api::Provider::GetRegisteredByEnum(inst.f_Mirror.getValue());
-            success = provider->DownloadBeatmap(bm);
+            success = provider->downloadBeatmap(bm);
         }
 
         DownloadQueue::GetInstance().notifyFinished(bm.sid);
@@ -118,18 +118,18 @@ features::Downloader::Downloader() :
         auto info = inst.m_SearchQueue.pop_front();
         LOGD("Poped search: %d", info.id);
 
-        auto provider = api::Provider::GetRegisteredByEnum(inst.f_Mirror.getValue());
-        if (auto ret = provider->SearchBeatmap(info); ret.has_value()) {
+        const auto provider = api::Provider::GetRegisteredByEnum(inst.f_Mirror.getValue());
+        if (auto ret = provider->searchBeatmap(info); ret.has_value()) {
             auto &bm = *ret;
             if (osu::BeatmapManager::GetInstance().hasBeatmap(bm) && info.directDownload) {
                 LOGI("Already has beatmapsets: %d, skipped direct download.", bm.sid);
                 GuiHelper::ShowInfoToast(lang.getTextCStr("ExistsBeatmapSkipAutoDownload"), bm.sid);
-                break;
+                continue;
             }
 
             info.directDownload ? inst.postDownload(bm) : ui::search::result::ShowSearchInfo(bm);
         } else {
-            LOGW("No such map found on %s. ID=%d, Type=%s", provider->GetName().c_str(), info.id,
+            LOGW("No such map found on %s. ID=%d, Type=%s", provider->getName().data(), info.id,
                  info.type == downloader::BeatmapType::Sid ? "beatmapsets" : "beatmapid");
             GuiHelper::ShowWarnToast(lang.getTextCStr("SearchFailed"), info.type == downloader::BeatmapType::Sid ? "sid" : "bid", info.id);
         }

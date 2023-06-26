@@ -4,21 +4,23 @@
 
 namespace api {
 
-Provider::Provider(std::string name, std::string doc, features::downloader::DownloadMirror mirror) : _name(name), _doc(doc), _enum(mirror) {}
+Provider::Provider(std::string name, std::string doc, features::downloader::DownloadMirror mirror) :
+    _name(std::move(name)), _doc(std::move(doc)), _enum(mirror) {
+}
 
-std::string Provider::GetDoc() const { return _doc; }
-std::string Provider::GetName() const { return _name; }
+std::string_view Provider::getDoc() const { return _doc; }
+std::string_view Provider::getName() const { return _name; }
 
 features::downloader::DownloadMirror Provider::GetEnum() const { return _enum; }
 
 Provider const *Provider::GetRegisteredByName(std::string name) {
     auto vec = Provider::GetRegistered();
-    return *std::find_if(vec.begin(), vec.end(), [&name](auto p) { return p->GetName() == name; });
+    return *std::ranges::find_if(vec, [&name](auto p) { return p->getName() == name; });
 }
 
 Provider const *Provider::GetRegisteredByEnum(features::downloader::DownloadMirror mirror) {
-    auto vec = Provider::GetRegistered();
-    return *std::find_if(vec.begin(), vec.end(), [&mirror](auto p) { return p->GetEnum() == mirror; });
+    auto &vec = GetRegistered();
+    return *std::ranges::find_if(vec, [&mirror](auto p) { return p->GetEnum() == mirror; });
 }
 
 std::vector<const Provider *> Provider::_providers;
@@ -26,7 +28,7 @@ std::vector<const Provider *> Provider::_providers;
 void Provider::Register(const Provider *provider) { _providers.push_back(provider); }
 
 void Provider::UnRegisterAll() {
-    for (auto it : Provider::_providers) {
+    for (const auto it : _providers) {
         delete it;
     }
 }

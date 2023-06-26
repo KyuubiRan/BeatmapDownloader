@@ -59,7 +59,7 @@ void nlohmann::adl_serializer<api::sayobot::BidData>::from_json(const nlohmann::
 api::Sayobot::Sayobot() :
     Provider("Sayobot", "https://www.showdoc.com.cn/SoulDee?page_id=3969517351482508", features::downloader::DownloadMirror::Sayobot) {}
 
-std::optional<osu::Beatmap> api::Sayobot::SearchBeatmap(const features::downloader::BeatmapInfo &info) const {
+std::optional<osu::Beatmap> api::Sayobot::searchBeatmap(const features::downloader::BeatmapInfo &info) const {
     const auto s = std::format("https://api.sayobot.cn/v2/beatmapinfo?K={0}&T={1}", info.id, (uint8_t)info.type);
     int resCode = -1;
     std::string response;
@@ -88,7 +88,7 @@ std::optional<osu::Beatmap> api::Sayobot::SearchBeatmap(const features::download
     return {};
 }
 
-bool api::Sayobot::DownloadBeatmap(const osu::Beatmap &bm) const {
+bool api::Sayobot::downloadBeatmap(const osu::Beatmap &bm) const {
     auto &dl = features::Downloader::GetInstance();
 
     const auto s = std::format("https://txy1.sayobot.cn/beatmaps/download/{0}/{1}?server=auto",

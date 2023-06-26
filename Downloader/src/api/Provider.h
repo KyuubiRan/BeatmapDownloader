@@ -13,17 +13,18 @@ private:
     features::downloader::DownloadMirror _enum;
 
 public:
+    virtual ~Provider() = default;
     Provider(std::string, std::string, features::downloader::DownloadMirror);
 
-    std::string GetDoc() const;
-    std::string GetName() const;
+    std::string_view getDoc() const;
+    std::string_view getName() const;
 
     features::downloader::DownloadMirror GetEnum() const;
 
-    virtual std::optional<osu::Beatmap> SearchBeatmap(const features::downloader::BeatmapInfo &) const = 0;
-    virtual bool DownloadBeatmap(const osu::Beatmap &) const = 0;
+    virtual std::optional<osu::Beatmap> searchBeatmap(const features::downloader::BeatmapInfo &) const = 0;
+    virtual bool downloadBeatmap(const osu::Beatmap &) const = 0;
 
-    static const std::vector<const Provider *> &GetRegistered() { return Provider::_providers; }
+    static const std::vector<const Provider *> &GetRegistered() { return _providers; }
     static Provider const *GetRegisteredByName(std::string);
     static Provider const *GetRegisteredByEnum(features::downloader::DownloadMirror);
     static void Register(const Provider *provider);
