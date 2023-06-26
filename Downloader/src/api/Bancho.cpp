@@ -17,6 +17,8 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
         return {};
     }
 
+    LOGD("Begin official search type=%s, id=%d", info.type == features::downloader::BeatmapType::Sid ? "Sid" : "Bid", info.id);
+
     // https://osu.ppy.sh/web/osu-search-set.php?u={username}&h={md5hash}&{type}={id};
 
     auto url = std::format("https://osu.ppy.sh/web/osu-search-set.php?u={0}&h={1}&{2}={3}", un, pw,

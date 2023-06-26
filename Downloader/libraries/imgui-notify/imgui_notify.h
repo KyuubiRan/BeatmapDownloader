@@ -10,6 +10,7 @@
 #include "font_awesome_5.h"
 #include "fa_solid_900.h"
 
+#pragma warning(push)
 #pragma warning(disable: 4172)
 #pragma warning(disable: 4267)
 #pragma warning(disable: 4477)
@@ -357,5 +358,7 @@ namespace ImGui
 		GetIO().Fonts->AddFontFromMemoryTTF((void*)fa_solid_900, sizeof(fa_solid_900), font_size, &icons_config, icons_ranges);
 	}
 }
+
+#pragma warning(pop)
 
 #endif
