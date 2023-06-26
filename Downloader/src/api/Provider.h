@@ -19,7 +19,7 @@ public:
     std::string_view getDoc() const;
     std::string_view getName() const;
 
-    features::downloader::DownloadMirror GetEnum() const;
+    features::downloader::DownloadMirror getEnum() const;
 
     virtual std::optional<osu::Beatmap> searchBeatmap(const features::downloader::BeatmapInfo &) const = 0;
     virtual bool downloadBeatmap(const osu::Beatmap &) const = 0;
@@ -32,4 +32,4 @@ public:
     static void UnRegisterAll();
 };
 
-}; // namespace api
+} // namespace api

@@ -11,16 +11,16 @@ Provider::Provider(std::string name, std::string doc, features::downloader::Down
 std::string_view Provider::getDoc() const { return _doc; }
 std::string_view Provider::getName() const { return _name; }
 
-features::downloader::DownloadMirror Provider::GetEnum() const { return _enum; }
+features::downloader::DownloadMirror Provider::getEnum() const { return _enum; }
 
 Provider const *Provider::GetRegisteredByName(std::string name) {
-    auto vec = Provider::GetRegistered();
+    auto &vec = GetRegistered();
     return *std::ranges::find_if(vec, [&name](auto p) { return p->getName() == name; });
 }
 
 Provider const *Provider::GetRegisteredByEnum(features::downloader::DownloadMirror mirror) {
     auto &vec = GetRegistered();
-    return *std::ranges::find_if(vec, [&mirror](auto p) { return p->GetEnum() == mirror; });
+    return *std::ranges::find_if(vec, [&mirror](auto p) { return p->getEnum() == mirror; });
 }
 
 std::vector<const Provider *> Provider::_providers;
@@ -31,6 +31,7 @@ void Provider::UnRegisterAll() {
     for (const auto it : _providers) {
         delete it;
     }
+    _providers.clear();
 }
 
-}; // namespace api
+} // namespace api
