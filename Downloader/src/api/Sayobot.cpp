@@ -63,6 +63,9 @@ std::optional<osu::Beatmap> api::Sayobot::SearchBeatmap(const features::download
     const auto s = std::format("https://api.sayobot.cn/v2/beatmapinfo?K={0}&T={1}", info.id, (uint8_t)info.type);
     int resCode = -1;
     std::string response;
+
+    LOGD("Begin sayobot search type=%s, id=%d", info.type == features::downloader::BeatmapType::Sid ? "Auto" : "Bid", info.id);
+    
     if (const CURLcode code = net::curl_get(s.c_str(), response, &resCode); code == CURLE_OK && resCode == 200) {
         // LOGD("Sayo search response: %s", response.c_str());
         const auto j = nlohmann::json::parse(response);
