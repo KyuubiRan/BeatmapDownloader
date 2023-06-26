@@ -100,5 +100,6 @@
   "MainMenuHotkey": "切换主菜单显示",
   "IdSearchHotkey": "切换Sid/Bid搜索界面显示",
   "Main": "主要",
-  "Theme": "主题"
+  "Theme": "主题",
+  "Paste": "粘贴"
 }

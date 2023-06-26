@@ -32,7 +32,7 @@ void ui::search::beatmapid::Update() {
 
     auto &lang = i18n::I18nManager::GetInstance();
 
-    constexpr static ImVec2 windowSize = ImVec2(400, 65);
+    constexpr static ImVec2 windowSize = ImVec2(425, 65);
     if (static bool inited = false; !inited) {
         const ImVec2 screenSize = ImGui::GetIO().DisplaySize;
         const ImVec2 windowPos(screenSize.x / 2 - windowSize.x / 2, screenSize.y / 2 - windowSize.y / 2);
@@ -41,7 +41,8 @@ void ui::search::beatmapid::Update() {
         inited = true;
     }
 
-    ImGui::Begin(lang.getTextCStr("SearchBeatmapId"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin(lang.getTextCStr("SearchBeatmapId"), nullptr,
+                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
     static std::string input;
     static const char *items[] = {"Sid", "Bid"};
 
@@ -59,6 +60,10 @@ void ui::search::beatmapid::Update() {
     ImGui::SameLine();
     if (ImGui::Button(lang.getTextCStr("Clear"))) {
         input = "";
+    }
+    ImGui::SameLine();
+    if (ImGui::Button(lang.getTextCStr("Paste"))) {
+        input = ImGui::GetClipboardText();
     }
 
     ImGui::SameLine();

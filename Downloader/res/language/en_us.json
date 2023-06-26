@@ -100,5 +100,6 @@
   "MainMenuHotkey": "Toggle Main Menu UI Show",
   "IdSearchHotkey": "Toggle Sid/Bid Search UI Show",
   "Main": "Main",
-  "Theme": "Theme"
+  "Theme": "Theme",
+  "Paste": "Paste"
 }
