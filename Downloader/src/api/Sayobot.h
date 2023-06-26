@@ -4,6 +4,18 @@
 #include <json.hpp>
 #include "misc/ISerializable.h"
 #include "features/Downloader.h"
+#include "Provider.h"
+
+namespace api {
+class Sayobot : public Provider {
+public:
+    Sayobot();
+
+    // Inherited via Provider
+    virtual std::optional<osu::Beatmap> SearchBeatmap(const features::downloader::BeatmapInfo &) const override;
+    virtual bool DownloadBeatmap(const osu::Beatmap &) const override;
+};
+};
 
 namespace api::sayobot {
 struct BidData : ISerializable {
@@ -60,9 +72,6 @@ void SayoResult<T, E0>::from_json(const nlohmann::json &j) {
     }
 }
 
-std::optional<SayoResult<SayoBeatmapDataV2>> SearchBeatmapV2(const features::downloader::BeatmapInfo &info);
-
-bool DownloadBeatmap(osu::Beatmap &bm);
 }
 
 template <>

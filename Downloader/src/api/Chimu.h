@@ -1,15 +1,15 @@
-﻿#pragma once
-#include "features/Downloader.h"
-#include "osu/Beatmap.h"
+#pragma once
 #include "Provider.h"
 
 namespace api {
-class Bancho : public Provider {
+class Chimu : public Provider {
+    int32_t _convertToSetId(const features::downloader::BeatmapInfo &info) const;
+
 public:
-    Bancho();
+    Chimu();
 
     // Inherited via Provider
     std::optional<osu::Beatmap> SearchBeatmap(const features::downloader::BeatmapInfo &) const override;
     bool DownloadBeatmap(const osu::Beatmap &) const override;
 };
-}
+}; // namespace api

@@ -19,6 +19,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
                 UnhookWindowsHookEx(renderer::g_msgHook);
             }
             config::Save();
+            api::Provider::UnRegisterAll();
             break;
     }
     return TRUE;

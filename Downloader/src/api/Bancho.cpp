@@ -6,7 +6,9 @@
 #include "utils/Utils.h"
 #include "utils/gui_utils.h"
 
-std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::BeatmapInfo &info) {
+api::Bancho::Bancho() : Provider("Bancho", "https://github.com/ppy/osu-api/wiki", features::downloader::DownloadMirror::OsuOfficial) {}
+
+std::optional<osu::Beatmap> api::Bancho::SearchBeatmap(const features::downloader::BeatmapInfo &info) const {
     auto &dl = features::Downloader::GetInstance();
 
     auto un = dl.f_OsuAccount->username();
@@ -49,11 +51,11 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
         try {
             auto bm = osu::Beatmap{};
             size_t i = 0;
-            l[i++]; // serverFilename 
+            l[i++]; // serverFilename
             bm.artist = l[i++];
             bm.title = l[i++];
             bm.author = l[i++];
-            l[i++]; // status 
+            l[i++]; // status
             /*
             "1" => SubmissionStatus.Ranked,
             "2" => SubmissionStatus.Approved,
@@ -87,7 +89,7 @@ std::optional<osu::Beatmap> api::bancho::SearchBeatmap(features::downloader::Bea
     return {};
 }
 
-bool api::bancho::DownloadBeatmap(osu::Beatmap &bm) {
+bool api::Bancho::DownloadBeatmap(const osu::Beatmap &bm) const {
     auto &dl = features::Downloader::GetInstance();
 
     auto un = dl.f_OsuAccount->username();

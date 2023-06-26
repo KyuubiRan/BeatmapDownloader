@@ -14,7 +14,7 @@ namespace downloader {
 enum class DownloadMirror : uint8_t {
     OsuOfficial = 0,
     Sayobot,
-    // Chimu,
+    Chimu,
 };
 
 enum class BeatmapType : uint8_t {
