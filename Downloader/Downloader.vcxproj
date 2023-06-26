@@ -104,6 +104,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PreBuildEvent>
+      <Command>python update_version.py</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -127,6 +130,9 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PreBuildEvent>
+      <Command>python update_version.py</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -145,6 +151,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PreBuildEvent>
+      <Command>python update_version.py</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -167,6 +176,9 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PreBuildEvent>
+      <Command>python update_version.py</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\api\Chimu.h" />
@@ -213,6 +225,7 @@
     <ClInclude Include="src\api\Sayobot.h" />
     <ClInclude Include="src\config\Field.h" />
     <ClInclude Include="src\config\I18nManager.h" />
+    <ClInclude Include="src\dlver.h" />
     <ClInclude Include="src\features\About.h" />
     <ClInclude Include="src\features\CustomHotkey.h" />
     <ClInclude Include="src\features\Downloader.h" />
@@ -224,9 +237,11 @@
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\HookManager.hpp" />
     <ClInclude Include="src\misc\Color.h" />
+    <ClInclude Include="src\misc\glob.h" />
     <ClInclude Include="src\misc\Hotkey.hpp" />
     <ClInclude Include="src\misc\ISerializable.h" />
     <ClInclude Include="src\misc\ResourcesLoader.hpp" />
+    <ClInclude Include="src\misc\VersionManager.h" />
     <ClInclude Include="src\network\HttpRequest.h" />
     <ClInclude Include="src\osu\Account.h" />
     <ClInclude Include="src\osu\BeatmapManager.h" />
@@ -309,6 +324,7 @@
     <ClCompile Include="src\features\HandleLinkHook.cpp" />
     <ClCompile Include="src\features\MultiDownload.cpp" />
     <ClCompile Include="src\features\Settings.cpp" />
+    <ClCompile Include="src\misc\VersionManager.cpp" />
     <ClCompile Include="src\network\HttpRequest.cpp" />
     <ClCompile Include="src\osu\Account.cpp" />
     <ClCompile Include="src\osu\BeatmapManager.cpp" />
@@ -342,6 +358,7 @@
     <Content Include="res\language\en_us.json" />
     <Content Include="res\language\zh_cn.json" />
     <Content Include="res\MiSans-Normal.ttf" />
+    <Content Include="update_version.py" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

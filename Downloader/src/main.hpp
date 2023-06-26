@@ -13,6 +13,7 @@
 #include "osu/OsuConfigManager.h"
 #include "ui/MainUi.h"
 #include "features/Settings.h"
+#include "misc/VersionManager.h"
 #include "utils/gui_utils.h"
 
 void InitFeatures();
@@ -90,6 +91,7 @@ void Run(HMODULE *phModule) {
     ui::main::ToggleShow();
 
     GuiHelper::ShowSuccessToast(i18n::I18nManager::GetInstance().getTextCStr("DownloaderLoadSuccess"));
+    misc::VersionManager::CheckUpdate();
 }
 
 #include "features/About.h"

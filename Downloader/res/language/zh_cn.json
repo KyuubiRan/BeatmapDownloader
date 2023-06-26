@@ -101,5 +101,12 @@
   "IdSearchHotkey": "切换Sid/Bid搜索界面显示",
   "Main": "主要",
   "Theme": "主题",
-  "Paste": "粘贴"
+  "Paste": "粘贴",
+  "VersionChecking": "正在检查新版本...",
+  "VersionIsLatest": "谱面下载器已是最新版本！",
+  "FoundNewVersion": "发现新版本：%s(%d)",
+  "VersionCheckFailed": "版本更新检查失败！代码：%d",
+  "CurrentVersion": "当前版本：%s(%d)",
+  "GotoDownload": "前往下载",
+  "CheckUpdate": "检查更新"
 }

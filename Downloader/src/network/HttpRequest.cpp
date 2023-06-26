@@ -2,6 +2,7 @@
 #include "HttpRequest.h"
 
 #include "features/Downloader.h"
+#include "misc/glob.h"
 #include "utils/gui_utils.h"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -14,7 +15,7 @@ size_t string_write_fn(char *data, size_t size, size_t nmemb, std::string *write
     return size * nmemb;
 }
 
-CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::string> &extraHeader, int32_t *resCode) {
+CURLcode net::curl_get(const char *url, std::string &response, const std::vector<std::string> &extraHeader, int32_t *resCode) {
     CURL *curl = curl_easy_init();
     if (!curl) {
         LOGE("Cannot init curl");
@@ -22,15 +23,18 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
     }
 
     auto &dl = features::Downloader::GetInstance();
-
+    
     curl_slist *headers = nullptr;
-    for (const auto &s : extraHeader) {
-        curl_slist_append(headers, s.c_str());
-    }
+
     const std::string ua = "User-Agent: " + (dl.f_EnableCustomUserAgent.getValue()
-        ? dl.f_CustomUserAgent.getValue()
-        : features::Downloader::DEFAULT_USER_AGENT);
-    curl_slist_append(headers, ua.c_str());
+         ? dl.f_CustomUserAgent.getValue()
+         : features::Downloader::DEFAULT_USER_AGENT);
+    headers = curl_slist_append(headers, ua.c_str());
+    
+    for (const auto &s : extraHeader) {
+        headers = curl_slist_append(headers, s.c_str());
+    }
+ 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
@@ -66,6 +70,15 @@ CURLcode net::curl_get(const char *url, std::string &response, std::vector<std::
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
     return res;
+}
+
+void net::curl_get_async(std::string url, std::vector<std::string> extraHeader, std::function<void(int, std::string &)> callback) {
+    glob::s_ThreadPool.post([u = std::move(url), h = std::move(extraHeader), c = std::move(callback)] {
+        std::string response;
+        int32_t code;
+        curl_get(u.c_str(), response, h, &code);
+        c(code, response);
+    });
 }
 
 size_t file_writer(char *data, size_t size, size_t nmemb, FILE *pFile) {
@@ -147,7 +160,7 @@ CURLcode net::curl_download(const char *url, std::filesystem::path &path, std::v
         LOGW("Curl req(dl) error: %d", res);
         GuiHelper::ShowErrorToast(i18n::I18nManager::GetTextCStr("CurlError"), res);
     }
-    
+
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
     return res;

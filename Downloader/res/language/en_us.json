@@ -101,5 +101,12 @@
   "IdSearchHotkey": "Toggle Sid/Bid Search UI Show",
   "Main": "Main",
   "Theme": "Theme",
-  "Paste": "Paste"
+  "Paste": "Paste",
+  "VersionChecking": "Checking update for BeatmapDownloader...",
+  "VersionIsLatest": "BeatmapDownloader is up to date!",
+  "FoundNewVersion": "Found new version: %s(%d)",
+  "VersionCheckFailed": "Cannot check latest version! code:%d",
+  "CurrentVersion": "Current Version: %s(%d)",
+  "GotoDownload": "Goto Download",
+  "CheckUpdate": "Check Update"
 }
