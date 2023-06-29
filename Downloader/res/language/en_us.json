@@ -108,5 +108,6 @@
   "VersionCheckFailed": "Cannot check latest version! code:%d",
   "CurrentVersion": "Current Version: %s(%d)",
   "GotoDownload": "Goto Download",
-  "CheckUpdate": "Check Update"
+  "CheckUpdate": "Check Update",
+  "AlreadyHasDownloadTask": "Already has download task: %d %s-%s [%s]"
 }

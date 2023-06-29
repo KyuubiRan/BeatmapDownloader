@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "DownloadQueue.h"
 
-#include <ranges>
 #include <set>
 
 #include "Downloader.h"
@@ -13,7 +12,7 @@ namespace features {
 std::set<int> removed{};
 
 void DownloadQueue::cancel(const int sid) const {
-    if (!m_InQueueMap.contains(sid)) {
+    if (const auto iter = findTaskBySid(sid); iter == m_TaskQueueSet.end()) {
         LOGW("No download task: %d", sid);
         return;
     }
@@ -24,45 +23,37 @@ void DownloadQueue::cancel(const int sid) const {
 bool DownloadQueue::addTask(const osu::Beatmap &bm) {
     std::unique_lock _g(m_Mutex);
 
-    if (m_InQueueMap.contains(bm.sid)) {
+    if (const auto iter = findTaskBySid(bm.sid); iter != m_TaskQueueSet.end()) {
         LOGW("Already has download task: %d %s-%s (%s)", bm.sid, bm.artist.c_str(), bm.title.c_str(), bm.author.c_str());
         return false;
     }
-    m_InQueueMap.insert({
-        bm.sid, DownloadTask{
-            .bm = bm
-        }
+    m_TaskQueueSet.insert(DownloadTask{
+        .bm = bm,
+        .insertTime = GetTickCount64(),
     });
 
     return true;
 }
 
 DownloadTask *DownloadQueue::getTask(const osu::Beatmap &bm) {
-    std::shared_lock _g(m_Mutex);
-    if (m_InQueueMap.contains(bm.sid)) {
-        auto &ret = m_InQueueMap[bm.sid];
-        ret.started = true;
-        return &ret;
-    }
-
-    return nullptr;
+    return getTask(bm.sid);
 }
 
 DownloadTask *DownloadQueue::getTask(int sid) {
-    std::shared_lock _g(m_Mutex);
-    if (m_InQueueMap.contains(sid)) {
-        auto &ret = m_InQueueMap[sid];
-        ret.started = true;
-        return &ret;
+    std::unique_lock _g(m_Mutex);
+    if (const auto iter = findTaskBySid(sid); iter != m_TaskQueueSet.end()) {
+        auto *ret = &const_cast<DownloadTask &>(*iter);
+        ret->started = true;
+        return ret;
     }
 
     return nullptr;
 }
 
-void DownloadQueue::notifyFinished(int sid) {
+void DownloadQueue::notifyFinished(const int sid) {
     std::unique_lock _g(m_Mutex);
-    if (m_InQueueMap.contains(sid)) {
-        m_InQueueMap.erase(sid);
+    if (const auto iter = findTaskBySid(sid); iter != m_TaskQueueSet.end()) {
+        m_TaskQueueSet.erase(iter);
     }
     Downloader::RemoveCancelDownload(sid);
 }
@@ -98,48 +89,28 @@ void DownloadQueue::drawTaskItem(const DownloadTask &item) const {
 void DownloadQueue::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
 
-    std::shared_lock _g(m_Mutex);
+    {
+        std::shared_lock _g(m_Mutex);
 
-    if (m_InQueueMap.empty()) {
-        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr("Empty")).x) * 0.5f);
-        ImGui::SetCursorPosY((ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.getTextCStr("Empty")).y) * 0.5f);
-        ImGui::Text(lang.getTextCStr("Empty"));
-        return;
+        if (m_TaskQueueSet.empty()) {
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(lang.getTextCStr("Empty")).x) * 0.5f);
+            ImGui::SetCursorPosY((ImGui::GetWindowSize().y - ImGui::CalcTextSize(lang.getTextCStr("Empty")).y) * 0.5f);
+            ImGui::Text(lang.getTextCStr("Empty"));
+            return;
+        }
+
+        for (auto &item : m_TaskQueueSet) {
+            drawTaskItem(item);
+        }
     }
-
-    for (auto &item : m_InQueueMap | std::views::values) {
-        drawTaskItem(item);
+    
+    {
+        std::unique_lock _g(m_Mutex);
+        for (auto &sid : removed) {
+            m_TaskQueueSet.erase(findTaskBySid(sid));
+        }
+        removed.clear();
     }
-
-    for (auto &sid : removed) {
-        m_InQueueMap.erase(sid);
-    }
-
-    /*
-    static auto example = DownloadTask{
-        osu::Beatmap{
-            .title = "Test title",
-            .artist = "Test artist",
-            .author = "Test mapper",
-            .bid = {123456, 789546},
-            .sid = 655352
-        },
-        4069000, 8192000
-    };
-    static auto example2 = DownloadTask{
-        osu::Beatmap{
-            .title = "Test title",
-            .artist = "Test artist",
-            .author = "Test mapper",
-            .bid = {123456, 789546},
-            .sid = 655351
-        },
-        0, 0
-    };
-
-    drawTaskItem(example);
-    drawTaskItem(example2);
-    */
 }
 
 FeatureInfo &DownloadQueue::getInfo() {

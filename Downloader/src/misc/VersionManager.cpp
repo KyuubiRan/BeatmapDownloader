@@ -5,6 +5,11 @@
 #include "utils/gui_utils.h"
 
 void misc::VersionManager::CheckUpdate(const bool force) {
+#ifdef SKIP_VERSION_CHECK
+    LOGI("Skipped version check!");
+    GuiHelper::ShowInfoToast("Skipped version check!");
+#endif
+    
     static bool checked = false;
     static bool inCheck = false;
 

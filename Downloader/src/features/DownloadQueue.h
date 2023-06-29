@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include <set>
 #include <shared_mutex>
-#include <unordered_map>
 
 #include "osu/Beatmap.h"
 #include "Feature.h"
@@ -11,6 +11,7 @@ struct DownloadTask {
     double dlSize{};
     double totalSize{};
     bool started = false;
+    uint64_t insertTime = UINT64_MAX;
 
     [[nodiscard]] double getProgress() const {
         return totalSize == 0 ? 0 : dlSize / totalSize;
@@ -19,12 +20,20 @@ struct DownloadTask {
     [[nodiscard]] bool prepared() const {
         return dlSize != 0 && totalSize != 0;
     }
+
+    bool operator==(const int sid) const {
+        return bm.sid == sid;
+    }
+
+    bool operator<(const DownloadTask &dl) const {
+        return insertTime < dl.insertTime;
+    }
 };
 
 class DownloadQueue : public Feature {
     DownloadQueue();
 
-    std::unordered_map<int, DownloadTask> m_InQueueMap;
+    std::set<DownloadTask> m_TaskQueueSet;
 
     inline static std::shared_mutex m_Mutex{};
 
@@ -33,19 +42,25 @@ class DownloadQueue : public Feature {
     void cancel(int sid) const;
 
 public:
+    using TaskIter = std::set<DownloadTask>::iterator;
+    using TaskIterConst = std::set<DownloadTask>::const_iterator;
+
     static DownloadQueue &GetInstance() {
         static DownloadQueue instance;
         return instance;
     }
 
     bool hasDownloadMapSet(const int id) const {
-        std::shared_lock _g(m_Mutex);
-        return m_InQueueMap.contains(id);
+        return std::ranges::any_of(m_TaskQueueSet.begin(), m_TaskQueueSet.end(),
+                                   [id](const DownloadTask &task) { return task.bm.sid == id; });
     }
 
     bool hasDownloadMap(const osu::Beatmap &bm) const {
-        std::shared_lock _g(m_Mutex);
-        return m_InQueueMap.contains(bm.sid);
+        return hasDownloadMapSet(bm.sid);
+    }
+
+    TaskIter findTaskBySid(const int id) const {
+        return std::ranges::find_if(m_TaskQueueSet, [id](const DownloadTask &task) { return task.bm.sid == id; });
     }
 
     bool addTask(const osu::Beatmap &bm);

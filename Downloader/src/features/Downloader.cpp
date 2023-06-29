@@ -5,8 +5,6 @@
 #include <shellapi.h>
 
 #include "DownloadQueue.h"
-#include "HandleLinkHook.h"
-#include "api/Bancho.h"
 #include "api/Sayobot.h"
 #include "config/I18nManager.h"
 #include "misc/Color.h"
