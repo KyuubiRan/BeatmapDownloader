@@ -109,5 +109,10 @@
   "CurrentVersion": "当前版本：%s(%d)",
   "GotoDownload": "前往下载",
   "CheckUpdate": "检查更新",
-  "AlreadyHasDownloadTask": "已存在的下载任务：%d %s-%s [%s]"
+  "AlreadyHasDownloadTask": "已存在的下载任务：%d %s-%s [%s]",
+  "BeatmapPackId": "曲包ID",
+  "BeatmapPackDownloader": "曲包下载器",
+  "BeatmapPackDownloadFailedNoSuchPackFound": "没有找到ID为%d(%s)的曲包！",
+  "StartDownloadPack": "开始下载曲包：%d(%s)",
+  "BeatmapPackDownloadFailedResponseCodeNotOk": "曲包下载失败：响应码：%d"
 }

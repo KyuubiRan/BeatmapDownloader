@@ -23,6 +23,7 @@ An in-game beatmap downloader for osu!stable
 - [x] Favorite beatmaps download
 - [x] Mapper beatmaps download
 - [x] Most played beatmaps download
+- [x] Beatmap pack download
 - [ ] (Maybe) Compatibility mode support
 
 ## UI

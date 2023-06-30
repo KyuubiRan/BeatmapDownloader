@@ -19,7 +19,7 @@ void MultiDownload::doRequest(const Task &task) {
 
 FeatureInfo &MultiDownload::getInfo() {
     static auto info = FeatureInfo{"MultiDL",
-                                             ""};
+                                   ""};
     return info;
 }
 
@@ -35,8 +35,9 @@ int multiDLSelected = 0;
 
 // osu = 0, taiko = 1, fruits = 2, mania = 3
 int bpDownloadSelect = 0;
+int packDownloadSelected = 0;
 
-const char *bpDownloadSelectItems[] = {
+const char *modeItems[] = {
     "osu",
     "taiko",
     "fruits",
@@ -72,7 +73,7 @@ void DoBPDownload(int id, int beg, int end) {
     GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadBP"), id, beg + 1, end);
     MultiDownload::Task req;
     req.url = std::format("https://osu.ppy.sh/users/{}/scores/best?mode={}&", id,
-                          bpDownloadSelectItems[bpDownloadSelect]);
+                          modeItems[bpDownloadSelect]);
     req.id = id;
     req.beg = beg;
     req.end = end;
@@ -319,9 +320,55 @@ void DoMostPlayedDownload(int id, int beg, int end) {
     MultiDownload::GetInstance().doRequest(req);
 }
 
+void DoPackDownload(int id) {
+    std::string mode = "S";
+    switch (packDownloadSelected) {
+    case 1:
+        mode.push_back('T');
+        break;
+    case 2:
+        mode.push_back('C');
+        break;
+    case 3:
+        mode.push_back('M');
+        break;
+    }
+    const std::string link = std::format("https://osu.ppy.sh/beatmaps/packs/{}{}?format=raw", mode.c_str(), id);
+
+    net::curl_get_async(link, [id](int code, auto &res) {
+        GET_LANG();
+        switch (code) {
+        case 200: {
+            const auto reg = std::regex(R"(https:\/\/osu\.ppy\.sh\/beatmapsets\/(\d+))");
+            auto &dl = Downloader::GetInstance();
+            std::smatch match;
+            std::string str = res;
+            GuiHelper::ShowInfoToast(lang.getTextCStr("StartDownloadPack"), id, modeItems[packDownloadSelected]);
+            while (std::regex_search(str, match, reg)) {
+                downloader::BeatmapInfo info{downloader::BeatmapType::Sid, std::stoi(match[1]), true};
+                dl.postSearch(info);
+                str = match.suffix();
+            }
+            break;
+        }
+        case 404: {
+            LOGW("No such beatmap pack ID=%d(%s) found!", id, modeItems[packDownloadSelected]);
+            GuiHelper::ShowWarnToast(lang.getTextCStr("BeatmapPackDownloadFailedNoSuchPackFound"), id, modeItems[packDownloadSelected]);
+            break;
+        }
+        default: {
+            LOGW("Beatmap pack download failed with http code: %d", code);
+            GuiHelper::ShowWarnToast(lang.getTextCStr("BeatmapPackDownloadFailedResponseCodeNotOk"), code);
+            break;
+        }
+        }
+
+    });
+}
+
 void MultiDownload::drawMain() {
     auto &lang = i18n::I18nManager::GetInstance();
-    
+
 #pragma region Multi DL
     {
         ImGui::BeginGroupPanel(lang.getTextCStr("MultiDownloader"));
@@ -350,8 +397,8 @@ void MultiDownload::drawMain() {
         ImGui::BeginGroupPanel(lang.getTextCStr("BPDownloader"));
 
         static int id = 0;
-        ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, bpDownloadSelectItems, IM_ARRAYSIZE(bpDownloadSelectItems));
-        ImGui::InputInt("UID", &id,1,100);
+        ImGui::Combo(lang.getTextCStr("Mode"), &bpDownloadSelect, modeItems, IM_ARRAYSIZE(modeItems));
+        ImGui::InputInt("UID", &id, 1, 100);
 
         static int begend[] = {0, 100};
         ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, 100, "%d");
@@ -426,7 +473,7 @@ void MultiDownload::drawMain() {
         ImGui::DragInt2(lang.getTextCStr("Range"), begend, 1, 1, MAX_MOST_PLAY_DL_COUNT, "%d");
         clamp(begend, 1, begend[1]);
         clamp(begend + 1, begend[0], MAX_MOST_PLAY_DL_COUNT);
-        
+
         if (ImGui::Button(lang.getTextCStr("Download"))) {
             DoMostPlayedDownload(id, begend[0] - 1, begend[1]);
         }
@@ -435,6 +482,20 @@ void MultiDownload::drawMain() {
     }
 #undef MAX_MOST_PLAY_DL_COUNT
 #pragma endregion
+
+#pragma region PackDownload
+    {
+        ImGui::BeginGroupPanel(lang.getTextCStr("BeatmapPackDownloader"));
+        static int id = 0;
+        ImGui::Combo(lang.getTextCStr("Mode"), &packDownloadSelected, modeItems, IM_ARRAYSIZE(modeItems));
+        ImGui::InputInt(lang.getTextCStr("BeatmapPackId"), &id, 1, 100);
+        if (ImGui::Button(lang.getTextCStr("Download"))) {
+            DoPackDownload(id);
+        }
+        ImGui::EndGroupPanel();
+    }
+#pragma endregion
+
 }
 
 [[noreturn]] void MultiDownload::SearchThread() {

@@ -109,5 +109,10 @@
   "CurrentVersion": "Current Version: %s(%d)",
   "GotoDownload": "Goto Download",
   "CheckUpdate": "Check Update",
-  "AlreadyHasDownloadTask": "Already has download task: %d %s-%s [%s]"
+  "AlreadyHasDownloadTask": "Already has download task: %d %s-%s [%s]",
+  "BeatmapPackId": "Beatmap Pack ID",
+  "BeatmapPackDownloader": "Beatmap Pack Downloader",
+  "BeatmapPackDownloadFailedNoSuchPackFound": "No such beatmap pack ID=%d(%s) found!",
+  "StartDownloadPack": "Start download beatmap pack: %d(%s)",
+  "BeatmapPackDownloadFailedResponseCodeNotOk": "Beatmap Pack Download failed: Response code: %d"
 }
