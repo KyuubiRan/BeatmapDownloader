@@ -1,4 +1,4 @@
-﻿#include <Windows.h>
+#include <Windows.h>
 #include <iostream>
 #include <string>
 #include <Psapi.h>
@@ -86,6 +86,32 @@ std::string ws2s(const std::wstring &s) {
     return r;
 }
 
+std::filesystem::path GetOsuPath() {
+    LPCTSTR rootKey = L"osu!\\shell\\open\\command";
+    LPCTSTR localKey = L"SOFTWARE\\Classes\\osu!\\shell\\open\\command";
+
+    HKEY hKey = nullptr;
+    if ((ERROR_SUCCESS == RegOpenKeyEx(HKEY_CLASSES_ROOT, rootKey, 0, KEY_READ, &hKey)) ||
+        (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, localKey, 0, KEY_READ, &hKey))) {
+        WCHAR value[MAX_PATH]{};
+        DWORD dwSize = sizeof(value);
+        DWORD dwType = REG_SZ;
+
+        if (ERROR_SUCCESS == RegQueryValueEx(hKey, nullptr, nullptr, &dwType, (LPBYTE)&value, &dwSize)) {
+            std::wstring wstr(value);
+            if (!wstr.empty()) {
+                wstr = wstr.substr(1, wstr.length() - 7);
+                std::filesystem::path path(wstr);
+                RegCloseKey(hKey);
+                return path;
+            }
+        }
+        RegCloseKey(hKey);
+    }
+    return "";
+}
+
+
 int main(int argc, char *argv[]) {
     bool noAutoStart = false;
 
@@ -94,7 +120,7 @@ int main(int argc, char *argv[]) {
             noAutoStart = true;
         }
     }
-
+    
     const auto dllPath = std::filesystem::current_path() / "Downloader.dll";
 
     if (DWORD pid = 0; noAutoStart || (pid = GetPidByName(OSU_NAME)) != 0) {
@@ -129,6 +155,14 @@ int main(int argc, char *argv[]) {
                 exit(1);
             }
             std::getline(ifs, line);
+        }
+
+        if (line.empty() || !filesystem::exists(line)) {
+            LOGI("Attempt to find the path of osu!.exe.");
+            auto osuPath = GetOsuPath();
+            if (exists(osuPath)) {
+                line = osuPath.string();
+            }
         }
 
         if (line.empty() || !filesystem::exists(line)) {
